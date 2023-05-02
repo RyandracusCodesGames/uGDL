@@ -13,7 +13,7 @@ The uGDL is capable of drawing 2D shapes, sprites, textures, supports a 2D-anima
 ## Contents
 <!--ts-->
 * [Drawing](#drawing)
-
+  * [Color](#color)
 
 <!--te-->
 
@@ -23,6 +23,9 @@ uGDL was programmed using the Windows API in C, but due to the platform independ
 the pixels sent by uGDL to its window. Once you have a game loop, while loop, coded it, this is what uGDL will need.
 
 ```c
+#include <windows.h>
+#include <gfx/framebuffer.h>
+#include <gfx/color.h>
 /*Structure that abstracts the components of our window display such as our title, width, and height*/
 Screen screen;
 /*Structure that contains a pointer that will represent all the pixels available in our display*/
@@ -41,12 +44,37 @@ int main(){
   while(1){
 
     /*This function will fill the entire window display with a particular color*/
-    /*The first parameter will take in your virtual memory containings all available pixels for your window*/
+    /*The first parameter will take in your virtual memory containing all available pixels for your window*/
     /*The second will taken in a color value commonly packaged into a triplet referred to as an RGB value(Red, Green, Blue)*/
-    uGDLFillScreen(frame_buffer.VRAM, uGDL_RGB(4,20,83));
+    uGDLFillScreen(frame_buffer.VRAM, uGDL_RGB888(4,20,83));
 
     InvalidateRect(window_handle, NULL, FALSE);
     UpdateWindow(window_handle);
   }
 }
+```
+# Color
+The color programming capabilites of the uGDL was heavily inspired by the Nintendo 64. For its time, the Nintendo 64 featured very
+advanced color blending functions powered by its Color Combiner and Blender which were the predecessors of the modern fragement shader.
+The Color Combiner mixes and interporlates through multiple layers of colors, and the Blender would mix colors against the corresponding
+value already placed in the FrameBuffer resulting in semi-transparent colors without the need for an alpha channel. The uGDL supports 32-Bit
+RGBA, 24-Bit RGB, 24-Bit BGR, 16-Bit RGB, and 16-Bit BGR all packaged into 32-Bit unsigned integers. Here are some of the ways to play around
+with colors using the uGDL.
+
+Calling a color value in uGDL can be accomplished in multiple ways. First, the uGDL has 5 macros for explicitly calling the different
+variants of bit-depth colors. They call begin with the prefix uGDL_ followed by the bit-depth in RGB form. For example, 24-Bit BGR
+would be called uGDL_BGR888 with 8 + 8 + 8 adding up to the total 24 bits. Similarly, 16-Bit BGR would be uGDL_BGR565 with 5 + 6 + 5 summing to 16 bits.
+
+uGDL also supports a function called ```c uGDLSetColor(BLACK);``` which will use a set of defined constants: BLACK, WHITE, GRAY, BLUE, GREEN,
+RED, PURPLE, BROWN, AND ORANGE, to provided a more beginner friendly manner of playing around with colors.
+
+```c
+while(1){
+
+    uGDLFillScreen(frame_buffer.VRAM, uGDL_BGR565(4,20,4));
+
+    InvalidateRect(window_handle, NULL, FALSE);
+    UpdateWindow(window_handle);
+  }
+
 ```
