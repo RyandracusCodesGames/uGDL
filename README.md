@@ -270,3 +270,205 @@ int main(){
 
 https://user-images.githubusercontent.com/108719757/235574401-ffaa6dd2-3db3-47d5-b7c9-54f01953eb1b.mp4
 
+The second kind of animation is 2D, sprite-based animations. While this is still a work in progress due to not having the most modular functionality,
+here is how I achieved 2D animation. Essentially, you have a pre-defined number of keyframe animations that have directions assosciated with them. For example,
+if your character had a 2 keyframe based running animation, you should prefix it with ```sonic_running_1.bmp and sonic_running_2.bmp```. You use an integer called
+spriteCounter that will function as a counter variable for deciding when to increment the variable ```spriteNum``` which will serve as what current keyframe you're on.
+You define a string called direction which will serve as the way uGDL can help determine what direction your sprite should be facing. uGDL supports vertical and horizontal flipping of images to avoid redudant and wasteful space for up, down, left, and right directions. As long as you provided one direction, uGDL can flip them
+according to the direction that you define. Here's an example of that in play:
+
+```c
+#include <gfx/framebuffer.h>
+#include <gfx/color.h>
+#include <gfx/bmp_img.h>
+#include <gfx/sprite.h>
+#include <gfx/draw.h>
+
+int main(){
+
+       while(1){
+       
+           /*Drawing Routines*/
+	    uGDLFillScreen(frame_buffer.VRAM, BLACK);
+	    
+	    if(event.rightPressed || event.dPressed){
+		direction = "right";
+
+		spriteCounter++;
+
+		if(spriteCounter >= 10)
+	         {
+	                if(spriteNum == 1)
+	                {
+	                    spriteNum = 2;
+	                }
+	            
+	                else if(spriteNum == 2)
+	                {
+	                    spriteNum = 3;
+	                }
+	            
+	                else if(spriteNum == 3)
+	                {
+	                    spriteNum = 4;
+	                }
+	                else if(spriteNum == 4)
+	                {
+	                    spriteNum = 5;
+	                }
+	                else if(spriteNum == 5)
+	                {
+	                    spriteNum = 6;
+	                }
+	                else if(spriteNum == 6)
+	                {
+	                    spriteNum = 7;
+	                }
+	                else if(spriteNum == 7)
+	                {
+	                    spriteNum = 1;
+	                }
+	                spriteCounter = 0;
+	            }
+				
+			map.vscroll.x -= 1;
+			map2.vscroll.x -= 1;
+			map3.vscroll.x += 0.50f;
+			map4.vscroll.x -= 0.35f;
+			x -= vel; x2 -= vel; x3 -= vel;
+			}
+			
+		if(event.leftPressed || event.aPressed){
+		direction = "left";
+
+		spriteCounter++;
+
+		if(spriteCounter >= 10)
+	            {
+	                if(spriteNum == 1)
+	                {
+	                    spriteNum = 2;
+	                }
+	            
+	                else if(spriteNum == 2)
+	                {
+	                    spriteNum = 3;
+	                }
+	            
+	                else if(spriteNum == 3)
+	                {
+	                    spriteNum = 4;
+	                }
+	                else if(spriteNum == 4)
+	                {
+	                    spriteNum = 5;
+	                }
+	                else if(spriteNum == 5)
+	                {
+	                    spriteNum = 6;
+	                }
+	                else if(spriteNum == 6)
+	                {
+	                    spriteNum = 7;
+	                }
+	                else if(spriteNum == 7)
+	                {
+	                    spriteNum = 1;
+	                }
+	                spriteCounter = 0;
+	            }
+				
+			map.vscroll.x += 1;
+			map2.vscroll.x += 1;
+			map3.vscroll.x -= 0.50f;
+			map4.vscroll.x += 0.35f;
+			x += vel; x2 += vel; x3 += vel;
+		}
+		
+		uGDLDispTilemap(frame_buffer.VRAM, &map3);
+			uGDLDispTilemap(frame_buffer.VRAM, &map);	
+			uGDLDispTilemap(frame_buffer.VRAM, &map2);
+			uGDLDispTilemap(frame_buffer.VRAM, &map4);	
+			
+			uGDLSprite spr = sonic;	
+			
+			if(direction == "left"){
+				switch(spriteNum){
+					case 1:{
+						spr = sonic;
+						break;
+					}
+					case 2:{
+						spr = sonic2;
+						break;
+					}
+					case 3:{
+						spr = sonic3;
+						break;
+					}
+					case 4:{
+						spr = sonic4;
+						break;
+					}
+					case 5:{
+						spr = sonic5;
+						break;
+					}
+					case 6:{
+						spr = sonic6;
+						break;
+					}
+					case 7:{
+						spr = sonic7;
+						break;
+					}
+				}
+				uGDLFlipSpriteHorz(frame_buffer.VRAM, spr, 100, 50, BMP, 0x439931);
+			}
+			if(direction == "right"){
+				switch(spriteNum){
+					case 1:{
+						spr = sonic;
+						break;
+					}
+					case 2:{
+						spr = sonic2;
+						break;
+					}
+					case 3:{
+						spr = sonic3;
+						break;
+					}
+					case 4:{
+						spr = sonic4;
+						break;
+					}
+					case 5:{
+						spr = sonic5;
+						break;
+					}
+					case 6:{
+						spr = sonic6;
+						break;
+					}
+					case 7:{
+						spr = sonic7;
+						break;
+					}
+				}
+				uGDLDispSprite(frame_buffer.VRAM, spr, 100, 50, 0x439931);
+			}
+			
+			
+			InvalidateRect(window_handle, NULL, FALSE);
+	   		UpdateWindow(window_handle);
+       
+       }
+
+}
+
+```
+
+
+https://user-images.githubusercontent.com/108719757/235575833-75083d51-1dd8-481c-912f-2a06c2e0b845.mp4
+
