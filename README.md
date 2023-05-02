@@ -117,5 +117,6 @@ while(1){
     UpdateWindow(window_handle);
   }
 ```
+
 This will be the result of calling these functions!
 ![shapes](https://user-images.githubusercontent.com/108719757/235565427-04c90626-d5f1-42fc-8160-20c2c89b962c.png)
