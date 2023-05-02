@@ -18,8 +18,8 @@ The uGDL is capable of drawing 2D shapes, sprites, textures, supports a 2D-anima
 <!--te-->
 
 ## Drawing
-In order to begin drawing using function calls from uGDL, it is neccessary to program to boiler plate code in order to begin writing more complex programs.
-uGDL was programmed using the Windows API in C, but due to it's platform idependant code, any platform that you're on simply needs to be able to accept
+In order to begin drawing using function calls from uGDL, we have to program some boiler plate code in order to begin writing more complex programs.
+uGDL was programmed using the Windows API in C, but due to the platform independant nature of its code, any platform that you're on simply needs to be able to accept
 the pixels sent by uGDL to its window. Once you have a game loop, while loop, coded it, this is what uGDL will need.
 
 ```c
