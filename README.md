@@ -15,7 +15,7 @@ The uGDL is capable of drawing 2D shapes, sprites, textures, supports a 2D-anima
 * [Drawing](#drawing)
   * [Color](#color)
   * [Shapes](#shapes)
-  * [Sprites, Textures, and Images](#sprites, textures, and images)
+  * [Sprites](#sprites)
 
 <!--te-->
 
@@ -122,7 +122,7 @@ while(1){
 This will be the result of calling these functions!
 ![shapes](https://user-images.githubusercontent.com/108719757/235565427-04c90626-d5f1-42fc-8160-20c2c89b962c.png)
 
-# Sprites, Textures, and Images
+# Sprites
 What would a graphics library be without supporting custom sprites to animate your 16-Bit characters or displaying Spongebob pictures onto the screen??!
 The uGDL supports what is commonly known as a sprite. Essentially, a 2D image that consists of a width, height, and CLUT(Color Look-up Table) which is
 essentially all the pixels needed to describe how uGDL should render it to the screen. A sprite should, however, not be confused with an Image. An image in the uGDL is simply a BMP or PNG image that is only used to export a screenshot of your display, textures, or sprites. All "Images" are sprites in uGDL as that is the only
