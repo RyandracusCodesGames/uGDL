@@ -132,13 +132,19 @@ way to render images to the screen. The uGDL supports a structure called ```uGDL
 Here is an example program loading a spongebob picture to the window!
 
 ```c
+#include <gfx/framebuffer.h>
+#include <gfx/color.h>
+#include <gfx/sprite.h>
+#include <gfx/bmp_img.h>
+#include <gfx/image.h>
+
 while(1){
 
     uGDLFillScreen(frame_buffer.VRAM, uGDLSetColor(BLUE, RGB_888));
     
     uGDLSprite spongebob;
-    uGDLLoadSprite("spongebob.bmp", &spongebob, 100, 100);
-    uGDLDispSprite(frame_buffer.VRAM, spongebob, 0x0);
+    uGDLLoadSprite("spongebob.bmp", RGB_888, &spongebob, 100, 100);
+    uGDLDispSprite(frame_buffer.VRAM, spongebob, 100, 200, 0x0);
     uGDLFreeSprite(&spongebob);
 
     InvalidateRect(window_handle, NULL, FALSE);
@@ -147,3 +153,35 @@ while(1){
 ```
 
 ![sponge](https://user-images.githubusercontent.com/108719757/235567752-ea1875fe-4e66-4a2e-af37-70f992b7b450.png)
+
+Essentially the ```uGDLLoadSprite()```function takes in your file path, the Color format of the image, a reference pointer to the sprite structures, and the width and
+height of the image. There are a plethora of ways to display the sprite to the screen. The simpliest way to do so is to call the ```uGDLDispSprite()``` function which
+will take in your virtual memory, your sprite, an x and y translation offset, and a parameter called erase which is essentially what color you would like uGDL to remove from the image as a sort ofpre-rendered transparency. For example, if you wanted to have a transparent sprite that had a black background behind it, simply pass BLACK into the erase slot to notify uGDL that you would like all instances of black to be removed from the sprite ```uGDLDispSprite(frame_buffer.VRAM, spongebob, 100, 200, BLACK);```.
+
+Using our Color mixer, uGDL can blend two sprites together, blend a sprite with a particular color, blend it with the color already placed in the frame buffer to achieve semi-transparcency like what the Nintendo 64 did. This is what the code would like:
+
+```c
+#include <gfx/framebuffer.h>
+#include <gfx/color.h>
+#include <gfx/sprite.h>
+#include <gfx/bmp_img.h>
+#include <gfx/image.h>
+
+int main(){
+     
+       while(1){
+           
+	   uGDLFillScreen(frame_buffer.VRAM, uGDLBlendColor(GRAY, WHITE, 0.4f, RGB_888));
+    
+	   uGDLSprite spongebob;
+	   uGDLLoadSprite("sponge.bmp", RGB_888, &spongebob, 100, 100);
+	   uGDLBlendSpriteTransparent(frame_buffer.VRAM, spongebob, 100, 45, 0.9f);
+	   uGDLFreeSprite(&spongebob);
+
+	   InvalidateRect(window_handle, NULL, FALSE);
+	   UpdateWindow(window_handle);
+       
+       }
+}
+```
+![fog](https://user-images.githubusercontent.com/108719757/235570925-ffb020dc-ec49-4b62-9435-8f1c6ad753d8.png)
