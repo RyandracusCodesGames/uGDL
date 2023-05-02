@@ -18,6 +18,7 @@ The uGDL is capable of drawing 2D shapes, sprites, textures, supports a 2D-anima
   * [Sprites](#sprites)
   * [Text](#text)
   * [Animation](#animation)
+  * [Tiles](#tiles)
 * [Input](#input)
 <!--te-->
 
@@ -519,3 +520,4 @@ int main(){
 }
 
 ```
+# Tiles
