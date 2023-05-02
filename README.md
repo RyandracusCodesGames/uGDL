@@ -128,7 +128,7 @@ What would a graphics library be without supporting custom sprites to animate yo
 The uGDL supports what is commonly known as a sprite. Essentially, a 2D image that consists of a width, height, and CLUT(Color Look-up Table) which is
 essentially all the pixels needed to describe how uGDL should render it to the screen. A sprite should, however, not be confused with an Image. An image in the uGDL is simply a BMP or PNG image that is only used to export a screenshot of your display, textures, or sprites. All "Images" are sprites in uGDL as that is the only
 way to render images to the screen. The uGDL supports a structure called ```uGDLSprite``` that will encapsulate the data for your sprite. Using a function called
-```uGDLLoadSprite("file_path_.bmp", sprite, width, height)``` defined in ```<gfx/bmp_img.h>``` that uGDL can find your image and convert it into a sprite for your use.
+```uGDLLoadSprite("file_path_.bmp", sprite, RGB_888, width, height)``` defined in ```<gfx/bmp_img.h>``` that uGDL can find your image and convert it into a sprite for your use.
 
 Here is an example program loading a spongebob picture to the window!
 
@@ -230,3 +230,4 @@ int main(){
 
 
 ```
+![font](https://user-images.githubusercontent.com/108719757/235572764-3bb5b49d-9e1c-44b2-93b1-5552f6b4a33e.png)
