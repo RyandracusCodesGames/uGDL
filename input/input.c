@@ -7,22 +7,22 @@ void joyDPADPressed(Uint8 hat_state, SDL_Joystick* joystick, uGDLEvent *event){
     switch(hat_state){
     	case DPAD_LEFT:{
     		event->leftPressed = true;
-    		SDL_Delay(150);
+    	//	SDL_Delay(150);
     		printf("DPAD Left pressed\n");
 		}break;
 		case DPAD_RIGHT:{
 			event->rightPressed = true;
-			SDL_Delay(150);
+		//	SDL_Delay(150);
 			printf("DPAD Right pressed\n");
 		}break;
 		case DPAD_UP:{
 			event->upPressed = true;
-			SDL_Delay(150);
+		//	SDL_Delay(150);
 			printf("DPAD Up pressed\n");
 		}break;
 		case DPAD_DOWN:{
 			event->downPressed = true;
-			SDL_Delay(150);
+		//	SDL_Delay(150);
 			printf("DPAD Down pressed\n");
 		}break;
 	}
@@ -36,7 +36,7 @@ void joyButtonPressed(SDL_Joystick *joystick, uGDLEvent *event){
     }
     if (SDL_JoystickGetButton(joystick, JOY_A) == 1) {
     	event->A_Pressed = true;
-    	SDL_Delay(150);
+    //	SDL_Delay(150);
         printf("A Pressed\n");
     }
     if (SDL_JoystickGetButton(joystick, JOY_B) == 1) {
@@ -45,7 +45,7 @@ void joyButtonPressed(SDL_Joystick *joystick, uGDLEvent *event){
     }
     if (SDL_JoystickGetButton(joystick, JOY_Y) == 1) {
     	event->Y_Pressed = true;
-    	SDL_Delay(150);
+    //	SDL_Delay(150);
         printf("Y Pressed\n");
     }
     if (SDL_JoystickGetButton(joystick, JOY_SELECT) == 1) {

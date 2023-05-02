@@ -395,6 +395,10 @@ int uGDLBlendColor(int col1, int col2, float ratio, ColorFormat cf){
 	else return b << 16 | g << 8 | r;
 }
 
+int uGDLBlendColorWithVRAM(int col, uint32_t *VRAM, int x, int y, float factor, ColorFormat cf){
+	return uGDLBlendColor(col, uGDLGetScreenPixel(VRAM, x, y, 0, 1), factor, cf);
+}
+
 int uGDLAddColor(int col1, int col2, ColorFormat cf){
 	int i1 = col1;
 	int i2 = col2;

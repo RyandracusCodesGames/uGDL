@@ -27,7 +27,7 @@ void uGDLBlendSpriteAndColWithVRAM(uint32_t *VRAM, uGDLSprite spr, int tX, int t
 /*Semi-Transparency similar to N64 where you blend a sprite's pixels with the color value already placed in the framebuffer*/
 void uGDLBlendSpriteTransparent(uint32_t *VRAM, uGDLSprite spr, int tX, int tY, float factor);
 void uGDLFlipSpriteVert(uint32_t *VRAM, uGDLSprite spr, int tX, int tY, int img_type);
-void uGDLFlipSpriteHorz(uint32_t *VRAM, uGDLSprite spr, int tX, int tY, int img_type);
+void uGDLFlipSpriteHorz(uint32_t *VRAM, uGDLSprite spr, int tX, int tY, int img_type, int erase);
 void uGDLRotSprite(uint32_t *VRAM, uGDLSprite spr, int tX, int tY, float angle);
 
 #endif

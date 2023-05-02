@@ -7,6 +7,7 @@
 #include "framebuffer.h"
 #include "sprite.h"
 #include "texture.h"
+#include "image.h"
 
 #define SIZE 4096
 
@@ -38,7 +39,9 @@ void uGDLLoadSprite(char* name, ColorFormat cf, uGDLSprite* spr,int width, int h
 void uGDLLoadTexture(char* name, ColorFormat cf, uGDLTexture *tex, int width, int height);
 void uGDLFreeTexture(uGDLTexture *tex);
 void uGDLFreeSprite(uGDLSprite *spr);
+int * uGDLLoadCLUT(char * name, ColorFormat cf, int width, int height);
 void readPixelsBMP(FILE* file,struct Pixel*pArr[SIZE],int width,int height, int *clut, ColorFormat cf);
 void removeAll(struct Pixel*pArr[SIZE],int width,int height);
+void uGDLWriteImage(uGDLImage img);
 
 #endif

@@ -3,6 +3,7 @@
 
 #include "framebuffer.h"
 #include "texture.h"
+#include "draw.h"
 
 #define MAXCOLORS 256
 
@@ -80,6 +81,7 @@ uGDL_PALETTE uGDLCreatePalette(uGDL_PALETTE* pal, int* col);
 void uGDLLoadTexturePalette(uGDL_PALETTE* pal, char * name, ColorFormat cf);
 void uGDLAddColToPalette(uGDL_PALETTE *pal, int index, int col);
 int uGDLBlendColor(int col1, int col2, float ratio, ColorFormat cf);
+int uGDLBlendColorWithVRAM(int col, uint32_t *VRAM, int x, int y, float factor, ColorFormat cf);
 int uGDLAddColor(int col1, int col2, ColorFormat cf);
 int uGDLInterpColor(int col1, int col2, float interp, ColorFormat cf);
 int uGDLDotColor(int col1, float factor, ColorFormat cf);

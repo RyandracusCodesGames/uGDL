@@ -31,7 +31,8 @@ void uGDLDispSprite(uint32_t *VRAM, uGDLSprite spr, int tX, int tY, int erase){
 	int x, y;
 	for(y = 0; y < spr.height; y++){
 		for(x = 0; x < spr.width; x++){
-			if(uGDLGetPixel(spr, x,y) != erase && getR(uGDLGetPixel(spr, x, y), RGB_888) - 3 >= 0 && getG(uGDLGetPixel(spr, x, y), RGB_888) - 3 >= 0){
+			if(uGDLGetPixel(spr, x,y) != erase){
+			// && getR(uGDLGetPixel(spr, x, y), RGB_888) - 3 >= 0 && getG(uGDLGetPixel(spr, x, y), RGB_888) - 3 >= 0){
 				uGDLPoint2D p = {x + tX, y + tY};
 				uGDLDrawPoint(VRAM, p, uGDLGetPixel(spr, x, y));
 			}
@@ -147,15 +148,17 @@ void uGDLFlipSpriteVert(uint32_t *VRAM, uGDLSprite spr, int tX, int tY, int img_
 	}
 }
 
-void uGDLFlipSpriteHorz(uint32_t *VRAM, uGDLSprite spr, int tX, int tY, int img_type){
+void uGDLFlipSpriteHorz(uint32_t *VRAM, uGDLSprite spr, int tX, int tY, int img_type, int erase){
 	if(img_type == BMP){
 		int x, y;
 		for(y = 0; y < spr.height; y++)
 		{
-			for(x = 0; x < spr.width; x++)
+			for(x = 1; x < spr.width; x++)
 			{
-				uGDLPoint2D p = {x + tX, y + tY};
-				uGDLDrawPoint(VRAM, p, uGDLGetPixel(spr, spr.width - x, y));
+				if(uGDLGetPixel(spr, spr.width - x, y) != erase){
+					uGDLPoint2D p = {x + tX, y + tY};
+					uGDLDrawPoint(VRAM, p, uGDLGetPixel(spr, spr.width - x, y));
+				}
 			}
 		}
 	}
