@@ -17,6 +17,7 @@ The uGDL is capable of drawing 2D shapes, sprites, textures, supports a 2D-anima
   * [Shapes](#shapes)
   * [Sprites](#sprites)
   * [Text](#text)
+  * [Animation](#animation)
 
 <!--te-->
 
@@ -193,9 +194,9 @@ processing font file formats, so they instead opted to manually program a struct
 provided to display text onto the window display. uGDL uses a similar approach and uses pre-defined sprites that can be replaced or manipulated
 by the programmer to fit their needs. That being said, this section is very simple since it only consists of three functions.
 
-*uGDLDrawChar()
-*uGDLDrawString()
-*uGDLPrintf()
+* uGDLDrawChar()
+* uGDLDrawString()
+* uGDLPrintf()
 
 As you would expect, provided by the ```<gfx/font.h>``` and ```<gfx/draw.h>``` header files, ```uGDLDrawChar()``` will display a singular character
 wherever you would like to the screen, ```uGDLDrawString()``` will allow a string, and the last one being for formatted output. Here's an example program:
@@ -231,3 +232,41 @@ int main(){
 
 ```
 ![font](https://user-images.githubusercontent.com/108719757/235572764-3bb5b49d-9e1c-44b2-93b1-5552f6b4a33e.png)
+
+# Animation
+uGDL interperets animations in two seperate and distinct ways. The first is "video playback" or simply a "video". The uGDL can render a video to the screen
+using a technique known as ```Keyframe Animation```. Essentially, we interpret our video as being a collection of dozens, hundreds, if not thousands of
+independant images when played one after another form a sequence that we refer to as an animation. In order to extract the frames of a video, there is an
+awesome software tool called VLC Media Players that will extract the frames for you. Using my Java class in the tools section of the repo, you can then convert it to BMP files, the only image type currently supported by the uGDL, and change its size and color format. In order to use the keyframe animation system, I have provided
+a header file ```<gfx/anim2d.h>``` which provides two functions, ```uGDLInitAnimation()``` and ```uGDLPlayAnimation()```.
+
+```uGDLInitAnimation()``` will take in a uGDLAnim2D structure, the numbers of frames, a floating-point variable called current frame, a string for the directory
+of the animation, a string to represent the name of the animation, and the extension of the image type which should be BMP until further notice. I have provided a sample animation from the PS1 game Alien: Resurrection. Here's how the code and resulting video looks like:
+
+```c
+#include <gfx/framebuffer.h>
+#include <gfx/color.h>
+#include <gfx/sprite.h>
+#include <gfx/bmp_img.h>
+#include <gfx/anim2d.h>
+
+int main(){
+   
+       uGDLAnim2D anim;
+       uGDLInitAnimation(&anim, 140, 1, "gfx/animations/fox_interactive_anim/","scene",".bmp");
+       
+       while(1){
+           
+	   uGDLFillScreen(frame_buffer.VRAM, BLACK);
+       	   uGDLPlayAnimation(frame_buffer.VRAM, &anim);
+       
+           InvalidateRect(window_handle, NULL, FALSE);
+	   UpdateWindow(window_handle);
+       }
+}
+
+```
+
+
+https://user-images.githubusercontent.com/108719757/235574401-ffaa6dd2-3db3-47d5-b7c9-54f01953eb1b.mp4
+
