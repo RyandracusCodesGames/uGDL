@@ -14,6 +14,7 @@ The uGDL is capable of drawing 2D shapes, sprites, textures, supports a 2D-anima
 <!--ts-->
 * [Drawing](#drawing)
   * [Color](#color)
+  * [Shapes](#shapes)
 
 <!--te-->
 
@@ -87,3 +88,34 @@ integer and vise versa, dimming or brighening a color, or simply adding or subtr
 * uGDLAddColor(int col1, int col2, ColorFormat cf)
 * uGDLInterpColor(int col1, int col2, float interp, ColorFormat cf)
 * uGDLDotColor(int col, float factor, ColorFormat cf)
+
+# Shapes
+The uGDL is essentially what we were refer to in graphics programming as a rasterizer which is the process of using geometric primitives such as points, lines,
+line stripes, triangles, and polygons to render flat, two dimensional shapes onto a computer monitor to render a full scene. The uGDL is rich in functions capable
+of producing and coloring such geometric primitives! It provides the 2D shapes via a header file ```<gfx/geometry.h>``` which contains all the structures that our
+functions will use to produce shapes onto our display! uGDL supports points, vertical lines, horizontal lines, general lines, rectangles, triangles, circles, and
+convex polygons.
+
+```c
+
+while(1){
+	
+    uGDLRect rect = {30, 30, 50, 25}, rect2 = {100, 120, 25, 25};
+    uGDLPoint2D point = {200, 150};
+    uGDLTriangle tri = {10, 100, 30, 90, 20, 50};
+    uGDLLine line = {70, 30, 100, 70};
+
+    uGDLFillScreen(frame_buffer.VRAM, uGDLSetColor(BLACK, RGB_888));
+
+    uGDLDrawRect(frame_buffer.VRAM, rect, uGDLBlendColor(BLUE, RED, 0.5f, RGB_888));
+    uGDLFillRect(frame_buffer.VRAM, rect2, uGDLBlendColor(BLUE, RED, 0.5f, RGB_888));
+    uGDLDrawPoint(frame_buffer.VRAM, point, uGDLInterpColor(BLUE, RED, 0.5f, RGB_888));
+    uGDLDrawLine(frame_buffer.VRAM, line, GREEN);
+    uGDLFillTriangle(frame_buffer.VRAM, tri, BLUE);
+
+    InvalidateRect(window_handle, NULL, FALSE);
+    UpdateWindow(window_handle);
+  }
+```
+This will be the result of calling these functions!
+![shapes](https://user-images.githubusercontent.com/108719757/235565427-04c90626-d5f1-42fc-8160-20c2c89b962c.png)
