@@ -53,7 +53,7 @@ int main(){
   }
 }
 ```
-# Color
+### Color
 The color programming capabilites of the uGDL was heavily inspired by the Nintendo 64. For its time, the Nintendo 64 featured very
 advanced color blending functions powered by its Color Combiner and Blender which were the predecessors of the modern fragement shader.
 The Color Combiner mixes and interporlates through multiple layers of colors, and the Blender would mix colors against the corresponding
@@ -65,16 +65,25 @@ Calling a color value in uGDL can be accomplished in multiple ways. First, the u
 variants of bit-depth colors. They call begin with the prefix uGDL_ followed by the bit-depth in RGB form. For example, 24-Bit BGR
 would be called uGDL_BGR888 with 8 + 8 + 8 adding up to the total 24 bits. Similarly, 16-Bit BGR would be uGDL_BGR565 with 5 + 6 + 5 summing to 16 bits.
 
-uGDL also supports a function called ```c uGDLSetColor(BLACK);``` which will use a set of defined constants: BLACK, WHITE, GRAY, BLUE, GREEN,
+uGDL also supports a function called ```uGDLSetColor(BLACK, RGB_888);``` which will use a set of defined constants: BLACK, WHITE, GRAY, BLUE, GREEN,
 RED, PURPLE, BROWN, AND ORANGE, to provided a more beginner friendly manner of playing around with colors.
 
 ```c
 while(1){
-
-    uGDLFillScreen(frame_buffer.VRAM, uGDL_BGR565(4,20,4));
+	
+    int myColor = uGDLSetColor(RED, BGR_565);
+    uGDLFillScreen(frame_buffer.VRAM, myColor);
 
     InvalidateRect(window_handle, NULL, FALSE);
     UpdateWindow(window_handle);
   }
 
 ```
+Much like the Nintendo 64, the uGDL has functions for blending and interpolating two colors together, converting from an RGB or RGBA structure to a packed
+integer and vise versa, dimming or brighening a color, or simply adding or subtracting two colors together. Here's a list of the common color blending functions:
+	
+	* ```uGDLBlendColor(int col1, int col2, float intensity, ColorFormat cf)```
+	* ```uGDLBlendColorWithVRAM(int col, uint32_t *VRAM, int x, int y, float factor, ColorFormat cf)```
+	* ```uGDLAddColor(int col1, int col2, ColorFormat cf)```
+	* ```uGDLInterpColor(int col1, int col2, float interp, ColorFormat cf)```
+	* ```uGDLDotColor(int col, float factor, ColorFormat cf)```
