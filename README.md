@@ -16,6 +16,7 @@ The uGDL is capable of drawing 2D shapes, sprites, textures, supports a 2D-anima
   * [Color](#color)
   * [Shapes](#shapes)
   * [Sprites](#sprites)
+  * [Text](#text)
 
 <!--te-->
 
@@ -185,3 +186,47 @@ int main(){
 }
 ```
 ![fog](https://user-images.githubusercontent.com/108719757/235570925-ffb020dc-ec49-4b62-9435-8f1c6ad753d8.png)
+
+# Text
+uGDL supports sprite-based font capabilites which was a very common practice on old hardware that lacked a file system or any feasible way of
+processing font file formats, so they instead opted to manually program a structure that consisted of all the sprites that a joystick or keyboard
+provided to display text onto the window display. uGDL uses a similar approach and uses pre-defined sprites that can be replaced or manipulated
+by the programmer to fit their needs. That being said, this section is very simple since it only consists of three functions.
+
+*uGDLDrawChar()
+*uGDLDrawString()
+*uGDLPrintf()
+
+As you would expect, provided by the ```<gfx/font.h>``` and ```<gfx/draw.h>``` header files, ```uGDLDrawChar()``` will display a singular character
+wherever you would like to the screen, ```uGDLDrawString()``` will allow a string, and the last one being for formatted output. Here's an example program:
+
+```c
+#include <gfx/framebuffer.h>
+#include <gfx/color.h>
+#include <gfx/font.h>
+#include <gfx/sprite.h>
+
+int main(){
+
+	uGDLFont font;
+	/*Function takes in reference to font structure and takes in the width and height of our font*/
+	uGDLInitFont(&font, 9, 9);
+       
+       while(1){
+       
+            uGDLFillScreen(frame_buffer.VRAM, BLACK);
+    
+	    uGDLDrawChar(frame_buffer.VRAM, font, 'E', 170, 140);
+	    uGDLDrawString(frame_buffer.VRAM, font, "GRAPHICS PROGRAMMING IS AWESOME!", 20, 120);
+
+	    InvalidateRect(window_handle, NULL, FALSE);
+	    UpdateWindow(window_handle);
+
+       }
+       /*Don't forget to free the memory after the program is done using these resources*/
+       uGDLFreeFont(&font);
+
+}
+
+
+```
