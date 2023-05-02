@@ -82,8 +82,8 @@ while(1){
 Much like the Nintendo 64, the uGDL has functions for blending and interpolating two colors together, converting from an RGB or RGBA structure to a packed
 integer and vise versa, dimming or brighening a color, or simply adding or subtracting two colors together. Here's a list of the common color blending functions:
 	
-	* uGDLBlendColor(int col1, int col2, float intensity, ColorFormat cf)
-	* uGDLBlendColorWithVRAM(int col, uint32_t *VRAM, int x, int y, float factor, ColorFormat cf)
-	* uGDLAddColor(int col1, int col2, ColorFormat cf)
-	* uGDLInterpColor(int col1, int col2, float interp, ColorFormat cf)
-	* uGDLDotColor(int col, float factor, ColorFormat cf)
+* uGDLBlendColor(int col1, int col2, float intensity, ColorFormat cf)
+* uGDLBlendColorWithVRAM(int col, uint32_t *VRAM, int x, int y, float factor, ColorFormat cf)
+* uGDLAddColor(int col1, int col2, ColorFormat cf)
+* uGDLInterpColor(int col1, int col2, float interp, ColorFormat cf)
+* uGDLDotColor(int col, float factor, ColorFormat cf)
