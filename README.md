@@ -18,7 +18,7 @@ The uGDL is capable of drawing 2D shapes, sprites, textures, supports a 2D-anima
   * [Sprites](#sprites)
   * [Text](#text)
   * [Animation](#animation)
-
+* [Input](#input)
 <!--te-->
 
 ## Drawing
@@ -472,3 +472,50 @@ int main(){
 
 https://user-images.githubusercontent.com/108719757/235575833-75083d51-1dd8-481c-912f-2a06c2e0b845.mp4
 
+# Input
+uGDL utilizes SDL(Simple DirectMedia Layer) in order to have cross-platform joystick/controller support. uGDL also uses the Windows API ```<windows.h>``` in order
+to gain access to keyboard input that Windows will notify us of. uGDL then encapsulates these user events via a structure called ```uGDLEvent``` which consists of
+booleans that are updated to be false after each update to the window so that the user can know when certain buttons are pressed. Here's example code to show how to
+initialize SDL when starting a program and the windows keyboard.
+
+```c
+#include <windows.h>
+#include <mmsystem.h>
+#include <gfx/framebuffer.h>
+#include <gfx/color.h>
+#include <gfx/input.h>
+
+int main(){
+
+	SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK);
+
+    	int num_joysticks = SDL_NumJoysticks();
+   	 printf("Number of joysticks connected: %d\n", num_joysticks);
+
+    	// Open the first joystick
+    	joystick = SDL_JoystickOpen(0);
+
+    	// Get the number of buttons on the joystick
+    	int num_buttons = SDL_JoystickNumButtons(joystick);
+    	printf("Number of buttons: %d\n", num_buttons);
+	
+	uGDLEvent event;
+
+	while(1){
+
+	    /*Process Joystick Button Input <X, Y, B, A>  for Xbox and <Square, X, Circle, and Triangle> for Playstation*/
+	    joyButtonPressed(joystick, &event);
+	   /*Process Joystick DPad Input*/
+	    Uint8 hat_state;
+	    joyDPADPressed(hat_state, joystick, &event);
+	    
+	    *Initialize the event state to be false after each update to the display*/
+	    uGDLInitEvent(&event);
+	    
+	    if(event.spacePressed || event.Y_Pressed){
+	    	uGDLDrawString(frame_buffer.VRAM, "Space bar or Y Button Pressed", font, 200, 200);
+	    }
+	}
+}
+
+```
