@@ -12,7 +12,7 @@ The uGDL is capable of drawing 2D shapes, sprites, textures, supports a 2D-anima
 
 ## Contents
 <!--ts-->
-* [Drawing]
+* [Drawing](#drawing)
 
 
 <!--te-->
