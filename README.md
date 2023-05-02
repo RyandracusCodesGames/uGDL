@@ -9,3 +9,10 @@ designed completely in software with no explicit use of the GPU. Each function w
 at the programmer's desire.
 
 The uGDL is capable of drawing 2D shapes, sprites, textures, supports a 2D-animation system, a sprite-based font system capable of supplying a graphics based printf() function,tile-based smooth side scrolling, exporting images, blending colors, sprites, and textures togther, simple UI components, polygonal 3D shapes, and so much more!
+
+## Contents
+<!--ts-->
+* [Drawing]
+
+
+<!--te-->
