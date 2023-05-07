@@ -1,7 +1,8 @@
 # uGDL - The Ultimate Graphics Display Library (uGDL)
 The ultimate open-source 2D and 3D software rendered graphics library.
 
-![uGDLShowCase](https://user-images.githubusercontent.com/108719757/235556187-221586d5-e169-4da8-9a39-79d6f3fbc6cb.png)
+![uGDLShowCase](https://user-images.githubusercontent.com/108719757/236356749-12d4c37a-e1dd-4c17-a507-10aea892bd16.png)
+
 
 ## About
 The uGDL is the ultimate open-source function library programmed to faciliate the essentials of 2D and 3D graphics programs
