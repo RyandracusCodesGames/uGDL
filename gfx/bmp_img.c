@@ -18,32 +18,87 @@ void readPixelsBMP(FILE* file,struct Pixel*pArr[SIZE],int width,int height, int 
 	int padding = width % 4; 
 	
 	// Move 54Bytes (Header Size) 	
-	fseek(file, 54, SEEK_SET); 
- 
-	int i, j;
-	int ind = 0;
-	for(i=0;i<height;i++)
-	{
-		for(j=0;j<width;j++)
-		{
-			pArr[ind] = (struct Pixel*)malloc(sizeof(struct Pixel));
-			fread(&(pArr[ind]->b), 1, 1, file); 
-			fread(&(pArr[ind]->g), 1, 1, file); 
-			fread(&(pArr[ind]->r), 1, 1, file); 
-			switch(cf){
-				case RGB_888:{
+	fseek(file, 54, SEEK_SET);
+	
+	switch(cf){
+		case RGB_888:{
+			int i, j;
+			int ind = 0;
+			for(i=0;i<height;i++)
+			{
+				for(j=0;j<width;j++)
+				{
+					pArr[ind] = (struct Pixel*)malloc(sizeof(struct Pixel));
+					fread(&(pArr[ind]->b), 1, 1, file); 
+					fread(&(pArr[ind]->g), 1, 1, file); 
+					fread(&(pArr[ind]->r), 1, 1, file); 
 					clut[ind] = uGDL_RGB888(pArr[ind]->r, pArr[ind]->g, pArr[ind]->b);
-				}break;
-				case BGR_888:{
-					clut[ind] = uGDL_BGR888(pArr[ind]->b, pArr[ind]->g, pArr[ind]->r);
-				}break;
+					ind++;
+				}
+				
+				// Padding at the End of Each Row
+				fseek(file, padding, SEEK_CUR);  
 			}
-			ind++;
-		}
-		
-		// Padding at the End of Each Row
-		fseek(file, padding, SEEK_CUR);  
-	}
+		}break;
+		case BGR_888:{
+			int i, j;
+			int ind = 0;
+			for(i=0;i<height;i++)
+			{
+				for(j=0;j<width;j++)
+				{
+					pArr[ind] = (struct Pixel*)malloc(sizeof(struct Pixel));
+					fread(&(pArr[ind]->b), 1, 1, file); 
+					fread(&(pArr[ind]->g), 1, 1, file); 
+					fread(&(pArr[ind]->r), 1, 1, file); 
+					clut[ind] = uGDL_BGR888(pArr[ind]->b, pArr[ind]->g, pArr[ind]->r);
+					ind++;
+				}
+				
+				// Padding at the End of Each Row
+				fseek(file, padding, SEEK_CUR);  
+			}
+		}break;
+		case RGBA_8888:{
+			int i, j;
+			int ind = 0;
+			for(i=0;i<height;i++)
+			{
+				for(j=0;j<width;j++)
+				{
+					pArr[ind] = (struct Pixel*)malloc(sizeof(struct Pixel));
+					fread(&(pArr[ind]->b), 1, 1, file); 
+					fread(&(pArr[ind]->g), 1, 1, file); 
+					fread(&(pArr[ind]->r), 1, 1, file); 
+					fread(&(pArr[ind]->r), 1, 1, file);
+					clut[ind] = uGDL_RGBA8888(pArr[ind]->r, pArr[ind]->g, pArr[ind]->b, pArr[ind]->a);
+					ind++;
+				}
+				
+				// Padding at the End of Each Row
+				fseek(file, padding, SEEK_CUR);  
+			}
+		}break;
+		case RGB_565:{
+			int i, j;
+			int ind = 0;
+			for(i=0;i<height;i++)
+			{
+				for(j=0;j<width;j++)
+				{
+					pArr[ind] = (struct Pixel*)malloc(sizeof(struct Pixel));
+					fread(&(pArr[ind]->b), 1, 1, file); 
+					fread(&(pArr[ind]->g), 1, 1, file); 
+					clut[ind] = pArr[ind]->b | pArr[ind]->g;
+					ind++;
+				}
+				
+				// Padding at the End of Each Row
+				fseek(file, padding, SEEK_CUR);  
+			}
+		}break;
+	} 
+ 
 }
 
 void displayPixels(struct Pixel*pArr[SIZE],int width,int height)
@@ -156,7 +211,7 @@ void uGDLWriteImage(uGDLImage img){
 	
 	BMPHeader bmp;
 	bmp.type = 0x4d42;
-	bmp.size = 54 + (w * h * 3 + (w * 2));
+	bmp.size = 54 + ((w * h * 3) + (w * 2));
 	bmp.reserved1 = 0;
 	bmp.reserved2 = 0;
 	bmp.offset = 54;
@@ -166,7 +221,7 @@ void uGDLWriteImage(uGDLImage img){
 	bmp.num_planes = 1;
 	bmp.bits_per_pixel = 24;
 	bmp.compression = 0;
-	bmp.image_size_bytes = w * h * 3 + (w * 2);
+	bmp.image_size_bytes = w * h * 3;
 	bmp.x_resolution_ppm = 0;
 	bmp.y_resolution_ppm = 0;
 	bmp.num_colors = 0;
@@ -196,12 +251,27 @@ void uGDLWriteImage(uGDLImage img){
 	int x, y;
 	for(y = 0; y < h; y++){
 		for(x = 0; x < w; x++){
-			fwrite(&img.clut[x+y*w],3,1,file);
+			int r = getR(img.clut[x+y*w],RGB_888);
+			int g = getG(img.clut[x+y*w],RGB_888);
+			int b = getB(img.clut[x+y*w],RGB_888);
+			
+			fwrite(&b,1,1,file);
+			fwrite(&g,1,1,file);
+			fwrite(&r,1,1,file);
 		}
-		fwrite(&padding,sizeof(uint16_t),1,file);
+		
+		if(!(w % 4) == 0){
+			fwrite(&padding,2,1,file);
+		}
 	}
 	
 	fclose(file);
+}
+
+void uGDLCaptureScreenshot(FrameBuffer buf){
+	uGDLImage img = uGDLCreateImage("screenshot.bmp",buf.width,buf.height);
+	uGDLSyncCLUT(&img, buf.VRAM);
+	uGDLWriteImage(img);
 }
 
 void uGDLFreeImage(uGDLImage *img){

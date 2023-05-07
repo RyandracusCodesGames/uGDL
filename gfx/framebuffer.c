@@ -6,6 +6,13 @@ void uGDLInitFrameBuffer(FrameBuffer *buf, int width, int height, ColorFormat cf
 	buf->cf = cf;
 }
 
+void uGDLSetScissor(int x, int y, int width, int height){
+	sciptr.x = x;
+	sciptr.y = y;
+	sciptr.width = width;
+	sciptr.height = height;
+}
+
 void uGDLInitDispInfo(Screen *screen, TV_SCREEN_WIDTH tvw, TV_SCREEN_HEIGHT tvh, int screen_x, int screen_y, char* name){
 	screen->tvw = tvw;
 	screen->tvh = tvh;

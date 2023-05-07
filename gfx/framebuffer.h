@@ -42,13 +42,23 @@ typedef struct{
 	char *name;
 }Screen;
 
+typedef struct{
+	int x, y;
+	int width, height;
+}uGDLScissor;
+
+/*Global viewport scissor*/
+extern uGDLScissor sciptr;
+/*Initialie the core components of our frame buffer*/
 void uGDLInitFrameBuffer(FrameBuffer *buf, int width, int height, ColorFormat cf);
 /*Some platforms require a manual page flip to avoid page tearing artifacts*/
 void uGDLSwapBuffers();
 /*Some platforms require the programmer to wait for all vertical scanlines to be done drawing before swapping buffers*/
 void uGDLWaitVBlank();
-/*Initialize the core components our of ouw window display*/
+/*Initialize the core components of our window display*/
 void uGDLInitDispInfo(Screen *screen, TV_SCREEN_WIDTH tvw, TV_SCREEN_HEIGHT tvh, int screen_x, int screen_y, char* name);
+/*Initialize the edges of our viewport boundaries in order to tell uGDL where to not allow rasterization*/
+void uGDLSetScissor(int x, int y, int width, int height);
 /*Copy the memory of one buffer to another*/
 void uGDLCopyBuffer(uint32_t *disp_buffer, uint32_t *draw_buffer);
 /*If we decided to swap buffers, useful utility function to clear the memory of the back buffer*/

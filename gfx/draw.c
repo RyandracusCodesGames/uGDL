@@ -1,4 +1,5 @@
 #include "draw.h"
+#include "framebuffer.h"
 #include "sprite.h"
 #include "color.h"
 #include <string.h>
@@ -10,6 +11,8 @@
 
 #define TRUE 1
 #define FALSE 0
+
+uGDLScissor sciptr;
 
 void SWAP(int* a, int *b){
 	int temp = *a;
@@ -30,8 +33,7 @@ int uGDLGetScreenPixel(uint32_t *VRAM, int x, int y, int index, int flag){
 }
 
 void uGDLDrawPoint(uint32_t *VRAM, uGDLPoint2D p, int col){
-	
-	if(p.x >= 0 && p.y >= 0 && p.x < (WIDTH - PLAYSTATION_W) && p.y < (HEIGHT - PLAYSTATION_H)){
+	if(p.x >= sciptr.x && p.y >= sciptr.y && p.x < sciptr.width && p.y < sciptr.height){
 		VRAM[p.x + (p.y + PLAYSTATION_H) * WIDTH] = col;
 	}
 }

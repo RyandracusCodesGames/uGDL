@@ -6,6 +6,7 @@
 #include "tile_priority.h"
 
 /*Counter variable to limit the amount of background layers being added*/
+int gTileNum = 0;
 int count = 0;
 /*Local pointer to root of the BST-based priority queue for background layers*/
 BST_NODE *root = NULL;

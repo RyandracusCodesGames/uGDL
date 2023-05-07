@@ -32,7 +32,7 @@ typedef struct {             // Total: 54 bytes
 
 struct Pixel
 {
-    unsigned char r, g, b;
+    unsigned char r, g, b, a;
 };
 
 void uGDLLoadSprite(char* name, ColorFormat cf, uGDLSprite* spr,int width, int height);
@@ -43,5 +43,5 @@ int * uGDLLoadCLUT(char * name, ColorFormat cf, int width, int height);
 void readPixelsBMP(FILE* file,struct Pixel*pArr[SIZE],int width,int height, int *clut, ColorFormat cf);
 void removeAll(struct Pixel*pArr[SIZE],int width,int height);
 void uGDLWriteImage(uGDLImage img);
-
+void uGDLCaptureScreenshot(FrameBuffer buf);
 #endif
