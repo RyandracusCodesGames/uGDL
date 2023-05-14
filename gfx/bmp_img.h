@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "framebuffer.h"
+#include "color.h"
 #include "sprite.h"
 #include "texture.h"
 #include "image.h"
@@ -44,4 +45,5 @@ void readPixelsBMP(FILE* file,struct Pixel*pArr[SIZE],int width,int height, int 
 void removeAll(struct Pixel*pArr[SIZE],int width,int height);
 void uGDLWriteImage(uGDLImage img);
 void uGDLCaptureScreenshot(FrameBuffer buf);
+void uGDLLoadColorPalette(char * name, uGDL_PALETTE *pal);
 #endif

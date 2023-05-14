@@ -29,5 +29,5 @@ void uGDLBlendSpriteTransparent(uint32_t *VRAM, uGDLSprite spr, int tX, int tY, 
 void uGDLFlipSpriteVert(uint32_t *VRAM, uGDLSprite spr, int tX, int tY, int img_type);
 void uGDLFlipSpriteHorz(uint32_t *VRAM, uGDLSprite spr, int tX, int tY, int img_type, int erase);
 void uGDLRotSprite(uint32_t *VRAM, uGDLSprite spr, int tX, int tY, float angle);
-
+uGDLSprite uGDLClipSprite(uGDLSprite spr, int x, int y, int width, int height);
 #endif

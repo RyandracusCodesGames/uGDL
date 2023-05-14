@@ -33,8 +33,7 @@ void uGDLDispSprite(uint32_t *VRAM, uGDLSprite spr, int tX, int tY, int erase){
 		for(x = 0; x < spr.width; x++){
 			if(uGDLGetPixel(spr, x,y) != erase){
 			// && getR(uGDLGetPixel(spr, x, y), RGB_888) - 3 >= 0 && getG(uGDLGetPixel(spr, x, y), RGB_888) - 3 >= 0){
-				uGDLPoint2D p = {x + tX, y + tY};
-				uGDLDrawPoint(VRAM, p, uGDLGetPixel(spr, x, y));
+				uGDLDrawPoint(VRAM, uGDLCreatePoint(x + tX, y + tY), uGDLGetPixel(spr, x, y));
 			}
 		}
 	}
@@ -45,8 +44,7 @@ void uGDLDispAnim(uint32_t *VRAM, uGDLSprite spr, int tX, int tY, int erase){
 	for(y = 0; y < spr.height; y++){
 		for(x = 0; x < spr.width; x++){
 			if(uGDLGetPixel(spr, x,y) != erase){
-				uGDLPoint2D p = {x + tY, y + tY};
-				uGDLDrawPoint(VRAM, p, uGDLGetPixel(spr, x, y));
+				uGDLDrawPoint(VRAM, uGDLCreatePoint(x + tY, y + tY), uGDLGetPixel(spr, x, y));
 			}
 		}
 	}
@@ -57,8 +55,7 @@ void uGDLAnimSprite(uint32_t *VRAM, uGDLSprite spr, int tX, int tY, int erase){
 	for(y = 0; y < spr.height; y++){
 		for(x = 0; x < spr.width; x++){
 			if(uGDLGetPixel(spr, x, spr.height - y) != erase){
-				uGDLPoint2D p = {x + tX, y + tY};
-				uGDLDrawPoint(VRAM, p, uGDLGetPixel(spr, x, spr.height - y));
+				uGDLDrawPoint(VRAM, uGDLCreatePoint(x + tX, y + tY), uGDLGetPixel(spr, x, spr.height - y));
 			}
 		}
 	}
@@ -117,8 +114,7 @@ void uGDLBlendSpriteTransparent(uint32_t *VRAM, uGDLSprite spr, int tX, int tY, 
 	for(y = 0; y < spr.height; y++){
 		for(x = 0; x < spr.width; x++){
 			int col = uGDLGetScreenPixel(VRAM, x, y, 0, 1);
-			uGDLPoint2D p = {x + tX, y + tY};
-			uGDLDrawPoint(VRAM, p, uGDLBlendColor(uGDLGetPixel(spr, x, y), col, factor, RGB_888));
+			uGDLDrawPoint(VRAM, uGDLCreatePoint(x + tX, y + tY), uGDLBlendColor(uGDLGetPixel(spr, x, y), col, factor, RGB_888));
 		}
 	}
 }
@@ -130,8 +126,7 @@ void uGDLFlipSpriteVert(uint32_t *VRAM, uGDLSprite spr, int tX, int tY, int img_
 		{
 			for(x = 0; x < spr.width; x++)
 			{
-				uGDLPoint2D p = {x + tX, y + tY};
-				uGDLDrawPoint(VRAM, p, uGDLGetPixel(spr, x, spr.height - y));
+				uGDLDrawPoint(VRAM, uGDLCreatePoint(x + tX, y + tY), uGDLGetPixel(spr, x, spr.height - y));
 			}
 		}
 	}
@@ -141,8 +136,7 @@ void uGDLFlipSpriteVert(uint32_t *VRAM, uGDLSprite spr, int tX, int tY, int img_
 		{
 			for(x = 0; x < spr.width; x++)
 			{
-				uGDLPoint2D p = {x + tX, y + tY};
-				uGDLDrawPoint(VRAM, p, uGDLGetPixel(spr, x, spr.height));
+				uGDLDrawPoint(VRAM, uGDLCreatePoint(x + tX, y + tY), uGDLGetPixel(spr, x, spr.height));
 			}
 		}
 	}
@@ -156,8 +150,7 @@ void uGDLFlipSpriteHorz(uint32_t *VRAM, uGDLSprite spr, int tX, int tY, int img_
 			for(x = 1; x < spr.width; x++)
 			{
 				if(uGDLGetPixel(spr, spr.width - x, y) != erase){
-					uGDLPoint2D p = {x + tX, y + tY};
-					uGDLDrawPoint(VRAM, p, uGDLGetPixel(spr, spr.width - x, y));
+					uGDLDrawPoint(VRAM, uGDLCreatePoint(x + tX, y + tY), uGDLGetPixel(spr, spr.width - x, y));
 				}
 			}
 		}
@@ -168,9 +161,24 @@ void uGDLFlipSpriteHorz(uint32_t *VRAM, uGDLSprite spr, int tX, int tY, int img_
 		{
 			for(x = 0; x < spr.width; x++)
 			{
-				uGDLPoint2D p = {x + tX, y + tY};
-				uGDLDrawPoint(VRAM, p, uGDLGetPixel(spr, spr.width - x, spr.height - y));
+				uGDLDrawPoint(VRAM, uGDLCreatePoint(x + tX, y + tY), uGDLGetPixel(spr, spr.width - x, spr.height - y));
 			}
 		}
 	}
+}
+
+uGDLSprite uGDLClipSprite(uGDLSprite spr, int x, int y, int width, int height){
+	uGDLSprite sprtemp;
+	sprtemp.width = width;
+	sprtemp.height = height;
+	sprtemp.clut = (int*)malloc(sizeof(int)*(width*height));
+	
+	int xx, yy;
+	for(yy = y; yy < spr.height; yy++){
+		for(xx = x; xx < spr.width; xx++){
+			sprtemp.clut[x + y * width] = uGDLGetPixel(spr, x, y);
+		}
+	}
+	
+	return sprtemp;
 }

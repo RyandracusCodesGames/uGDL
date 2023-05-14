@@ -18,6 +18,7 @@ void uGDLBlendTextureAndCol(uGDLTexture dest, int col, float factor, ColorFormat
 void uGDLBlendTextureAndVRAM(uGDLTexture dest, uint32_t *VRAM, float factor, ColorFormat cf);
 void uGDLFlipTextureVert(uGDLTexture tex, int image_type);
 void uGDLFlipTextureHorz(uGDLTexture tex, int image_type);
+void uGDLClearTexture(uGDLTexture *tex, int col);
 int countbits(int n);
 
 #endif

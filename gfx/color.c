@@ -472,3 +472,24 @@ int uGDLDotColor(int col1, float factor, ColorFormat cf){
 	}
 	else return b << 16 | g << 8 | r;
 }
+
+int uGDLRGBComponentsToInt(int r, int g, int b, ColorFormat cf){
+	switch(cf){
+		case RGB_888:{
+			return r << 16 | g << 8 | b;
+		}break;
+		case BGR_888:{
+			return b << 16 | g << 8 | r;
+		}
+		case RGB_565:{
+			return r << 11 | g << 6 | b;
+		}break;
+		case BGR_565:{
+			return b << 11 | g << 6 | r;
+		}
+	}
+}
+
+int uGDLRGBAComponentsToInt(int r, int g, int b, int a){
+	return r << 24 | g << 16 | b << 8 | a;
+}

@@ -86,4 +86,6 @@ int uGDLAddColor(int col1, int col2, ColorFormat cf);
 int uGDLInterpColor(int col1, int col2, float interp, ColorFormat cf);
 int uGDLDotColor(int col1, float factor, ColorFormat cf);
 int uGDLClampColor(int col1, int max, int min, int target, ColorFormat cf);
+int uGDLRGBComponentsToInt(int r, int g, int b, ColorFormat cf);
+int uGDLRGBAComponentsToInt(int r, int g, int b, int a);
 #endif

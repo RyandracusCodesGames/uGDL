@@ -5,7 +5,7 @@
 
 /*Enumeration to represent the most common bit-depth's for color in computer graphics*/
 typedef enum ColorFormat{
-	RGBA_8888 = 0,/*32 Bit BGR*/
+	RGBA_8888 = 0,/*32 Bit RGBA*/
 	RGB_888 = 1,  /*24 Bit RGB*/
 	BGR_888 = 2,  /*24 Bit BGR*/
 	RGB_565 = 3,  /*16 Bit RGB*/
@@ -60,7 +60,9 @@ void uGDLInitDispInfo(Screen *screen, TV_SCREEN_WIDTH tvw, TV_SCREEN_HEIGHT tvh,
 /*Initialize the edges of our viewport boundaries in order to tell uGDL where to not allow rasterization*/
 void uGDLSetScissor(int x, int y, int width, int height);
 /*Copy the memory of one buffer to another*/
-void uGDLCopyBuffer(uint32_t *disp_buffer, uint32_t *draw_buffer);
+void uGDLCopyBuffer(FrameBuffer *buf, uint32_t *draw_buffer);
 /*If we decided to swap buffers, useful utility function to clear the memory of the back buffer*/
-void uGDLClearBackBuffer(uint32_t *draw_buffer);
+void uGDLClearBackBuffer(uint32_t *draw_buffer, int width, int height);
+/*Release the buffer's memory after application termination*/
+void uGDLFreeFrameBuffer(FrameBuffer *buf);
 #endif

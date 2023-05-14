@@ -65,6 +65,10 @@ void uGDLFlipTextureHorz(uGDLTexture tex, int image_type){
 	}
 }
 
+void uGDLClearTexture(uGDLTexture *tex, int col){
+	memset(tex->tlut,col,sizeof(int)*(tex->width*tex->height));
+}
+
 int countbits(int n){
 	int count = 0;
     while (n > 0) {

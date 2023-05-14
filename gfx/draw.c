@@ -22,7 +22,7 @@ void SWAP(int* a, int *b){
 
 int uGDLGetScreenPixel(uint32_t *VRAM, int x, int y, int index, int flag){
 	if(flag == SCREEN_POINT){
-		if(x >= 0 && y >= 0 && x < (WIDTH - PLAYSTATION_W) && y < (HEIGHT - PLAYSTATION_H)){
+		if(x >= 0 && y >= 0 && x < sciptr.width && y < sciptr.width){
 			return VRAM[x + (y + PLAYSTATION_H) * WIDTH];
 		}
 	}
@@ -33,7 +33,12 @@ int uGDLGetScreenPixel(uint32_t *VRAM, int x, int y, int index, int flag){
 }
 
 void uGDLDrawPoint(uint32_t *VRAM, uGDLPoint2D p, int col){
-	if(p.x >= sciptr.x && p.y >= sciptr.y && p.x < sciptr.width && p.y < sciptr.height){
+    if(sciptr.x != 1000000){
+		if(p.x >= sciptr.x && p.y >= sciptr.y && p.x < sciptr.width && p.y < sciptr.height){
+			VRAM[p.x + (p.y + PLAYSTATION_H) * WIDTH] = col;
+		}
+	}
+	else{
 		VRAM[p.x + (p.y + PLAYSTATION_H) * WIDTH] = col;
 	}
 }
@@ -65,16 +70,14 @@ uGDLSprite uGDLScreenToSprite(uint32_t *VRAM){
 void uGDLDrawVertLine(uint32_t *VRAM, uGDLVertLine v1, int col){
 	int y;
 	for(y = v1.y1; y <= v1.y2; y++){
-		uGDLPoint2D p = {v1.x, y};
-		uGDLDrawPoint(VRAM, p, col);
+		uGDLDrawPoint(VRAM, uGDLCreatePoint(v1.x, y), col);
 	}
 }
 
 void uGDLDrawHorzLine(uint32_t *VRAM, uGDLHorzLine hl, int col){
 	int x;
 	for(x = hl.x1; x <= hl.x2; x++){
-		uGDLPoint2D p = {x, hl.y};
-		uGDLDrawPoint(VRAM, p, col);
+		uGDLDrawPoint(VRAM, uGDLCreatePoint(x, hl.y), col);
 	}
 }
 
@@ -84,14 +87,12 @@ void uGDLDrawLine(uint32_t *VRAM, uGDLLine line, int col){
 	int dx, dy, sx, sy, err, e2;
 	
 	if(x1 == x2){
-		uGDLVertLine vline = {x1, y1, y2};
-		uGDLDrawVertLine(VRAM, vline, col);
+		uGDLDrawVertLine(VRAM, uGDLCreateVertLine(x1, y1, y2), col);
 		return;
 	}
 	
-	if(y1 == y2){
-		uGDLHorzLine hline = {x1, x2, y1};
-		uGDLDrawHorzLine(VRAM, hline, col);
+	if(y1 == y2){;
+		uGDLDrawHorzLine(VRAM, uGDLCreateHorzLine(x1, x2, y1), col);
 		return;
 	}
 	
@@ -115,8 +116,7 @@ void uGDLDrawLine(uint32_t *VRAM, uGDLLine line, int col){
 	err = dx - dy;
 	
 	do{
-		uGDLPoint2D p = {x1, y1};
-		uGDLDrawPoint(VRAM, p, col);
+		uGDLDrawPoint(VRAM, uGDLCreatePoint(x1, y1), col);
 		e2 = err * 2;
 		if (e2 > -dy) 
 		{
@@ -400,12 +400,42 @@ void uGDLFillRect(uint32_t *VRAM, uGDLRect rect, int col)
 {
 	int x = rect.x, maxx = rect.x + rect.width, maxy = rect.y + rect.height, y;
 	for(y = rect.y; y < maxy; y++){
-		
-		uGDLHorzLine hline = {x, maxx, y};
-		uGDLDrawHorzLine(VRAM, hline, col);
+		uGDLDrawHorzLine(VRAM, uGDLCreateHorzLine(x, maxx, y), col);
 	}
 }
 
-void uGDLDrawCircle(uint32_t *VRAM){
-	
+void uGDLDrawCircleOutline(uint32_t *VRAM, int x, int y, int xc, int yc, int col){
+	uGDLDrawPoint(VRAM, uGDLCreatePoint(xc+x, yc+y), col);
+	uGDLDrawPoint(VRAM, uGDLCreatePoint(xc-x, yc+y), col);
+	uGDLDrawPoint(VRAM, uGDLCreatePoint(xc+x, yc-y), col);
+	uGDLDrawPoint(VRAM, uGDLCreatePoint(xc-x, yc-y), col);
+	uGDLDrawPoint(VRAM, uGDLCreatePoint(xc+y, yc+x), col);
+	uGDLDrawPoint(VRAM, uGDLCreatePoint(xc-y, yc+x), col);
+	uGDLDrawPoint(VRAM, uGDLCreatePoint(xc+y, yc-x), col);
+	uGDLDrawPoint(VRAM, uGDLCreatePoint(xc-y, yc-x), col);
+}
+
+void uGDLDrawCircle(uint32_t *VRAM, uGDLCircle circle, int col){
+	int x = 0, y = circle.r;
+    int d = 3 - 2 * circle.r;
+    uGDLDrawCircleOutline(VRAM, x, y, circle.xc, circle.yc, col);
+    while (y >= x)
+    {
+        // for each pixel we will
+        // draw all eight pixels
+         
+        x++;
+ 
+        // check for decision parameter
+        // and correspondingly
+        // update d, x, y
+        if (d > 0)
+        {
+            y--;
+            d = d + 4 * (x - y) + 10;
+        }
+        else
+            d = d + 4 * x + 6;
+        uGDLDrawCircleOutline(VRAM, x, y, circle.xc, circle.yc, col);
+    }
 }

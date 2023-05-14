@@ -33,11 +33,9 @@ int uGDLGetTileTexel(uGDLTile tile, int x, int y){
 }
 
 void uGDLSetTileTexel(uGDLTile *tile, int x, int y, int col){
-	if(x >= 0 && y >= 0 && x < W && y < W){
-		return;
+	if(x >= 0 && y >= 0 && x < W && y < H){
+		tile->tlut[x + y * W] = col;
 	}
-	
-	tile->tlut[x + y * W] = col;
 }
 
 void uGDLBeginTileList(uGDLTilemap *map){
@@ -112,8 +110,7 @@ void uGDLDispTile(uint32_t *VRAM, uGDLTile tile, int tX, int tY, int erase){
 	for(y = 0; y < H; y++){
 		for(x = 0; x < W; x++){
 			if(uGDLGetTileTexel(tile, x, y) != erase){
-				uGDLPoint2D p = {(x + tX) + (tile.x * W), (y + tY) + (tile.y * H)};
-				uGDLDrawPoint(VRAM, p, uGDLGetTileTexel(tile, x, y));
+				uGDLDrawPoint(VRAM, uGDLCreatePoint((x + tX) + (tile.x * W), (y + tY) + (tile.y * H)), uGDLGetTileTexel(tile, x, y));
 			}
 		}
 	}
@@ -124,8 +121,7 @@ void uGDLDispTileVert(uint32_t *VRAM, uGDLTile tile, int tX, int tY, int erase){
 	for(y = 0; y < H; y++){
 		for(x = 0; x < W; x++){
 			if(uGDLGetTileTexel(tile, x, H - y) != erase){
-				uGDLPoint2D p = {(x + tX) + (tile.x * W), (y + tY) + (tile.y * H)};
-				uGDLDrawPoint(VRAM, p, uGDLGetTileTexel(tile, x, H - y));
+				uGDLDrawPoint(VRAM, uGDLCreatePoint((x + tX) + (tile.x * W), (y + tY) + (tile.y * H)), uGDLGetTileTexel(tile, x, H - y));
 			}
 		}
 	}
@@ -136,8 +132,7 @@ void uGDLDispTileHorz(uint32_t *VRAM, uGDLTile tile, int tX, int tY, int erase){
 	for(y = 0; y < H; y++){
 		for(x = 1; x < W; x++){
 			if(uGDLGetTileTexel(tile, W - x, y) != erase){
-				uGDLPoint2D p = {(x + tX) + (tile.x * W), (y + tY) + (tile.y * H)};
-				uGDLDrawPoint(VRAM, p, uGDLGetTileTexel(tile, W - x, y));
+				uGDLDrawPoint(VRAM, uGDLCreatePoint((x + tX) + (tile.x * W), (y + tY) + (tile.y * H)), uGDLGetTileTexel(tile, W - x, y));
 			}
 		}
 	}
@@ -148,8 +143,7 @@ void uGDLDispTileHorzAndVert(uint32_t *VRAM, uGDLTile tile, int tX, int tY, int 
 	for(y = 0; y < H; y++){
 		for(x = 0; x < W; x++){
 			if(uGDLGetTileTexel(tile, x, y) != erase){
-				uGDLPoint2D p = {(x + tX) + (tile.x * W), (y + tY) + (tile.y * H)};
-				uGDLDrawPoint(VRAM, p, uGDLGetTileTexel(tile, W - x, H - y));
+				uGDLDrawPoint(VRAM, uGDLCreatePoint((x + tX) + (tile.x * W), (y + tY) + (tile.y * H)), uGDLGetTileTexel(tile, W - x, H - y));
 			}
 		}
 	}

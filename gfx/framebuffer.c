@@ -3,6 +3,7 @@
 void uGDLInitFrameBuffer(FrameBuffer *buf, int width, int height, ColorFormat cf){
 	buf->width = width;
 	buf->height = height;
+	buf->VRAM = (uint32_t*)malloc(sizeof(uint32_t)*(buf->width*buf->height));
 	buf->cf = cf;
 }
 
@@ -21,10 +22,14 @@ void uGDLInitDispInfo(Screen *screen, TV_SCREEN_WIDTH tvw, TV_SCREEN_HEIGHT tvh,
 	screen->name = name;
 }
 
-void uGDLCopyBuffer(uint32_t *disp_buffer, uint32_t *draw_buffer){
-	memcpy(draw_buffer, disp_buffer, 624 * 441);
+void uGDLCopyBuffer(FrameBuffer *buf, uint32_t *draw_buffer){
+	memcpy(buf->VRAM, draw_buffer, sizeof(uint32_t) * buf->width * buf->height);
 }
 
-void uGDLClearBackBuffer(uint32_t *draw_buffer){
-	memset(draw_buffer, 0, 624 * 441);
+void uGDLClearBackBuffer(uint32_t *draw_buffer, int width, int height){
+	memset(draw_buffer, 0, sizeof(uint32_t) * width * height);
+}
+
+void uGDLFreeFrameBuffer(FrameBuffer *buf){
+	free(buf->VRAM);
 }
