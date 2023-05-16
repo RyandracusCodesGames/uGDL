@@ -116,12 +116,34 @@ void uGDLDispTile(uint32_t *VRAM, uGDLTile tile, int tX, int tY, int erase){
 	}
 }
 
+void uGDLDispTileOnCanvas(uGDLCanvas canvas, uGDLTile tile, int tX, int tY, int erase){
+	int x, y;
+	for(y = 0; y < H; y++){
+		for(x = 0; x < W; x++){
+			if(uGDLGetTileTexel(tile, x, y) != erase){
+				uGDLDrawPointOnCanvas(canvas, uGDLCreatePoint((x + tX) + (tile.x * W), (y + tY) + (tile.y * H)), uGDLGetTileTexel(tile, x, y));
+			}
+		}
+	}
+}
+
 void uGDLDispTileVert(uint32_t *VRAM, uGDLTile tile, int tX, int tY, int erase){
 	int x, y;
 	for(y = 0; y < H; y++){
 		for(x = 0; x < W; x++){
 			if(uGDLGetTileTexel(tile, x, H - y) != erase){
 				uGDLDrawPoint(VRAM, uGDLCreatePoint((x + tX) + (tile.x * W), (y + tY) + (tile.y * H)), uGDLGetTileTexel(tile, x, H - y));
+			}
+		}
+	}
+}
+
+void uGDLDispTileVertOnCanvas(uGDLCanvas canvas, uGDLTile tile, int tX, int tY, int erase){
+	int x, y;
+	for(y = 0; y < H; y++){
+		for(x = 0; x < W; x++){
+			if(uGDLGetTileTexel(tile, x, H - y) != erase){
+				uGDLDrawPointOnCanvas(canvas, uGDLCreatePoint((x + tX) + (tile.x * W), (y + tY) + (tile.y * H)), uGDLGetTileTexel(tile, x, H - y));
 			}
 		}
 	}
@@ -138,12 +160,34 @@ void uGDLDispTileHorz(uint32_t *VRAM, uGDLTile tile, int tX, int tY, int erase){
 	}
 }
 
+void uGDLDispTileHorzOnCanvas(uGDLCanvas canvas, uGDLTile tile, int tX, int tY, int erase){
+	int x, y;
+	for(y = 0; y < H; y++){
+		for(x = 1; x < W; x++){
+			if(uGDLGetTileTexel(tile, W - x, y) != erase){
+				uGDLDrawPointOnCanvas(canvas, uGDLCreatePoint((x + tX) + (tile.x * W), (y + tY) + (tile.y * H)), uGDLGetTileTexel(tile, W - x, y));
+			}
+		}
+	}
+}
+
 void uGDLDispTileHorzAndVert(uint32_t *VRAM, uGDLTile tile, int tX, int tY, int erase){
 	int x, y;
 	for(y = 0; y < H; y++){
 		for(x = 0; x < W; x++){
-			if(uGDLGetTileTexel(tile, x, y) != erase){
+			if(uGDLGetTileTexel(tile, W - x, H - y) != erase){
 				uGDLDrawPoint(VRAM, uGDLCreatePoint((x + tX) + (tile.x * W), (y + tY) + (tile.y * H)), uGDLGetTileTexel(tile, W - x, H - y));
+			}
+		}
+	}
+}
+
+void uGDLDispTileHorzAndVertOnCanvas(uGDLCanvas canvas, uGDLTile tile, int tX, int tY, int erase){
+	int x, y;
+	for(y = 0; y < H; y++){
+		for(x = 0; x < W; x++){
+			if(uGDLGetTileTexel(tile, W - x, H - y) != erase){
+				uGDLDrawPointOnCanvas(canvas, uGDLCreatePoint((x + tX) + (tile.x * W), (y + tY) + (tile.y * H)), uGDLGetTileTexel(tile, W - x, H - y));
 			}
 		}
 	}
@@ -181,8 +225,44 @@ void uGDLDispTilemap(uint32_t *VRAM, uGDLTilemap *map){
 	}
 }
 
+void uGDLDispTilemapOnCanvas(uGDLCanvas canvas, uGDLTilemap *map){
+	int i = 0;
+	for(i = 0; i < map->index; i++){
+		if((map->map[i].x * W)+ map->map[i].transx + map->vscroll.x >= 322){
+		//	printf("OUT OF BOUNDS AT (%d,%d)\n",map->map[i].x, map->map[i].y);
+			map->map[i].transx -= 336;
+		}
+		if((map->map[i].x * W)+ map->map[i].transx + map->vscroll.x <= -26){
+		//	printf("OUT OF BOUNDS AT (%d,%d)\n",map->map[i].x, map->map[i].y);
+			map->map[i].transx += 336;
+		}
+		
+		switch(map->map[i].attribute){
+			case G_FLIP_HORZ:{
+				uGDLDispTileHorzOnCanvas(canvas, map->map[i], (int)(map->vscroll.x) + map->map[i].transx, (int)(map->hscroll.y) + map->map[i].transy, map->erase);
+			}break;
+			case G_FLIP_VERT:{
+				uGDLDispTileVertOnCanvas(canvas, map->map[i], (int)(map->vscroll.x) + map->map[i].transx, (int)(map->hscroll.y) + map->map[i].transy, map->erase);
+			}break;
+			case (G_FLIP_HORZ + G_FLIP_VERT):{
+				uGDLDispTileHorzAndVertOnCanvas(canvas, map->map[i], (int)(map->vscroll.x) + map->map[i].transx, (int)(map->hscroll.y) + map->map[i].transy, map->erase);
+			}break;
+			case G_MIRROR:{
+				
+			}break;
+			default:{
+				uGDLDispTileOnCanvas(canvas, map->map[i], (int)(map->vscroll.x) + map->map[i].transx, (int)(map->hscroll.y) + map->map[i].transy, map->erase);
+			}break;
+		}
+	}
+}
+
 void uGDLDispTileset(uint32_t *VRAM){
 	uGDLRenderTilemapLayers(VRAM, root);
+}
+
+void uGDLDispTilesetOnCanvas(uGDLCanvas canvas){
+	uGDLRenderTilemapLayersOnCanvas(canvas, root);
 }
 
 void uGDLSwapLayers(uGDLTilemap *a, uGDLTilemap *b){

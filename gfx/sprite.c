@@ -39,12 +39,34 @@ void uGDLDispSprite(uint32_t *VRAM, uGDLSprite spr, int tX, int tY, int erase){
 	}
 }
 
+void uGDLDispSpriteOnCanvas(uGDLCanvas canvas, uGDLSprite spr, int tX, int tY, int erase){
+	int x, y;
+	for(y = 0; y < spr.height; y++){
+		for(x = 0; x < spr.width; x++){
+			if(uGDLGetPixel(spr,x,y) != erase){
+				uGDLDrawPointOnCanvas(canvas, uGDLCreatePoint(x + tX, y + tY), uGDLGetPixel(spr,x,y));
+			}
+		}
+	}
+}
+
 void uGDLDispAnim(uint32_t *VRAM, uGDLSprite spr, int tX, int tY, int erase){
 	int x, y;
 	for(y = 0; y < spr.height; y++){
 		for(x = 0; x < spr.width; x++){
 			if(uGDLGetPixel(spr, x,y) != erase){
 				uGDLDrawPoint(VRAM, uGDLCreatePoint(x + tY, y + tY), uGDLGetPixel(spr, x, y));
+			}
+		}
+	}
+}
+
+void uGDLDispAnimOnCanvas(uGDLCanvas canvas, uGDLSprite spr, int tX, int tY, int erase){
+	int x, y;
+	for(y = 0; y < spr.height; y++){
+		for(x = 0; x < spr.width; x++){
+			if(uGDLGetPixel(spr,x,y) != erase){
+				uGDLDrawPointOnCanvas(canvas, uGDLCreatePoint(x + tX, y + tY), uGDLGetPixel(spr,x,y));
 			}
 		}
 	}
@@ -61,11 +83,48 @@ void uGDLAnimSprite(uint32_t *VRAM, uGDLSprite spr, int tX, int tY, int erase){
 	}
 }
 
-void uGDLScaleSprite(uint32_t *VRAM, uGDLSprite spr, int tX, int tY, float sX, float sY){
+void uGDLAnimSpriteOnCanvas(uGDLCanvas canvas, uGDLSprite spr, int tX, int tY, int erase){
 	int x, y;
 	for(y = 0; y < spr.height; y++){
 		for(x = 0; x < spr.width; x++){
-			VRAM[(int)(x * sX + tX) + (int)((y + 220) * sY + tY) * WIDTH] = uGDLGetPixel(spr, x, y);
+			if(uGDLGetPixel(spr, x, spr.height - y) != erase){
+				uGDLDrawPointOnCanvas(canvas, uGDLCreatePoint(x + tX, y + tY), uGDLGetPixel(spr, x, spr.height - y));
+			}
+		}
+	}
+}
+/*Scaling algorithm utilizes nearest neighbor image scaling*/
+/* Credit: http://tech-algorithm.com/articles/nearest-neighbor-image-scaling/ */
+void uGDLScaleSprite(uint32_t *VRAM, uGDLSprite spr, int tX, int tY, float sX, float sY){
+	int w1 = spr.width, w2 = (int)(spr.width * sX);
+	int h1 = spr.height, h2 = (int)(spr.height * sY);
+	
+	int x_factor = (int)((w1<<16)/w2) + 1;
+	int y_factor = (int)((h1<<16)/h2) + 1;
+	
+	int x, y, x2, y2;
+	for(y = 0; y < h2; y++){
+		for(x = 0; x < w2; x++){
+			x2 = ((x*x_factor)>>16);
+			y2 = ((y*y_factor)>>16);
+			uGDLDrawPoint(VRAM, uGDLCreatePoint(x + tX,y + tY),uGDLGetPixel(spr,x2,y2));
+		}
+	}
+}
+
+void uGDLScaleSpriteOnCanvas(uGDLCanvas canvas, uGDLSprite spr, int tX, int tY, float sX, float sY){
+	int w1 = spr.width, w2 = (int)(spr.width * sX);
+	int h1 = spr.height, h2 = (int)(spr.height * sY);
+	
+	int x_factor = (int)((w1<<16)/w2) + 1;
+	int y_factor = (int)((h1<<16)/h2) + 1;
+	
+	int x, y, x2, y2;
+	for(y = 0; y < h2; y++){
+		for(x = 0; x < w2; x++){
+			x2 = ((x*x_factor)>>16);
+			y2 = ((y*y_factor)>>16);
+			uGDLDrawPointOnCanvas(canvas, uGDLCreatePoint(x + tX,y + tY),uGDLGetPixel(spr,x2,y2));
 		}
 	}
 }
@@ -119,6 +178,16 @@ void uGDLBlendSpriteTransparent(uint32_t *VRAM, uGDLSprite spr, int tX, int tY, 
 	}
 }
 
+void uGDLBlendSpriteTransparentOnCanvas(uGDLCanvas canvas, uGDLSprite spr, int tX, int tY, float factor){
+	int x, y;
+	for(y = 0; y < spr.height; y++){
+		for(x = 0; x < spr.width; x++){
+			int col = uGDLGetCanvasPixel(canvas,x,y);
+			uGDLDrawPointOnCanvas(canvas, uGDLCreatePoint(x + tX, y + tY), uGDLBlendColor(uGDLGetPixel(spr, x, y), col, factor, RGB_888));
+		}
+	}
+}
+
 void uGDLFlipSpriteVert(uint32_t *VRAM, uGDLSprite spr, int tX, int tY, int img_type){
 	if(img_type == BMP){
 		int x, y;
@@ -137,6 +206,29 @@ void uGDLFlipSpriteVert(uint32_t *VRAM, uGDLSprite spr, int tX, int tY, int img_
 			for(x = 0; x < spr.width; x++)
 			{
 				uGDLDrawPoint(VRAM, uGDLCreatePoint(x + tX, y + tY), uGDLGetPixel(spr, x, spr.height));
+			}
+		}
+	}
+}
+
+void uGDLFlipSpriteVertOnCanvas(uGDLCanvas canvas, uGDLSprite spr, int tX, int tY, int img_type){
+	if(img_type == BMP){
+		int x, y;
+		for(y = 0; y < spr.height; y++)
+		{
+			for(x = 0; x < spr.width; x++)
+			{
+				uGDLDrawPointOnCanvas(canvas, uGDLCreatePoint(x + tX, y + tY), uGDLGetPixel(spr, x, spr.height - y));
+			}
+		}
+	}
+	else{
+		int x, y;
+		for(y = 0; y < spr.height; y++)
+		{
+			for(x = 0; x < spr.width; x++)
+			{
+				uGDLDrawPointOnCanvas(canvas, uGDLCreatePoint(x + tX, y + tY), uGDLGetPixel(spr, x, spr.height));
 			}
 		}
 	}
@@ -162,6 +254,31 @@ void uGDLFlipSpriteHorz(uint32_t *VRAM, uGDLSprite spr, int tX, int tY, int img_
 			for(x = 0; x < spr.width; x++)
 			{
 				uGDLDrawPoint(VRAM, uGDLCreatePoint(x + tX, y + tY), uGDLGetPixel(spr, spr.width - x, spr.height - y));
+			}
+		}
+	}
+}
+
+void uGDLFlipSpriteHorzOnCanvas(uGDLCanvas canvas, uGDLSprite spr, int tX, int tY, int img_type, int erase){
+	if(img_type == BMP){
+		int x, y;
+		for(y = 0; y < spr.height; y++)
+		{
+			for(x = 1; x < spr.width; x++)
+			{
+				if(uGDLGetPixel(spr, spr.width - x, y) != erase){
+					uGDLDrawPointOnCanvas(canvas, uGDLCreatePoint(x + tX, y + tY), uGDLGetPixel(spr, spr.width - x, y));
+				}
+			}
+		}
+	}
+	else{
+		int x, y;
+		for(y = 0; y < spr.height; y++)
+		{
+			for(x = 0; x < spr.width; x++)
+			{
+				uGDLDrawPointOnCanvas(canvas, uGDLCreatePoint(x + tX, y + tY), uGDLGetPixel(spr, spr.width - x, spr.height - y));
 			}
 		}
 	}

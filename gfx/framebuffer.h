@@ -45,6 +45,7 @@ typedef struct{
 typedef struct{
 	int x, y;
 	int width, height;
+	int scissor;
 }uGDLScissor;
 
 /*Global viewport scissor*/

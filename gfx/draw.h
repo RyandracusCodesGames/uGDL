@@ -27,6 +27,8 @@ void uGDLDrawPolygon(uint32_t *VRAM, uGDLPolygon p, int nx, int ny, int col);
 void uGDLDrawRect(uint32_t *VRAM, uGDLRect rect, int col);
 void uGDLDrawChar(uint32_t *VRAM, uGDLFont font, char s, int tX, int tY);
 void uGDLDrawString(uint32_t *VRAM, uGDLFont font, char * s, int tX, int tY);
+void uGDLDrawCharOnCanvas(uGDLCanvas canvas, uGDLFont font, char s, int tX, int tY);
+void uGDLDrawStringOnCanvas(uGDLCanvas canvas, uGDLFont font, char * s, int tX, int tY);
 void uGDLDrawCirlceOutline(uint32_t *VRAM, int x, int y, int xc, int yc, int col);
 void uGLDrawCircle(uint32_t *VRAM, uGDLCircle circle, int col);
 void uGDLFillRect(uint32_t *VRAM, uGDLRect rect, int col);
@@ -37,4 +39,14 @@ void uGDLTextureRect(uint32_t *VRAM, uGDLRect rect);
 int uGDLGetScreenPixel(uint32_t *VRAM, int x, int y, int index, int flag);
 //void uGDLTextureTriangle(uint32_t* VRAM, int x1, int y1, float u1, float v1, float w1, int x2, int y2, float
  //   u2, float v2, float w2, int x3, int y3, float u3, float v3, float w3,T_TEXTURE texture, double visibility, int fog, int directionLighting, float dp);
+ 
+ 
+/*TODO: Replace math utility functions in seperate source file*/
+#define Abs(a) ((a) < 0 ? -(a) : a)
+#define Min(a,b) ((a) < (b) ? (a) : (b))
+#define Max(a,b) ((a) > (b) ? (a) : (b))
+
+#define TRUE 1
+#define FALSE 0
+
 #endif

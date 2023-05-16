@@ -101,6 +101,17 @@ void uGDLRenderTilemapLayers(uint32_t *VRAM, BST_NODE *root)
     }
 }
 
+void uGDLRenderTilemapLayersOnCanvas(uGDLCanvas canvas, BST_NODE *root)
+{
+    if (root != NULL)
+    {
+        uGDLRenderTilemapLayersOnCanvas(canvas, root->right);
+        /*Perform Post-Order Rasterization of the Scene*/
+        uGDLDispTilemapOnCanvas(canvas, root->tilemap);
+        uGDLRenderTilemapLayersOnCanvas(canvas, root->left);
+    }
+}
+
 BST_NODE * uGDLSearchNode(BST_NODE *root, int priority){
 	if(root == NULL){
 		return;

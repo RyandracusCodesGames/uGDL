@@ -4,14 +4,6 @@
 #include "color.h"
 #include <string.h>
 
-/*TODO: Replace math utility functions in seperate source file*/
-#define Abs(a) ((a) < 0 ? -(a) : a)
-#define Min(a,b) ((a) < (b) ? (a) : (b))
-#define Max(a,b) ((a) > (b) ? (a) : (b))
-
-#define TRUE 1
-#define FALSE 0
-
 uGDLScissor sciptr;
 
 void SWAP(int* a, int *b){
@@ -33,9 +25,9 @@ int uGDLGetScreenPixel(uint32_t *VRAM, int x, int y, int index, int flag){
 }
 
 void uGDLDrawPoint(uint32_t *VRAM, uGDLPoint2D p, int col){
-    if(sciptr.x != 1000000){
+    if(sciptr.scissor == 1){
 		if(p.x >= sciptr.x && p.y >= sciptr.y && p.x < sciptr.width && p.y < sciptr.height){
-			VRAM[p.x + (p.y + PLAYSTATION_H) * WIDTH] = col;
+			VRAM[p.x + p.y * WIDTH] = col;
 		}
 	}
 	else{

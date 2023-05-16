@@ -1,3 +1,5 @@
+#include <stdlib.h>
+#include <string.h>
 #include "framebuffer.h"
 
 void uGDLInitFrameBuffer(FrameBuffer *buf, int width, int height, ColorFormat cf){
@@ -12,6 +14,7 @@ void uGDLSetScissor(int x, int y, int width, int height){
 	sciptr.y = y;
 	sciptr.width = width;
 	sciptr.height = height;
+	sciptr.scissor = 1;
 }
 
 void uGDLInitDispInfo(Screen *screen, TV_SCREEN_WIDTH tvw, TV_SCREEN_HEIGHT tvh, int screen_x, int screen_y, char* name){
