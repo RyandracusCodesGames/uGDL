@@ -24,6 +24,8 @@ void uGDLAnimSprite(uint32_t *VRAM, uGDLSprite spr, int tX, int tY, int erase);
 void uGDLScaleSprite(uint32_t *VRAM, uGDLSprite spr, int tX, int tY, float sX, float sY);
 void uGDLBlendSprite(uGDLSprite spr1, uGDLSprite spr2, float factor);
 void uGDLBlendSpriteAndCol(uGDLSprite spr, int col, float factor);
+void uGDLBlendSpriteMode(uGDLSprite spr1, uGDLSprite spr2, float factor, int mode);
+void uGDLBlendSpriteAndColMode(uGDLSprite spr, int col, float factor, int mode);
 void uGDLBlendSpriteAndColWithVRAM(uint32_t *VRAM, uGDLSprite spr, int tX, int tY, int col, float factor);
 /*Semi-Transparency similar to N64 where you blend a sprite's pixels with the color value already placed in the framebuffer*/
 void uGDLBlendSpriteTransparent(uint32_t *VRAM, uGDLSprite spr, int tX, int tY, float factor);

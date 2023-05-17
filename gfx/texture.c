@@ -25,12 +25,33 @@ void uGDLBlendTexture(uGDLTexture dest, uGDLTexture src, float factor, ColorForm
 	}
 }
 
+void uGDLBlendTextureMode(uGDLTexture dest, uGDLTexture src, float factor, ColorFormat cf, int mode){
+	int x, y;
+	for(y = 0; y < dest.height; y++){
+		for(x = 0; x < dest.width; x++){
+			int col1 = uGDLGetTexel(dest, x, y);
+			int col2 = uGDLGetTexel(src, x, y);
+			uGDLSetPixel(&dest, x, y, uGDLBlendColorMode(col1, col2, factor, cf, mode));
+		}
+	}
+}
+
 void uGDLBlendTextureAndCol(uGDLTexture dest, int col, float factor, ColorFormat cf){
 	int x, y;
 	for(y = 0; y < dest.height; y++){
 		for(x = 0; x < dest.width; x++){
 			int col1 = uGDLGetTexel(dest, x, y);
 			uGDLSetTexel(&dest, x, y, uGDLBlendColor(col1, col, factor, cf));
+		}
+	}
+}
+
+void uGDLBlendTextureAndColMode(uGDLTexture dest, int col, float factor, ColorFormat cf, int mode){
+	int x, y;
+	for(y = 0; y < dest.height; y++){
+		for(x = 0; x < dest.width; x++){
+			int col1 = uGDLGetTexel(dest, x, y);
+			uGDLSetTexel(&dest, x, y, uGDLBlendColorMode(col1, col, factor, cf, mode));
 		}
 	}
 }

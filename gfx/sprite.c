@@ -150,6 +150,27 @@ void uGDLBlendSpriteAndCol(uGDLSprite spr, int col, float factor){
 	}
 }
 
+void uGDLBlendSpriteMode(uGDLSprite spr1, uGDLSprite spr2, float factor, int mode){
+	int x, y;
+	for(y = 0; y < spr1.height; y++){
+		for(x = 0; x < spr1.width; x++){
+			int col1 = uGDLGetPixel(spr1, x, y);
+			int col2 = uGDLGetPixel(spr2, x, y);
+			uGDLSetPixel(&spr1, x, y, uGDLBlendColorMode(col1, col2, factor, RGB_888, mode));
+		}
+	}
+}
+
+void uGDLBlendSpriteAndColMode(uGDLSprite spr, int col, float factor, int mode){
+	int x, y;
+	for(y = 0; y < spr.height; y++){
+		for(x = 0; x < spr.width; x++){
+			int col2 = uGDLGetPixel(spr, x, y);
+			uGDLSetPixel(&spr, x, y, uGDLBlendColorMode(col2, col, factor, RGB_888, mode));
+		}
+	}
+}
+
 void uGDLBlendSpriteAndColWithVRAM(uint32_t *VRAM, uGDLSprite spr, int tX, int tY, int col, float factor){
 	int x, y;
 	for(y = 0; y < spr.height; y++){

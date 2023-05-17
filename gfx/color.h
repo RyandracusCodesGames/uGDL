@@ -56,6 +56,17 @@
 #define PURPLE_565 0xA81F
 #define ORANGE_565 0xFD20
 #define BROWN_565 0x9240
+/*Sega Dreamcast Inspired Color Mixing Modes*/
+/*MULTIPLY SOURCE COLOR BY (1-As, 1-As, 1-As, 1-As) AND DESTINATION COLOR BY (As, As, As, As) AND BLEND*/
+#define BLEND_COLOR_BOTHINVALPHA 0x14
+/*MULTIPLY SOURCE COLOR BY (As, As, As, As) AND DESTINATION COLOR BY (1-As, 1-As, 1-As, 1-As) AND BLEND*/
+#define BLEND_COLOR_BOTHSRCALPHA 0x15
+/*MULTIPLY SOURCE COLOR BY (Ad, Ad, Ad, Ad) AND BLEND*/
+#define BLEND_COLOR_DESTALPHA 0x16
+/*MULTIPLY DESTINATION COLOR BY (Ad, Ad, Ad, Ad) AND BLEND*/
+#define BLEND_COLOR_SRCALPHA 0x17
+/*MULTIPLY SPECIFIED SOURCE BY (1-Ad, 1-Ad, 1-Ad, 1-Ad) AND BLEND*/
+#define BLEND_COLOR_INVDESTALPHA 0x18
 typedef struct{
 	int r, g, b;
 }uGDL_RGB;
@@ -67,9 +78,7 @@ typedef struct{
 typedef struct{
 	int palette[MAXCOLORS];
 }uGDL_PALETTE;
-/*Extract Individual Red, Green, and Blue components from an integer*/
-int getR(int col, ColorFormat cf);
-int getG(int col, ColorFormat cf);
+
 int getB(int col, ColorFormat cf);
 int getA(int col, ColorFormat cf);
 int getCol(uGDL_RGB rgb, ColorFormat cf);
@@ -81,6 +90,7 @@ uGDL_PALETTE uGDLCreatePalette(uGDL_PALETTE* pal, int* col);
 void uGDLLoadTexturePalette(uGDL_PALETTE* pal, char * name, ColorFormat cf);
 void uGDLAddColToPalette(uGDL_PALETTE *pal, int index, int col);
 int uGDLBlendColor(int col1, int col2, float ratio, ColorFormat cf);
+int uGDLBlendColorMode(int col1, int col2, float factor, ColorFormat cf, int mode);
 int uGDLBlendColorWithVRAM(int col, uint32_t *VRAM, int x, int y, float factor, ColorFormat cf);
 int uGDLAddColor(int col1, int col2, ColorFormat cf);
 int uGDLInterpColor(int col1, int col2, float interp, ColorFormat cf);

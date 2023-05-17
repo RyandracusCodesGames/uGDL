@@ -387,12 +387,105 @@ int uGDLBlendColor(int col1, int col2, float ratio, ColorFormat cf){
     int a = (int)((a1 * iRatio) + (a2 * ratio));
 	
 	if(cf == RGB_888){
-		return r << 16 | g << 8 | b;	
+		return uGDLRGBComponentsToInt(r,g,b,RGB_888);	
 	}
 	else if(cf == RGBA_8888){
-		return r << 24 | g << 16 | b << 8 | a;
+		return uGDLRGBAComponentsToInt(r,g,b,a);
 	}
-	else return b << 16 | g << 8 | r;
+	else return uGDLRGBComponentsToInt(r,g,b,BGR_888);
+}
+
+int uGDLBlendColorMode(int col1, int col2, float factor, ColorFormat cf, int mode){
+	if(factor > 1.0f){
+		factor = 1.0f;
+	}
+	
+	if(factor < 0.0f){
+		factor = 0.0f;
+	}
+	
+	float iFactor = 1.0f - factor;
+	
+	int r1 = getR(col1,cf);
+	int g1 = getG(col1,cf);
+	int b1 = getB(col1,cf);
+	int a1 = getA(col1,cf);
+	
+	int r2 = getR(col2,cf);
+	int g2 = getG(col2,cf);
+	int b2 = getB(col2,cf);
+	int a2 = getA(col2,cf);
+	
+	if(cf == RGB_888){
+		switch(mode){
+			case BLEND_COLOR_BOTHINVALPHA:{
+				int r = (r1 * iFactor) + (r2 * factor);
+				int g = (g1 * iFactor) + (g2 * factor);
+				int b = (b1 * iFactor) + (b2 * factor);
+				return uGDLRGBComponentsToInt(r,g,b,RGB_888);
+			}break;
+			case BLEND_COLOR_BOTHSRCALPHA:{
+				return uGDLBlendColor(col1, col2, factor, cf);
+			}break;
+			case BLEND_COLOR_SRCALPHA:{
+				return uGDLAddColor(uGDLDotColor(col1,factor,cf), col2,cf);
+			}break;
+			case BLEND_COLOR_DESTALPHA:{
+				return uGDLAddColor(col1, uGDLDotColor(col2,factor,cf),cf);
+			}break;
+			case BLEND_COLOR_INVDESTALPHA:{
+				return uGDLAddColor(col1, uGDLDotColor(col2, 1.0 - factor,cf),cf);
+			}break;
+			default: return uGDLAddColor(col1,col2,cf); break;
+		}
+	}
+	else if(cf == BGR_888){
+		switch(mode){
+			case BLEND_COLOR_BOTHINVALPHA:{
+				int r = (r1 * iFactor) + (r2 * factor);
+				int g = (g1 * iFactor) + (g2 * factor);
+				int b = (b1 * iFactor) + (b2 * factor);
+				return uGDLRGBComponentsToInt(r,g,b,RGB_888);
+			}break;
+			case BLEND_COLOR_BOTHSRCALPHA:{
+				return uGDLBlendColor(col1, col2, factor, cf);
+			}break;
+			case BLEND_COLOR_SRCALPHA:{
+				return uGDLAddColor(uGDLDotColor(col1,factor,cf), col2,cf);
+			}break;
+			case BLEND_COLOR_DESTALPHA:{
+				return uGDLAddColor(col1, uGDLDotColor(col2,factor,cf),cf);
+			}break;
+			case BLEND_COLOR_INVDESTALPHA:{
+				return uGDLAddColor(col1, uGDLDotColor(col2, 1.0 - factor,cf),cf);
+			}break;
+			default: return uGDLAddColor(col1,col2,cf); break;
+		}
+	}
+	else{
+		switch(mode){
+			case BLEND_COLOR_BOTHINVALPHA:{
+				int r = (r1 * iFactor) + (r2 * factor);
+				int g = (g1 * iFactor) + (g2 * factor);
+				int b = (b1 * iFactor) + (b2 * factor);
+				int a = (a1 * iFactor) + (a2 * factor);
+				return uGDLRGBAComponentsToInt(r,g,b,a);
+			}break;
+			case BLEND_COLOR_BOTHSRCALPHA:{
+				return uGDLBlendColor(col1, col2, factor, cf);
+			}break;
+			case BLEND_COLOR_SRCALPHA:{
+				return uGDLAddColor(uGDLDotColor(col1,factor,cf), col2,cf);
+			}break;
+			case BLEND_COLOR_DESTALPHA:{
+				return uGDLAddColor(col1, uGDLDotColor(col2,factor,cf),cf);
+			}break;
+			case BLEND_COLOR_INVDESTALPHA:{
+				return uGDLAddColor(col1, uGDLDotColor(col2, 1.0 - factor,cf),cf);
+			}break;
+			default: return uGDLAddColor(col1,col2,cf); break;
+		}
+	}
 }
 
 int uGDLBlendColorWithVRAM(int col, uint32_t *VRAM, int x, int y, float factor, ColorFormat cf){
@@ -419,12 +512,12 @@ int uGDLAddColor(int col1, int col2, ColorFormat cf){
     int a = a1 + a2;
 	
 	if(cf == RGB_888){
-		return r << 16 | g << 8 | b;	
+		return uGDLRGBComponentsToInt(r,g,b,RGB_888);	
 	}
 	else if(cf == RGBA_8888){
-		return r << 24 | g << 16 | b << 8 | a;
+		return uGDLRGBAComponentsToInt(r,g,b,a);
 	}
-	else return b << 16 | g << 8 | r;
+	else return uGDLRGBComponentsToInt(r,g,b,BGR_888);
 }
 
 int uGDLInterpColor(int col1, int col2, float interp, ColorFormat cf){
@@ -445,12 +538,12 @@ int uGDLInterpColor(int col1, int col2, float interp, ColorFormat cf){
 	int a = a1 + interp * (a1 - a2);
 	
 	if(cf == RGB_888){
-		return r << 16 | g << 8 | b;	
+		return uGDLRGBComponentsToInt(r,g,b,RGB_888);	
 	}
 	else if(cf == RGBA_8888){
-		return r << 24 | g << 16 | b << 8 | a;
+		return uGDLRGBAComponentsToInt(r,g,b,a);
 	}
-	else return b << 16 | g << 8 | r;
+	else return uGDLRGBComponentsToInt(r,g,b,BGR_888);
 }
 int uGDLDotColor(int col1, float factor, ColorFormat cf){
 	
@@ -465,12 +558,12 @@ int uGDLDotColor(int col1, float factor, ColorFormat cf){
 	int a = (a1 * factor);
 	
 	if(cf == RGB_888){
-		return r << 16 | g << 8 | b;	
+		return uGDLRGBComponentsToInt(r,g,b,RGB_888);	
 	}
 	else if(cf == RGBA_8888){
-		return r << 24 | g << 16 | b << 8 | a;
+		return uGDLRGBAComponentsToInt(r,g,b,a);
 	}
-	else return b << 16 | g << 8 | r;
+	else return uGDLRGBComponentsToInt(r,g,b,BGR_888);
 }
 
 int uGDLRGBComponentsToInt(int r, int g, int b, ColorFormat cf){
@@ -487,6 +580,7 @@ int uGDLRGBComponentsToInt(int r, int g, int b, ColorFormat cf){
 		case BGR_565:{
 			return b << 11 | g << 6 | r;
 		}
+		default: return r << 16 | g << 8 | b; break;
 	}
 }
 
