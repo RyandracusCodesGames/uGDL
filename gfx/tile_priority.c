@@ -101,7 +101,7 @@ void uGDLRenderTilemapLayers(uint32_t *VRAM, BST_NODE *root)
     }
 }
 
-void uGDLRenderTilemapLayersOnCanvas(uGDLCanvas canvas, BST_NODE *root)
+void uGDLRenderTilemapLayersOnCanvas(uGDLCanvas *canvas, BST_NODE *root)
 {
     if (root != NULL)
     {

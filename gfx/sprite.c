@@ -39,7 +39,7 @@ void uGDLDispSprite(uint32_t *VRAM, uGDLSprite spr, int tX, int tY, int erase){
 	}
 }
 
-void uGDLDispSpriteOnCanvas(uGDLCanvas canvas, uGDLSprite spr, int tX, int tY, int erase){
+void uGDLDispSpriteOnCanvas(uGDLCanvas *canvas, uGDLSprite spr, int tX, int tY, int erase){
 	int x, y;
 	for(y = 0; y < spr.height; y++){
 		for(x = 0; x < spr.width; x++){
@@ -61,7 +61,7 @@ void uGDLDispAnim(uint32_t *VRAM, uGDLSprite spr, int tX, int tY, int erase){
 	}
 }
 
-void uGDLDispAnimOnCanvas(uGDLCanvas canvas, uGDLSprite spr, int tX, int tY, int erase){
+void uGDLDispAnimOnCanvas(uGDLCanvas *canvas, uGDLSprite spr, int tX, int tY, int erase){
 	int x, y;
 	for(y = 0; y < spr.height; y++){
 		for(x = 0; x < spr.width; x++){
@@ -83,7 +83,7 @@ void uGDLAnimSprite(uint32_t *VRAM, uGDLSprite spr, int tX, int tY, int erase){
 	}
 }
 
-void uGDLAnimSpriteOnCanvas(uGDLCanvas canvas, uGDLSprite spr, int tX, int tY, int erase){
+void uGDLAnimSpriteOnCanvas(uGDLCanvas *canvas, uGDLSprite spr, int tX, int tY, int erase){
 	int x, y;
 	for(y = 0; y < spr.height; y++){
 		for(x = 0; x < spr.width; x++){
@@ -112,7 +112,7 @@ void uGDLScaleSprite(uint32_t *VRAM, uGDLSprite spr, int tX, int tY, float sX, f
 	}
 }
 
-void uGDLScaleSpriteOnCanvas(uGDLCanvas canvas, uGDLSprite spr, int tX, int tY, float sX, float sY){
+void uGDLScaleSpriteOnCanvas(uGDLCanvas *canvas, uGDLSprite spr, int tX, int tY, float sX, float sY){
 	int w1 = spr.width, w2 = (int)(spr.width * sX);
 	int h1 = spr.height, h2 = (int)(spr.height * sY);
 	
@@ -178,7 +178,7 @@ void uGDLBlendSpriteTransparent(uint32_t *VRAM, uGDLSprite spr, int tX, int tY, 
 	}
 }
 
-void uGDLBlendSpriteTransparentOnCanvas(uGDLCanvas canvas, uGDLSprite spr, int tX, int tY, float factor){
+void uGDLBlendSpriteTransparentOnCanvas(uGDLCanvas *canvas, uGDLSprite spr, int tX, int tY, float factor){
 	int x, y;
 	for(y = 0; y < spr.height; y++){
 		for(x = 0; x < spr.width; x++){
@@ -211,7 +211,7 @@ void uGDLFlipSpriteVert(uint32_t *VRAM, uGDLSprite spr, int tX, int tY, int img_
 	}
 }
 
-void uGDLFlipSpriteVertOnCanvas(uGDLCanvas canvas, uGDLSprite spr, int tX, int tY, int img_type){
+void uGDLFlipSpriteVertOnCanvas(uGDLCanvas *canvas, uGDLSprite spr, int tX, int tY, int img_type){
 	if(img_type == BMP){
 		int x, y;
 		for(y = 0; y < spr.height; y++)
@@ -259,7 +259,7 @@ void uGDLFlipSpriteHorz(uint32_t *VRAM, uGDLSprite spr, int tX, int tY, int img_
 	}
 }
 
-void uGDLFlipSpriteHorzOnCanvas(uGDLCanvas canvas, uGDLSprite spr, int tX, int tY, int img_type, int erase){
+void uGDLFlipSpriteHorzOnCanvas(uGDLCanvas *canvas, uGDLSprite spr, int tX, int tY, int img_type, int erase){
 	if(img_type == BMP){
 		int x, y;
 		for(y = 0; y < spr.height; y++)

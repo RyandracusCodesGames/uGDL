@@ -15,24 +15,24 @@ typedef struct{
 
 /*Initialization and Essential Utility Functions For a Canvas*/
 uGDLCanvas uGDLCreateCanvas(int x, int y, int width, int height, ColorFormat cf);
-int uGDLGetCanvasPixel(uGDLCanvas canvas, int x, int y);
+int uGDLGetCanvasPixel(uGDLCanvas *canvas, int x, int y);
 void uGDLFreeCanvas(uGDLCanvas *canvas);
 /*Display Canvas to Frame Buffer*/
-void uGDLDispCanvas(uGDLCanvas canvas, FrameBuffer buf);
-void uGDLDispTranslatedCanvas(uGDLCanvas canvas, FrameBuffer buf, int tX, int tY);
-void uGDLDispScaledCanvas(uGDLCanvas, FrameBuffer buf, float sX,float sY);
-void uGDLFlipCanvasHorz(uGDLCanvas, FrameBuffer buf, int tX, int tY);
-void uGDLFlipCanvasVert(uGDLCanvas, FrameBuffer buf, int tX, int tY);
-void uGDLDispCanvasHorzAndVert(uGDLCanvas canvas, FrameBuffer buf, int tX, int tY);
+void uGDLDispCanvas(uGDLCanvas canvas, FrameBuffer *buf);
+void uGDLDispTranslatedCanvas(uGDLCanvas canvas, FrameBuffer *buf, int tX, int tY);
+void uGDLDispScaledCanvas(uGDLCanvas canvas, FrameBuffer *buf, float sX,float sY);
+void uGDLFlipCanvasHorz(uGDLCanvas canvas, FrameBuffer *buf, int tX, int tY);
+void uGDLFlipCanvasVert(uGDLCanvas canvas, FrameBuffer *buf, int tX, int tY);
+void uGDLDispCanvasHorzAndVert(uGDLCanvas canvas, FrameBuffer *buf, int tX, int tY);
 /*Rasterization functions applied to the canvas*/
-void uGDLDrawPointOnCanvas(uGDLCanvas canvas, uGDLPoint2D p, int col);
-void uGDLClearCanvas(uGDLCanvas canvas, int col);
-void uGDLDrawVertLineOnCanvas(uGDLCanvas canvas, uGDLVertLine vline, int col);
-void uGDLDrawHorzLineOnCanvas(uGDLCanvas canvas, uGDLHorzLine hline, int col);
-void uGDLDrawLineOnCanvas(uGDLCanvas canvas, uGDLLine line, int col);
-void uGDLDrawTriangleOnCanvas(uGDLCanvas canvas, uGDLTriangle tri, int col);
-void uGDLDrawRectOnCanvas(uGDLCanvas canvas, uGDLRect rect, int col);
-void uGDLFillTriangleOnCanvas(uGDLCanvas canvas, uGDLTriangle t, int col);
-void uGDLFillRectOnCanvas(uGDLCanvas canvas, uGDLRect rect, int col);
-void uGDLDrawCircleOnCanvas(uGDLCanvas canvas, uGDLCircle circle, int col);
+void uGDLDrawPointOnCanvas(uGDLCanvas *canvas, uGDLPoint2D p, int col);
+void uGDLClearCanvas(uGDLCanvas *canvas, int col);
+void uGDLDrawVertLineOnCanvas(uGDLCanvas *canvas, uGDLVertLine vline, int col);
+void uGDLDrawHorzLineOnCanvas(uGDLCanvas *canvas, uGDLHorzLine hline, int col);
+void uGDLDrawLineOnCanvas(uGDLCanvas *canvas, uGDLLine line, int col);
+void uGDLDrawTriangleOnCanvas(uGDLCanvas *canvas, uGDLTriangle tri, int col);
+void uGDLDrawRectOnCanvas(uGDLCanvas *canvas, uGDLRect rect, int col);
+void uGDLFillTriangleOnCanvas(uGDLCanvas *canvas, uGDLTriangle t, int col);
+void uGDLFillRectOnCanvas(uGDLCanvas *canvas, uGDLRect rect, int col);
+void uGDLDrawCircleOnCanvas(uGDLCanvas *canvas, uGDLCircle circle, int col);
 #endif

@@ -31,7 +31,7 @@ void uGDLDrawPoint(uint32_t *VRAM, uGDLPoint2D p, int col){
 		}
 	}
 	else{
-		VRAM[p.x + (p.y + PLAYSTATION_H) * WIDTH] = col;
+		VRAM[p.x + p.y * WIDTH] = col;
 	}
 }
 

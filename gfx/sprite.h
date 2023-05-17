@@ -32,11 +32,11 @@ void uGDLFlipSpriteHorz(uint32_t *VRAM, uGDLSprite spr, int tX, int tY, int img_
 void uGDLRotSprite(uint32_t *VRAM, uGDLSprite spr, int tX, int tY, float angle);
 uGDLSprite uGDLClipSprite(uGDLSprite spr, int x, int y, int width, int height);
 /*Canvas Equivalent Sprite Functions*/
-void uGDLDispSpriteOnCanvas(uGDLCanvas canvas, uGDLSprite spr, int tX, int tY, int erase);
-void uGDLDispAnimOnCanvas(uGDLCanvas canvas, uGDLSprite spr, int tX, int tY, int erase);
-void uGDLAnimSpriteOnCanvas(uGDLCanvas canvas, uGDLSprite spr, int tX, int tY, int erase);
-void uGDLScaleSpriteOnCanvas(uGDLCanvas canvas, uGDLSprite spr, int tX, int tY, float sX, float sY);
-void uGDLBlendSpriteTransparentOnCanvas(uGDLCanvas canvas, uGDLSprite spr, int tX, int tY, float factor);
-void uGDLFlipSpriteVertOnCanvas(uGDLCanvas canvas, uGDLSprite spr, int tX, int tY, int img_type);
-void uGDLFlipSpriteHorzOnCanvas(uGDLCanvas canvas, uGDLSprite spr, int tX, int tY, int img_type, int erase);
+void uGDLDispSpriteOnCanvas(uGDLCanvas *canvas, uGDLSprite spr, int tX, int tY, int erase);
+void uGDLDispAnimOnCanvas(uGDLCanvas *canvas, uGDLSprite spr, int tX, int tY, int erase);
+void uGDLAnimSpriteOnCanvas(uGDLCanvas *canvas, uGDLSprite spr, int tX, int tY, int erase);
+void uGDLScaleSpriteOnCanvas(uGDLCanvas *canvas, uGDLSprite spr, int tX, int tY, float sX, float sY);
+void uGDLBlendSpriteTransparentOnCanvas(uGDLCanvas *canvas, uGDLSprite spr, int tX, int tY, float factor);
+void uGDLFlipSpriteVertOnCanvas(uGDLCanvas *canvas, uGDLSprite spr, int tX, int tY, int img_type);
+void uGDLFlipSpriteHorzOnCanvas(uGDLCanvas *canvas, uGDLSprite spr, int tX, int tY, int img_type, int erase);
 #endif

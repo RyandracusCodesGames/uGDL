@@ -42,6 +42,7 @@ void uGDLBeginTileList(uGDLTilemap *map){
 	count++;
 	if(count > 4){
 		printf("Maximum Background Layer is 4\n");
+		return;
 	}
 	map->index = 0;
 }
@@ -116,7 +117,7 @@ void uGDLDispTile(uint32_t *VRAM, uGDLTile tile, int tX, int tY, int erase){
 	}
 }
 
-void uGDLDispTileOnCanvas(uGDLCanvas canvas, uGDLTile tile, int tX, int tY, int erase){
+void uGDLDispTileOnCanvas(uGDLCanvas *canvas, uGDLTile tile, int tX, int tY, int erase){
 	int x, y;
 	for(y = 0; y < H; y++){
 		for(x = 0; x < W; x++){
@@ -138,7 +139,7 @@ void uGDLDispTileVert(uint32_t *VRAM, uGDLTile tile, int tX, int tY, int erase){
 	}
 }
 
-void uGDLDispTileVertOnCanvas(uGDLCanvas canvas, uGDLTile tile, int tX, int tY, int erase){
+void uGDLDispTileVertOnCanvas(uGDLCanvas *canvas, uGDLTile tile, int tX, int tY, int erase){
 	int x, y;
 	for(y = 0; y < H; y++){
 		for(x = 0; x < W; x++){
@@ -160,7 +161,7 @@ void uGDLDispTileHorz(uint32_t *VRAM, uGDLTile tile, int tX, int tY, int erase){
 	}
 }
 
-void uGDLDispTileHorzOnCanvas(uGDLCanvas canvas, uGDLTile tile, int tX, int tY, int erase){
+void uGDLDispTileHorzOnCanvas(uGDLCanvas *canvas, uGDLTile tile, int tX, int tY, int erase){
 	int x, y;
 	for(y = 0; y < H; y++){
 		for(x = 1; x < W; x++){
@@ -182,7 +183,7 @@ void uGDLDispTileHorzAndVert(uint32_t *VRAM, uGDLTile tile, int tX, int tY, int 
 	}
 }
 
-void uGDLDispTileHorzAndVertOnCanvas(uGDLCanvas canvas, uGDLTile tile, int tX, int tY, int erase){
+void uGDLDispTileHorzAndVertOnCanvas(uGDLCanvas *canvas, uGDLTile tile, int tX, int tY, int erase){
 	int x, y;
 	for(y = 0; y < H; y++){
 		for(x = 0; x < W; x++){
@@ -225,7 +226,7 @@ void uGDLDispTilemap(uint32_t *VRAM, uGDLTilemap *map){
 	}
 }
 
-void uGDLDispTilemapOnCanvas(uGDLCanvas canvas, uGDLTilemap *map){
+void uGDLDispTilemapOnCanvas(uGDLCanvas *canvas, uGDLTilemap *map){
 	int i = 0;
 	for(i = 0; i < map->index; i++){
 		if((map->map[i].x * W)+ map->map[i].transx + map->vscroll.x >= 322){
@@ -261,7 +262,7 @@ void uGDLDispTileset(uint32_t *VRAM){
 	uGDLRenderTilemapLayers(VRAM, root);
 }
 
-void uGDLDispTilesetOnCanvas(uGDLCanvas canvas){
+void uGDLDispTilesetOnCanvas(uGDLCanvas *canvas){
 	uGDLRenderTilemapLayersOnCanvas(canvas, root);
 }
 
