@@ -66,6 +66,15 @@ void uGDLBlendTextureAndVRAM(uGDLTexture dest, uint32_t *VRAM, float factor, Col
 	}
 }
 
+void uGDLConvertTextureToGrayscale(uGDLTexture tex, int tX, int tY, ColorFormat cf){
+	int x, y;
+	for(y = 0; y < tex.height; y++){
+		for(x = 0; x < tex.width; x++){
+			uGDLSetTexel(&tex,x,y,uGDLColToGrayscale(uGDLGetTexel(tex,x,y), cf));
+		}
+	}
+}
+
 void uGDLFlipTextureVert(uGDLTexture tex, int image_type){
 	int x, y;
 	for(y = 0; y < tex.height; y++){

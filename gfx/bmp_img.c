@@ -358,6 +358,19 @@ int uGDLGetImagePixel(uGDLImage img, int x, int y){
 	}
 }
 
+void uGDLSetImagePixel(uGDLImage *img, int x, int y, int col){
+	if(x >= 0 && y >= 0 && x < img->width && y < img->height){
+		 img->clut[x + y * img->width] = col;
+	}
+}
+
+void uGDLConvertImageToGrayscale(uGDLImage *img){
+	int i;
+	for(i = 0; i < img->width * img->height; i++){
+		img->clut[i] = uGDLColToGrayscale(img->clut[i], img->cf);
+	}
+}
+
 void uGDLFreeImage(uGDLImage *img){
 	if(img == NULL){
 		printf("IMAGE DOES NOT EXIST\n");

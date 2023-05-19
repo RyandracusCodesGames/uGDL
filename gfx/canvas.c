@@ -98,16 +98,32 @@ void uGDLClearCanvas(uGDLCanvas *canvas, int col){
 }
 
 void uGDLDrawVertLineOnCanvas(uGDLCanvas *canvas, uGDLVertLine vline, int col){
-	int y;
-	for(y = vline.y1; y <= vline.y2; y++){
-		uGDLDrawPointOnCanvas(canvas, uGDLCreatePoint(vline.x, y), col);
+	if(vline.y2 < vline.y1){
+		int y;
+		for(y = vline.y2; y >= vline.y1; y--){
+			uGDLDrawPointOnCanvas(canvas, uGDLCreatePoint(vline.x, y), col);
+		}
+	}
+	else{
+		int y;
+		for(y = vline.y1; y <= vline.y2; y++){
+			uGDLDrawPointOnCanvas(canvas, uGDLCreatePoint(vline.x, y), col);
+		}
 	}
 }
 
 void uGDLDrawHorzLineOnCanvas(uGDLCanvas *canvas, uGDLHorzLine hline, int col){
-	int x;
-	for(x = hline.x1; x <= hline.x2; x++){
-		uGDLDrawPointOnCanvas(canvas, uGDLCreatePoint(x, hline.y), col);
+	if(hline.x1 > hline.x2){
+		int x;
+		for(x = hline.x1; x >= hline.x2; x--){
+			uGDLDrawPointOnCanvas(canvas, uGDLCreatePoint(x, hline.y), col);
+		}
+	}
+	else{
+		int x;
+		for(x = hline.x1; x <= hline.x2; x++){
+			uGDLDrawPointOnCanvas(canvas, uGDLCreatePoint(x, hline.y), col);
+		}
 	}
 }
 
@@ -191,6 +207,71 @@ void uGDLDrawRectOnCanvas(uGDLCanvas *canvas, uGDLRect rect, int col){
 	uGDLDrawVertLineOnCanvas(canvas, v2, col);
 	uGDLDrawHorzLineOnCanvas(canvas, h1, col);
 	uGDLDrawHorzLineOnCanvas(canvas, h2, col);
+}
+
+void uGDLFillFlatTopTriangleOnCanvas(uGDLCanvas *canvas, uGDLTriangle tri, int col){
+	float invslope1 = (tri.x3 - tri.x1)/(float)(tri.y3 - tri.y1);
+	float invslope2 = (tri.x3 - tri.x2)/(float)(tri.y3 - tri.y2);
+	
+	float currx1 = tri.x3;
+	float currx2 = tri.x3;
+	
+	int y;
+	for(y = tri.y3; y < tri.y1; y++){
+		uGDLDrawHorzLineOnCanvas(canvas, uGDLCreateHorzLine((int)currx2,(int)currx1, y),col);
+		currx1 += invslope1;
+		currx2 += invslope2;
+	}
+}
+
+void uGDLFillFlatBottomTriangleOnCanvas(uGDLCanvas *canvas, uGDLTriangle tri, int col){
+	float invslope1 = (tri.x2 - tri.x1)/(float)(tri.y2 - tri.y1);
+	float invslope2 = (tri.x3 - tri.x1)/(float)(tri.y3 - tri.y1);
+	
+	float currx1 = tri.x1;
+	float currx2 = tri.x1;
+
+	int y;
+	for(y = tri.y1; y >= tri.y2; y--){
+		uGDLDrawHorzLineOnCanvas(canvas, uGDLCreateHorzLine((int)currx2,(int)currx1, y),col);
+		currx1 -= invslope1;
+		currx2 -= invslope2;
+	}
+}
+
+void uGDLFillFastTriangleOnCanvas(uGDLCanvas *canvas, uGDLTriangle tri,  int col){
+	int x1 = tri.x1, x2 = tri.x2, x3 = tri.x3, y1 = tri.y1, y2 = tri.y2, y3 = tri.y3;
+	
+	if(y1 < y2){
+		SWAP(&y1, &y2);
+		SWAP(&x1, &x2);
+	}
+	
+	if(y2 < y3){
+		SWAP(&y2, &y3);
+		SWAP(&x2, &x3);
+	}
+	
+	if(y1 < y3){
+		SWAP(&y1, &y3);
+		SWAP(&x1, &x3);
+	}
+	
+	if(y2 == y3){
+		uGDLFillFlatBottomTriangleOnCanvas(canvas, tri, col);
+	}
+	
+	else if(y1 == y2){
+		uGDLFillFlatTopTriangleOnCanvas(canvas, tri, col);
+	}
+	else{
+		int x4 =(int)(x1 + ((float)(y2 - y1) / (float)(y3 - y1)) * (x3 - x1));
+		int y4 = y2;
+	//	printf("x1 = %d, x2 = %d, x3 = %d, x4 = %d\n",x1,x2,x3,x4);
+	//	printf("y1 = %d, y2 = %d, y3 = %d, y4 = %d\n",y1,y2,y3,y4);
+		uGDLFillFlatTopTriangleOnCanvas(canvas, uGDLCreateTriangle(x2,y2,x4,y4,x3,y3),col);
+		uGDLFillFlatBottomTriangleOnCanvas(canvas, uGDLCreateTriangle(x1,y1,x2,y2,x4,y4),col);
+	}
 }
 
 void uGDLFillTriangleOnCanvas(uGDLCanvas *canvas, uGDLTriangle t, int col){
@@ -372,4 +453,11 @@ void uGDLDrawCircleOnCanvas(uGDLCanvas *canvas, uGDLCircle circle, int col){
             d = d + 4 * x + 6;
         uGDLDrawCircleOutlineOnCanvas(canvas, x, y, circle.xc, circle.yc, col);
     }
+}
+
+void uGDLConvertCanvasToGrayscale(uGDLCanvas *canvas){
+	int i;
+	for(i = 0; i < canvas->width * canvas->height; i++){
+		canvas->VRAM[i] = uGDLColToGrayscale(canvas->VRAM[i],canvas->cf);
+	}
 }

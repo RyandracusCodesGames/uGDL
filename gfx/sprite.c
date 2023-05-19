@@ -209,6 +209,15 @@ void uGDLBlendSpriteTransparentOnCanvas(uGDLCanvas *canvas, uGDLSprite spr, int 
 	}
 }
 
+void uGDLConvertSpriteToGrayscale(uint32_t *VRAM, uGDLSprite spr, int tX, int tY){
+	int x, y;
+	for(y = 0; y < spr.height; y++){
+		for(x = 0; x < spr.width; x++){
+			uGDLDrawPoint(VRAM, uGDLCreatePoint(x + tX,y + tY),uGDLColToGrayscale(uGDLGetPixel(spr,x,y), RGB_888));
+		}
+	}
+}
+
 void uGDLFlipSpriteVert(uint32_t *VRAM, uGDLSprite spr, int tX, int tY, int img_type){
 	if(img_type == BMP){
 		int x, y;

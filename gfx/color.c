@@ -492,6 +492,21 @@ int uGDLBlendColorWithVRAM(int col, uint32_t *VRAM, int x, int y, float factor, 
 	return uGDLBlendColor(col, uGDLGetScreenPixel(VRAM, x, y, 0, 1), factor, cf);
 }
 
+int uGDLColToGrayscale(int col, ColorFormat cf){
+	float r = getR(col, RGB_888);
+	float g = getG(col, RGB_888);
+	float b = getB(col, RGB_888);
+
+	if(cf == RGBA_8888){
+		int grayscale = (int)((r,g,b)/3.0f);
+		return uGDLRGBAComponentsToInt(grayscale, grayscale, grayscale,255);
+	}
+	else{
+		int grayscale = (int)((r+g+b)/3.0f);
+		return uGDLRGBComponentsToInt(grayscale, grayscale, grayscale, cf);
+	}
+}
+
 int uGDLAddColor(int col1, int col2, ColorFormat cf){
 	int i1 = col1;
 	int i2 = col2;

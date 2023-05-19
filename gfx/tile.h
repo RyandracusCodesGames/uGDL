@@ -51,6 +51,8 @@ void uGDLSetTileTexel(uGDLTile *tile, int x, int y, int col);
 uGDLTile uGDLLoadTile(char * name, int x, int y, int attr);
 void uGDLSetTileAttribute(uGDLTile *tile, int attr);
 void uGDLDispTile(uint32_t *VRAM, uGDLTile tile, int tX, int tY, int erase);
+void uGDLDispGrayscaleTile(uint32_t *VRAM, uGDLTile tile, int tX, int tY);
+void uGDLDispGrayscaleTileOnCanvas(uGDLCanvas *canvas, uGDLTile tile, int tX, int tY);
 void uGDLDispTileVert(uint32_t *VRAM, uGDLTile tile, int tX, int tY, int erase);
 void uGDLDispTileHorz(uint32_t *VRAM, uGDLTile tile, int tX, int tY, int erase);
 void uGDLDispTileHorzAndVert(uint32_t *VRAM, uGDLTile tile, int tX, int tY, int erase);

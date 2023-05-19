@@ -117,6 +117,24 @@ void uGDLDispTile(uint32_t *VRAM, uGDLTile tile, int tX, int tY, int erase){
 	}
 }
 
+void uGDLDispGrayscaleTile(uint32_t *VRAM, uGDLTile tile, int tX, int tY){
+	int x, y;
+	for(y = 0; y < H; y++){
+		for(x = 0; x < W; x++){
+			uGDLDrawPoint(VRAM, uGDLCreatePoint((x + tX) + (tile.x * W), (y + tY) + (tile.y * H)), uGDLColToGrayscale(uGDLGetTileTexel(tile, x, y),RGB_888));
+		}
+	}
+}
+
+void uGDLDispGrayscaleTileOnCanvas(uGDLCanvas *canvas, uGDLTile tile, int tX, int tY){
+	int x, y;
+	for(y = 0; y < H; y++){
+		for(x = 0; x < W; x++){
+			uGDLDrawPointOnCanvas(canvas, uGDLCreatePoint((x + tX) + (tile.x * W), (y + tY) + (tile.y * H)), uGDLColToGrayscale(uGDLGetTileTexel(tile, x, y),RGB_888));
+		}
+	}
+}
+
 void uGDLDispTileOnCanvas(uGDLCanvas *canvas, uGDLTile tile, int tX, int tY, int erase){
 	int x, y;
 	for(y = 0; y < H; y++){

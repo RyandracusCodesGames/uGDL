@@ -94,6 +94,7 @@ int uGDLBlendColorMode(int col1, int col2, float factor, ColorFormat cf, int mod
 int uGDLBlendColorWithVRAM(int col, uint32_t *VRAM, int x, int y, float factor, ColorFormat cf);
 int uGDLAddColor(int col1, int col2, ColorFormat cf);
 int uGDLInterpColor(int col1, int col2, float interp, ColorFormat cf);
+int uGDLColToGrayscale(int col, ColorFormat cf);
 int uGDLDotColor(int col1, float factor, ColorFormat cf);
 int uGDLClampColor(int col1, int max, int min, int target, ColorFormat cf);
 int uGDLRGBComponentsToInt(int r, int g, int b, ColorFormat cf);

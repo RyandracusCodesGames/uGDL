@@ -5,7 +5,7 @@
 #include "geometry.h"
 
 /*A CANVAS IS A RECTANGULAR DRAWABLE AREA WITH A UNIQUE GRAPHICS CONTEXT IN THE LARGER DISPLAY OF A FRAME BUFFER*/
-/*SIMPLISTIC DEFINITION: A TEXTURED RECTANGLE*/
+/*SIMPLISTIC DEFINITION: A GLORIFIED TEXTURED RECTANGLE*/
 typedef struct{
 	int x, y;	/*x and y screen offset*/
 	int width, height; /*width and height of rectangle*/
@@ -32,7 +32,11 @@ void uGDLDrawHorzLineOnCanvas(uGDLCanvas *canvas, uGDLHorzLine hline, int col);
 void uGDLDrawLineOnCanvas(uGDLCanvas *canvas, uGDLLine line, int col);
 void uGDLDrawTriangleOnCanvas(uGDLCanvas *canvas, uGDLTriangle tri, int col);
 void uGDLDrawRectOnCanvas(uGDLCanvas *canvas, uGDLRect rect, int col);
+void uGDLFillFlatTopTriangleOnCanvas(uGDLCanvas *canvas, uGDLTriangle tri, int col);
+void uGDLFillFlatBottomTriangleOnCanvas(uGDLCanvas *canvas, uGDLTriangle tri, int col);
+void uGDLFillFastTriangleOnCanvas(uGDLCanvas *canvas, uGDLTriangle tri,  int col);
 void uGDLFillTriangleOnCanvas(uGDLCanvas *canvas, uGDLTriangle t, int col);
 void uGDLFillRectOnCanvas(uGDLCanvas *canvas, uGDLRect rect, int col);
 void uGDLDrawCircleOnCanvas(uGDLCanvas *canvas, uGDLCircle circle, int col);
+void uGDLConvertCanvasToGrayscale(uGDLCanvas *canvas);
 #endif

@@ -60,16 +60,32 @@ uGDLSprite uGDLScreenToSprite(uint32_t *VRAM){
 }
 
 void uGDLDrawVertLine(uint32_t *VRAM, uGDLVertLine v1, int col){
-	int y;
-	for(y = v1.y1; y <= v1.y2; y++){
-		uGDLDrawPoint(VRAM, uGDLCreatePoint(v1.x, y), col);
+	if(v1.y2 < v1.y1){
+		int y;
+		for(y = v1.y2; y >= v1.y1; y--){
+			uGDLDrawPoint(VRAM, uGDLCreatePoint(v1.x, y), col);
+		}
+	}
+	else{
+		int y;
+		for(y = v1.y1; y <= v1.y2; y++){
+			uGDLDrawPoint(VRAM, uGDLCreatePoint(v1.x, y), col);
+		}
 	}
 }
 
 void uGDLDrawHorzLine(uint32_t *VRAM, uGDLHorzLine hl, int col){
-	int x;
-	for(x = hl.x1; x <= hl.x2; x++){
-		uGDLDrawPoint(VRAM, uGDLCreatePoint(x, hl.y), col);
+	if(hl.x1 > hl.x2){
+		int x;
+		for(x = hl.x1; x >= hl.x2; x--){
+			uGDLDrawPoint(VRAM, uGDLCreatePoint(x, hl.y), col);
+		}
+	}
+	else{
+		int x;
+		for(x = hl.x1; x <= hl.x2; x++){
+			uGDLDrawPoint(VRAM, uGDLCreatePoint(x, hl.y), col);
+		}
 	}
 }
 
@@ -202,51 +218,68 @@ void uGDLDrawString(uint32_t *VRAM, uGDLFont font, char * s, int tX, int tY){
 	}
 }
 
-int uGDLEdgeCross(int x1, int y1, int x2, int y2, int x3, int y3){
-	uGDLPoint2D p1 = {x2 - x1, y2 - y1};
-	uGDLPoint2D p2 = {x3 - x1, y3 - y1};
-	return p1.x * p2.y - p1.y * p2.x;
+void uGDLFillFlatTopTriangle(uint32_t *VRAM, uGDLTriangle tri, int col){
+	float invslope1 = (tri.x3 - tri.x1)/(float)(tri.y3 - tri.y1);
+	float invslope2 = (tri.x3 - tri.x2)/(float)(tri.y3 - tri.y2);
+	
+	float currx1 = tri.x3;
+	float currx2 = tri.x3;
+	
+	int y;
+	for(y = tri.y3; y < tri.y1; y++){
+		uGDLDrawHorzLine(VRAM, uGDLCreateHorzLine((int)currx2,(int)currx1, y),col);
+		currx1 += invslope1;
+		currx2 += invslope2;
+	}
 }
 
-int uGDLIsTopLeft(int x1, int y1, int x2, int y2){
-	uGDLPoint2D p = {x2 - x1, y2 - y1};
+void uGDLFillFlatBottomTriangle(uint32_t *VRAM, uGDLTriangle tri, int col){
+	float invslope1 = (tri.x2 - tri.x1)/(float)(tri.y2 - tri.y1);
+	float invslope2 = (tri.x3 - tri.x1)/(float)(tri.y3 - tri.y1);
 	
-	int isTopEdge = p.y == 0 && p.x == 0;
-	int isLeftEdge = p.y < 0;
-	
-	return isTopEdge || isLeftEdge;
+	float currx1 = tri.x1;
+	float currx2 = tri.x1;
+
+	int y;
+	for(y = tri.y1; y >= tri.y2; y--){
+		uGDLDrawHorzLine(VRAM, uGDLCreateHorzLine((int)currx2,(int)currx1, y),col);
+		currx1 -= invslope1;
+		currx2 -= invslope2;
+	}
 }
 
-void uGDLFastFillTriangle(uint32_t *VRAM, uGDLTriangle t, int col){
+void uGDLFillFastTriangle(uint32_t *VRAM, uGDLTriangle tri,  int col){
+	int x1 = tri.x1, x2 = tri.x2, x3 = tri.x3, y1 = tri.y1, y2 = tri.y2, y3 = tri.y3;
 	
-	if(t.y1 == t.y2 || t.y2 == t.y3 || t.y1 == t.y3){
-		uGDLFillTriangle(VRAM, t, col);
-		return;
+	if(y1 < y2){
+		SWAP(&y1, &y2);
+		SWAP(&x1, &x2);
 	}
 	
-	int minx = Min(Min(t.x1, t.x2),t.x3);
-	int miny = Min(Min(t.y1, t.y2),t.y3);
-	int maxx = Max(Max(t.x1, t.x2),t.x3);
-	int maxy = Max(Max(t.y1, t.y2),t.y3);
+	if(y2 < y3){
+		SWAP(&y2, &y3);
+		SWAP(&x2, &x3);
+	}
 	
-	int bias0 = uGDLIsTopLeft(t.x2, t.y2, t.x3, t.y3) ? 0 : -1;
-	int bias1 = uGDLIsTopLeft(t.x3, t.y3, t.x1, t.y1) ? 0: -1;
-	int bias2 = uGDLIsTopLeft(t.x1, t.y1, t.x2, t.y2) ? 0: -1;
+	if(y1 < y3){
+		SWAP(&y1, &y3);
+		SWAP(&x1, &x3);
+	}
 	
-	int x, y;
-	for(y = miny; y <= maxy; y++){
-		for(x = minx; x <= maxx; x++){
-			uGDLPoint2D p = {x, y};
-			
-			int w0 = uGDLEdgeCross(t.x2, t.y2, t.x3, t.y3, p.x, p.y) + bias0;
-			int w1 = uGDLEdgeCross(t.x3, t.y3, t.x1, t.y1, p.x, p.y) + bias1;
-			int w2 = uGDLEdgeCross(t.x1, t.y1, t.x2, t.y2, p.x, p.y) + bias2;
-			
-			int is_inside = w0 >= 0 && w1 >= 0 && w2 >= 0;
-			if(is_inside){
-				uGDLDrawPoint(VRAM, p, col);
-			}
-		}
+	if(y2 == y3){
+		uGDLFillFlatBottomTriangle(VRAM, tri, col);
+	}
+	
+	else if(y1 == y2){
+		uGDLFillFlatTopTriangle(VRAM, tri, col);
+	}
+	else{
+		int x4 =(int)(x1 + ((float)(y2 - y1) / (float)(y3 - y1)) * (x3 - x1));
+		int y4 = y2;
+	//	printf("x1 = %d, x2 = %d, x3 = %d, x4 = %d\n",x1,x2,x3,x4);
+	//	printf("y1 = %d, y2 = %d, y3 = %d, y4 = %d\n",y1,y2,y3,y4);
+		uGDLFillFlatTopTriangle(VRAM, uGDLCreateTriangle(x2,y2,x4,y4,x3,y3),col);
+		uGDLFillFlatBottomTriangle(VRAM, uGDLCreateTriangle(x1,y1,x2,y2,x4,y4),col);
 	}
 }
 
@@ -430,4 +463,14 @@ void uGDLDrawCircle(uint32_t *VRAM, uGDLCircle circle, int col){
             d = d + 4 * x + 6;
         uGDLDrawCircleOutline(VRAM, x, y, circle.xc, circle.yc, col);
     }
+}
+/*Be careful about choice of color due to recursive nature of flood fill*/
+void uGDLFloodFill(uint32_t* VRAM, int x, int y, int col){
+	if(uGDLGetScreenPixel(VRAM,x,y,0,1) == col){
+		uGDLDrawPoint(VRAM, uGDLCreatePoint(x,y),col);
+		uGDLFloodFill(VRAM, x + 1, y, col);
+		uGDLFloodFill(VRAM, x - 1, y, col);
+		uGDLFloodFill(VRAM, x, y + 1, col);
+		uGDLFloodFill(VRAM, x, y - 1, col);
+	}
 }

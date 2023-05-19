@@ -19,6 +19,7 @@ void uGDLBlendTextureAndCol(uGDLTexture dest, int col, float factor, ColorFormat
 void uGDLBlendTextureMode(uGDLTexture dest, uGDLTexture src, float factor, ColorFormat cf, int mode);
 void uGDLBlendTextureAndColMode(uGDLTexture dest, int col, float factor, ColorFormat cf, int mode);
 void uGDLBlendTextureAndVRAM(uGDLTexture dest, uint32_t *VRAM, float factor, ColorFormat cf);
+void uGDLConvertTextureToGrayscale(uGDLTexture tex, int tX, int tY, ColorFormat cf);
 void uGDLFlipTextureVert(uGDLTexture tex, int image_type);
 void uGDLFlipTextureHorz(uGDLTexture tex, int image_type);
 void uGDLClearTexture(uGDLTexture *tex, int col);

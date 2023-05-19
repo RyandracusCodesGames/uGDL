@@ -32,11 +32,14 @@ void uGDLDrawStringOnCanvas(uGDLCanvas canvas, uGDLFont font, char * s, int tX, 
 void uGDLDrawCirlceOutline(uint32_t *VRAM, int x, int y, int xc, int yc, int col);
 void uGLDrawCircle(uint32_t *VRAM, uGDLCircle circle, int col);
 void uGDLFillRect(uint32_t *VRAM, uGDLRect rect, int col);
+void uGDLFillFlatTopTriangle(uint32_t *VRAM, uGDLTriangle tri, int col);
+void uGDLFillFlatBottomTriangle(uint32_t *VRAM, uGDLTriangle tri, int col);
 void uGDLFillTriangle(uint32_t *VRAM, uGDLTriangle t, int col);
-void uGDLFastFillTriangle(uint32_t *VRAM, uGDLTriangle t, int ool);
+void uGDLFillFastTriangle(uint32_t *VRAM, uGDLTriangle tri, int ool);
 void uGDLFillPolygon(uint32_t *VRAM, uGDLPolygon p, int col);
 void uGDLTextureRect(uint32_t *VRAM, uGDLRect rect);
 int uGDLGetScreenPixel(uint32_t *VRAM, int x, int y, int index, int flag);
+void uGDLFloodFill(uint32_t* VRAM, int x, int y, int col);
 //void uGDLTextureTriangle(uint32_t* VRAM, int x1, int y1, float u1, float v1, float w1, int x2, int y2, float
  //   u2, float v2, float w2, int x3, int y3, float u3, float v3, float w3,T_TEXTURE texture, double visibility, int fog, int directionLighting, float dp);
  

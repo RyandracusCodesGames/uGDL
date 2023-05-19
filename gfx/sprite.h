@@ -33,6 +33,9 @@ void uGDLFlipSpriteVert(uint32_t *VRAM, uGDLSprite spr, int tX, int tY, int img_
 void uGDLFlipSpriteHorz(uint32_t *VRAM, uGDLSprite spr, int tX, int tY, int img_type, int erase);
 void uGDLRotSprite(uint32_t *VRAM, uGDLSprite spr, int tX, int tY, float angle);
 uGDLSprite uGDLClipSprite(uGDLSprite spr, int x, int y, int width, int height);
+/*Grayscale is the process of taking the average of the RGB Components and using that same resulting value
+/*as a new RGB triplet for each new component(Shades of gray always have equal RGB Components)*/
+void uGDLConvertSpriteToGrayscale(uint32_t *VRAM, uGDLSprite spr, int tX, int tY);
 /*Canvas Equivalent Sprite Functions*/
 void uGDLDispSpriteOnCanvas(uGDLCanvas *canvas, uGDLSprite spr, int tX, int tY, int erase);
 void uGDLDispAnimOnCanvas(uGDLCanvas *canvas, uGDLSprite spr, int tX, int tY, int erase);
