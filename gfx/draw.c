@@ -192,28 +192,54 @@ void uGDLDrawRect(uint32_t* VRAM, uGDLRect rect, int col)
 	uGDLDrawHorzLine(VRAM, h2, col);
 }
 
-void uGDLDrawChar(uint32_t *VRAM, uGDLFont font, char s, int tX, int tY){
+void uGDLDrawChar(uint32_t *VRAM, uGDLFont font, char s, int tX, int tY, float sX, float sY){
 	uGDLSprite spr = uGDLFindFontCharacter(font, s);
-	uGDLDispSprite(VRAM, spr, tX, tY, BLACK);
+	uGDLScaleSprite(VRAM, spr, tX, tY, sX,sY);
 }
 
-void uGDLDrawString(uint32_t *VRAM, uGDLFont font, char * s, int tX, int tY){
+void uGDLDrawString(uint32_t *VRAM, uGDLFont font, char * s, int tX, int tY, float sX, float sY){
+	int count = 0;
 	int i;
 	for(i = 0; i < strlen(s) + 1; i++){		
 		if(s[i] == ' '){
-			tX = tX + 8;			
+			tX = tX + 8 * sX;			
 		}
-		else if(s[i] == 'I' || s[i] == '1'){
-			tX = tX + 9;			
-			uGDLSprite spr = uGDLFindFontCharacter(font, s[i]);
-			uGDLDispSprite(VRAM, spr, tX, tY, BLACK);	
-			tX = tX - 5;		
+		else if(s[i] == 'I' || s[i] == '1' || s[i] == '!'){
+			tX = tX + 9 * sX;			
+			uGDLDrawChar(VRAM, font, s[i], tX, tY, sX, sY);	
+			tX = tX - 5 * sX;		
 		}		
 		else{
-			tX = tX + 8;
-		
-			uGDLSprite spr = uGDLFindFontCharacter(font, s[i]);
-			uGDLDispSprite(VRAM, spr, tX, tY, BLACK);			
+			tX = tX + 8 * sX;
+			if(s[i] != '\0'){
+				uGDLDrawChar(VRAM, font, s[i], tX, tY, sX, sY);
+			}
+		}		
+	}
+}
+
+void uGDLDrawCharOnCanvas(uGDLCanvas *canvas, uGDLFont font, char s, int tX, int tY, float sX, float sY){
+	uGDLSprite spr = uGDLFindFontCharacter(font, s);
+	uGDLScaleSpriteOnCanvas(canvas, spr, tX, tY, sX,sY);
+}
+
+void uGDLDrawStringOnCanvas(uGDLCanvas *canvas, uGDLFont font, char * s, int tX, int tY, float sX, float sY){
+	int count = 0;
+	int i;
+	for(i = 0; i < strlen(s) + 1; i++){		
+		if(s[i] == ' '){
+			tX = tX + 8 * sX;			
+		}
+		else if(s[i] == 'I' || s[i] == '1' || s[i] == '!'){
+			tX = tX + 9 * sX;			
+			uGDLDrawChar(canvas, font, s[i], tX, tY, sX, sY);	
+			tX = tX - 5 * sX;		
+		}		
+		else{
+			tX = tX + 8 * sX;
+			if(s[i] != '\0'){
+				uGDLDrawChar(canvas, font, s[i], tX, tY, sX, sY);
+			}
 		}		
 	}
 }

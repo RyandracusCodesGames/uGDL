@@ -17,11 +17,13 @@ typedef struct{
 	char * directory;
 	char * name;
 	char * extension;
+	float scale;
 }uGDLAnim2D;
 
 void uGDLInitAnimation(uGDLAnim2D *anim, int num_of_frames, float curr_frame, char *directory, char *name, char *extension);
+void uGDLSetAnimationScale(uGDLAnim2D *anim, float scale);
 void uGDLPlayAnimation(uint32_t *VRAM, uGDLAnim2D *anim);
-void uGDLPauseAnimation(uGDLAnim2D *anim);
+void uGDLUnpauseAnimation(uGDLAnim2D *anim);
 void uGDLStopAnimation(uGDLAnim2D *anim);
 char* AppendStrings(const char *A, const char*B);
 #endif

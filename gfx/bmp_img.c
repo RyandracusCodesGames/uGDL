@@ -1,6 +1,5 @@
 #include "bmp_img.h"
 #include "color.h"
-
 /**
  * read Pixels from BMP file based on width and height.
  *
@@ -148,6 +147,7 @@ void uGDLLoadSprite(char* name, ColorFormat cf, uGDLSprite* spr, int width, int 
 	
 	spr->width = width;
 	spr->height = height;
+	spr->cf = cf;
 
 	removeAll(A,width,height);
 	fclose(fp);	
@@ -341,6 +341,13 @@ void uGDLWriteImage(uGDLImage img){
 void uGDLCaptureScreenshot(FrameBuffer buf){
 	uGDLImage img = uGDLCreateImage("screenshot.bmp",buf.width,buf.height, RGB_888);
 	uGDLSyncCLUT(&img, buf.VRAM);
+	uGDLWriteImage(img);
+}
+
+void uGDLCaptureDitheredScreenshot(FrameBuffer buf, uGDLDither dither, int factor){
+	uGDLImage img = uGDLCreateImage("screenshot_dithered.bmp",buf.width,buf.height, RGB_888);
+	uGDLSyncCLUT(&img, buf.VRAM);
+	uGDLDitherImage(img, dither, factor);
 	uGDLWriteImage(img);
 }
 

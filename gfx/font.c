@@ -58,7 +58,7 @@ void uGDLInitFont(uGDLFont *font, int width, int height){
 	uGDLLoadSprite("gfx/textures/fonts/F.bmp", RGB_888, &font->spr[5], font->width, font->height);
 	uGDLLoadSprite("gfx/textures/fonts/G.bmp", RGB_888, &font->spr[6], font->width, font->height);
 	uGDLLoadSprite("gfx/textures/fonts/H.bmp", RGB_888, &font->spr[7], font->width, font->height);
-	uGDLLoadSprite("gfx/textures/fonts/I.bmp", RGB_888, &font->spr[8], font->width, font->height);
+	uGDLLoadSprite("gfx/textures/fonts/I.bmp", RGB_888, &font->spr[8], font->width - 6, font->height);
 	uGDLLoadSprite("gfx/textures/fonts/J.bmp", RGB_888, &font->spr[9], font->width, font->height);
 	uGDLLoadSprite("gfx/textures/fonts/K.bmp", RGB_888, &font->spr[10], font->width, font->height);
 	uGDLLoadSprite("gfx/textures/fonts/L.bmp", RGB_888, &font->spr[11], font->width, font->height);

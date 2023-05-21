@@ -1,5 +1,6 @@
 #include "tile_priority.h"
 #include <stddef.h>
+#include <stdlib.h>
 
 BST_NODE * uGDLNewNode(uGDLTilemap *map, int priority){
 	BST_NODE * root = (BST_NODE*)malloc(sizeof(BST_NODE));

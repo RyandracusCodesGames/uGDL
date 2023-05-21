@@ -7,8 +7,8 @@
 
 #define W 16
 #define H 16
-#define MAX_X 20
-#define MAX_Y 15
+#define MAX_X 100
+#define MAX_Y 75
 
 /*Macros will determine if individual tile will be flipped horizontally, vertically, or both*/
 #define G_FLIP_HORZ 0x0810
@@ -19,7 +19,9 @@
 #define PRIOR_B1 4
 #define PRIOR_B2 8
 #define PRIOR_B3 12
-
+/*Macros will define modes of smooth side scrolling*/
+#define MODE_PARALLAX 0x629
+#define MODE_SMOOTH_SCROLL 0x175
 /*Global variable to hold size of tilemap while adding tiles in a display list*/
 extern int gTileNum;
 

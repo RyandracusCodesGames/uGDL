@@ -74,13 +74,12 @@ void uGDLDispScaledCanvas(uGDLCanvas canvas, FrameBuffer *buf, float sX, float s
 	int x_factor = (int)((w1<<16)/ w2) + 1;
 	int y_factor = (int)((h1<<16)/ h2) + 1;
 	
-	int x, y, x2, y2;
-	for(y = 0; y < h2; y++){
-		for(x = 0; x < w2; x++){
-			x2 = ((x*x_factor)>>16);
-			y2 = ((y*y_factor)>>16);
-			uGDLDrawPoint(buf->VRAM, uGDLCreatePoint(x + canvas.x,y + canvas.y),uGDLGetCanvasPixel(&canvas, x2, y2));
-		}
+	int x, y, x2, y2, i;
+	for(i = 0; i < w2 * h2; i++){
+		x = i % w2, y = i / w2;
+		x2 = ((x*x_factor)>>16);
+		y2 = ((y*y_factor)>>16);
+		uGDLDrawPoint(buf->VRAM, uGDLCreatePoint(x + canvas.x,y + canvas.y),uGDLGetCanvasPixel(&canvas, x2, y2));
 	}
 }
 

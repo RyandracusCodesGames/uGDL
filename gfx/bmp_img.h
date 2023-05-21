@@ -9,6 +9,7 @@
 #include "sprite.h"
 #include "texture.h"
 #include "image.h"
+#include "dither.h"
 
 #define SIZE 4096
 
@@ -45,5 +46,6 @@ void readPixelsBMP(FILE* file,struct Pixel*pArr[SIZE],int width,int height, int 
 void removeAll(struct Pixel*pArr[SIZE],int width,int height);
 void uGDLWriteImage(uGDLImage img);
 void uGDLCaptureScreenshot(FrameBuffer buf);
+void uGDLCaptureDitheredScreenshot(FrameBuffer buf, uGDLDither dither, int factor);
 void uGDLLoadColorPalette(char * name, uGDL_PALETTE *pal);
 #endif

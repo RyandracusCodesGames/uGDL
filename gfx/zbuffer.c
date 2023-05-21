@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include "zbuffer.h"
 
 void uGDLInitDepthBuffer(uGDLDepthBuffer *buf, int width, int height){
