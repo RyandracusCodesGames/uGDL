@@ -24,7 +24,7 @@ void uGDLInitAnimation(uGDLAnim2D *anim, int num_of_frames, float curr_frame, ch
 
 void uGDLPlayAnimation(uint32_t *VRAM, uGDLAnim2D *anim){
 	if(!anim->finished){
-		anim->curr_frame = anim->curr_frame + 0.45f;
+		anim->curr_frame = anim->curr_frame + 0.75f;
 		if(anim->curr_frame >= anim->num_of_frames){
 			anim->curr_frame = 1;
 			uGDLStopAnimation(anim);
