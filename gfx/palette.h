@@ -1,6 +1,20 @@
 #ifndef PALETTE_H
 #define PALETTE_H
 
+/*************************************************************************
+	Copyright (c) 2023-present Ryandracus Chapman (@RyandracusCodesGames)
+	
+	(The Ultimate Graphics Display Library)
+	
+	Library : uGDL
+	File    : palette.h
+	Author  : Ryandracus Chapamn
+	Date 	: 5/23/2023
+	Version : 1.0
+	
+*************************************************************************/
+
+
 #include "bmp_img.h"
 
 #define W 16

@@ -1,6 +1,19 @@
 #ifndef GEOMETRY_H
 #define GEOMETRY_H
 
+/*************************************************************************
+	Copyright (c) 2023-present Ryandracus Chapman (@RyandracusCodesGames)
+	
+	(The Ultimate Graphics Display Library)
+	
+	Library : uGDL
+	File    : geometry.h
+	Author  : Ryandracus Chapamn
+	Date 	: 5/23/2023
+	Version : 1.0
+	
+*************************************************************************/
+
 #define MAX_LINES 30
 
 typedef struct{

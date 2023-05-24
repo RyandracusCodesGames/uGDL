@@ -2,6 +2,19 @@
 #include <stddef.h>
 #include <stdlib.h>
 
+/*************************************************************************
+	Copyright (c) 2023-present Ryandracus Chapman (@RyandracusCodesGames)
+	
+	(The Ultimate Graphics Display Library)
+	
+	Library : uGDL
+	File    : tile_priority.c
+	Author  : Ryandracus Chapamn
+	Date 	: 5/23/2023
+	Version : 1.0
+	
+*************************************************************************/
+
 BST_NODE * uGDLNewNode(uGDLTilemap *map, int priority){
 	BST_NODE * root = (BST_NODE*)malloc(sizeof(BST_NODE));
 	root->tilemap = map;

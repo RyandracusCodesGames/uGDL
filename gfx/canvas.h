@@ -4,6 +4,19 @@
 #include "framebuffer.h"
 #include "geometry.h"
 
+/*************************************************************************
+	Copyright (c) 2023-present Ryandracus Chapman (@RyandracusCodesGames)
+	
+	(The Ultimate Graphics Display Library)
+	
+	Library : uGDL
+	File    : canvas.h
+	Author  : Ryandracus Chapamn
+	Date 	: 5/23/2023
+	Version : 1.0
+	
+*************************************************************************/
+
 /*A CANVAS IS A RECTANGULAR DRAWABLE AREA WITH A UNIQUE GRAPHICS CONTEXT IN THE LARGER DISPLAY OF A FRAME BUFFER*/
 /*SIMPLISTIC DEFINITION: A GLORIFIED TEXTURED RECTANGLE*/
 typedef struct{
@@ -30,7 +43,9 @@ void uGDLClearCanvas(uGDLCanvas *canvas, int col);
 void uGDLDrawVertLineOnCanvas(uGDLCanvas *canvas, uGDLVertLine vline, int col);
 void uGDLDrawHorzLineOnCanvas(uGDLCanvas *canvas, uGDLHorzLine hline, int col);
 void uGDLDrawLineOnCanvas(uGDLCanvas *canvas, uGDLLine line, int col);
+void uGDLDrawAALineOnCanvas(uGDLCanvas *canvas, uGDLLine line, int col);
 void uGDLDrawTriangleOnCanvas(uGDLCanvas *canvas, uGDLTriangle tri, int col);
+void uGDLDrawAATriangleOnCanvas(uGDLCanvas *canvas, uGDLTriangle tri, int col);
 void uGDLDrawRectOnCanvas(uGDLCanvas *canvas, uGDLRect rect, int col);
 void uGDLFillFlatTopTriangleOnCanvas(uGDLCanvas *canvas, uGDLTriangle tri, int col);
 void uGDLFillFlatBottomTriangleOnCanvas(uGDLCanvas *canvas, uGDLTriangle tri, int col);

@@ -3,18 +3,57 @@
 #include "draw.h"
 #include "geometry.h"
 
+/*************************************************************************
+	Copyright (c) 2023-present Ryandracus Chapman (@RyandracusCodesGames)
+	
+	(The Ultimate Graphics Display Library)
+	
+	Library : uGDL
+	File    : sprite.c
+	Author  : Ryandracus Chapamn
+	Date 	: 5/23/2023
+	Version : 1.0
+	
+*************************************************************************/
+
+/*
+=======================================================================================
+	Function   : uGDLGetPixel
+	Purpose    : Returns the color located at the specificed coordinates of the sprite
+	Parameters : x - The x - coordinate
+				 y - The y - coordinate
+	Returns	   : A color packed into an integer.
+=======================================================================================
+*/
 int uGDLGetPixel(uGDLSprite spr, int x, int y){
 	if(x >= 0 && y >= 0 && x < spr.width && y < spr.height){
 		return spr.clut[x + y * spr.width];
 	}
 }
-
+/*
+=======================================================================================
+	Function   : uGDLSetCanvasPixel
+	Purpose    : Sets the pixel located at the specificed coordinates of the sprite to a desired color
+	Parameters : x - The x - coordinate
+				 y - The y - coordinate
+				 col - The desired color
+	Returns	   : void
+=======================================================================================
+*/
 void uGDLSetPixel(uGDLSprite *spr, int x, int y, int col){
 	if(x >= 0 && y >= 0 && x < spr->width && y < spr->height){
 		spr->clut[x + y * spr->width] = col;
 	}
 }
-
+/*
+=======================================================================================
+	Function   : uGDLAllPixelsSameColor
+	Purpose    : A boolean function that checks if all the pixels in the sprite are the same
+	Parameters : spr - A sprite structure
+				 col - A color
+	Returns	   : void
+=======================================================================================
+*/
 int uGDLAllPixelsSameColor(uGDLSprite spr, int col){
 	int flag;
 	int i;
@@ -26,7 +65,18 @@ int uGDLAllPixelsSameColor(uGDLSprite spr, int col){
 	}
 	return flag;
 }
-
+/*
+=======================================================================================
+	Function   : uGDLDispSprite
+	Purpose    : Displays a sprite to our window display
+	Parameters : VRAM - A reference to the video memory of the window display
+				 spr - A sprite structure
+				 tX - The x - coordinate translation offset
+				 tY - The y - coordinate translation offset
+				 erase - Doesn't draw desired color from a sprite achieving transparency
+	Returns	   : void
+=======================================================================================
+*/
 void uGDLDispSprite(uint32_t *VRAM, uGDLSprite spr, int tX, int tY, int erase){
 	int x, y;
 	for(y = 0; y < spr.height; y++){
@@ -38,7 +88,18 @@ void uGDLDispSprite(uint32_t *VRAM, uGDLSprite spr, int tX, int tY, int erase){
 		}
 	}
 }
-
+/*
+=======================================================================================
+	Function   : uGDLDispSpriteOnCanvas
+	Purpose    : Displays a sprite to a canvas
+	Parameters : canvas - A reference to a canvas structure
+				 spr - A sprite structure
+				 tX - The x - coordinate translation offset
+				 tY - The y - coordinate translation offset
+				 erase - Doesn't draw desired color from a sprite achieving transparency
+	Returns	   : void
+=======================================================================================
+*/
 void uGDLDispSpriteOnCanvas(uGDLCanvas *canvas, uGDLSprite spr, int tX, int tY, int erase){
 	int x, y;
 	for(y = 0; y < spr.height; y++){
@@ -49,7 +110,18 @@ void uGDLDispSpriteOnCanvas(uGDLCanvas *canvas, uGDLSprite spr, int tX, int tY, 
 		}
 	}
 }
-
+/*
+=======================================================================================
+	Function   : uGDLDispAnim
+	Purpose    : Displays a sprite to our window display
+	Parameters : VRAM - A reference to the video memory of the window display
+				 spr - A sprite structure
+				 tX - The x - coordinate translation offset
+				 tY - The y - coordinate translation offset
+				 erase - Doesn't draw desired color from a sprite achieving transparency
+	Returns	   : void
+=======================================================================================
+*/
 void uGDLDispAnim(uint32_t *VRAM, uGDLSprite spr, int tX, int tY, int erase){
 	int x, y;
 	for(y = 0; y < spr.height; y++){
@@ -60,7 +132,18 @@ void uGDLDispAnim(uint32_t *VRAM, uGDLSprite spr, int tX, int tY, int erase){
 		}
 	}
 }
-
+/*
+=======================================================================================
+	Function   : uGDLDispAnimOnCanvas
+	Purpose    : Displays a sprite to a canvas
+	Parameters : canvas - A reference to a canvas structure
+				 spr - A sprite structure
+				 tX - The x - coordinate translation offset
+				 tY - The y - coordinate translation offset
+				 erase - Doesn't draw desired color from a sprite achieving transparency
+	Returns	   : void
+=======================================================================================
+*/
 void uGDLDispAnimOnCanvas(uGDLCanvas *canvas, uGDLSprite spr, int tX, int tY, int erase){
 	int x, y;
 	for(y = 0; y < spr.height; y++){
@@ -71,7 +154,18 @@ void uGDLDispAnimOnCanvas(uGDLCanvas *canvas, uGDLSprite spr, int tX, int tY, in
 		}
 	}
 }
-
+/*
+=======================================================================================
+	Function   : uGDLDispAnim
+	Purpose    : Displays a sprite vertically to our window display
+	Parameters : VRAM - A reference to the video memory of the window display
+				 spr - A sprite structure
+				 tX - The x - coordinate translation offset
+				 tY - The y - coordinate translation offset
+				 erase - Doesn't draw desired color from a sprite achieving transparency
+	Returns	   : void
+=======================================================================================
+*/
 void uGDLAnimSprite(uint32_t *VRAM, uGDLSprite spr, int tX, int tY, int erase){
 	int x, y;
 	for(y = 0; y < spr.height; y++){
@@ -82,7 +176,18 @@ void uGDLAnimSprite(uint32_t *VRAM, uGDLSprite spr, int tX, int tY, int erase){
 		}
 	}
 }
-
+/*
+=======================================================================================
+	Function   : uGDLDispAnimOnCanvas
+	Purpose    : Displays a sprite vertically flipped to a canvas
+	Parameters : canvas - A reference to a canvas structure
+				 spr - A sprite structure
+				 tX - The x - coordinate translation offset
+				 tY - The y - coordinate translation offset
+				 erase - Doesn't draw desired color from a sprite achieving transparency
+	Returns	   : void
+=======================================================================================
+*/
 void uGDLAnimSpriteOnCanvas(uGDLCanvas *canvas, uGDLSprite spr, int tX, int tY, int erase){
 	int x, y;
 	for(y = 0; y < spr.height; y++){

@@ -5,6 +5,19 @@
 #include "draw.h"
 #include "tile_priority.h"
 
+/*************************************************************************
+	Copyright (c) 2023-present Ryandracus Chapman (@RyandracusCodesGames)
+	
+	(The Ultimate Graphics Display Library)
+	
+	Library : uGDL
+	File    : tile.c
+	Author  : Ryandracus Chapamn
+	Date 	: 5/23/2023
+	Version : 1.0
+	
+*************************************************************************/
+
 /*Counter variable to limit the amount of background layers being added*/
 int gTileNum = 0;
 int count = 0;
@@ -254,26 +267,26 @@ void uGDLDispTilemap(uint32_t *VRAM, uGDLTilemap *map){
 	}
 }
 
-void uGDLDispTilemapOnCanvas(uGDLCanvas *canvas, uGDLTilemap *map){
+void uGDLDispTilemapOnCanvas(uGDLCanvas *canvas, uGDLTilemap *map, int offsetx, int offsety){
 	int i = 0;
 	for(i = 0; i < map->index; i++){
-		if((map->map[i].x * W)+ map->map[i].transx + map->vscroll.x >= canvas->width + 2){
+		if((map->map[i].x * W)+ map->map[i].transx + map->vscroll.x >= canvas->width + offsetx + 2){
 		//	printf("OUT OF BOUNDS AT (%d,%d)\n",map->map[i].x, map->map[i].y);
-			map->map[i].transx -= canvas->width + W;
+			map->map[i].transx -= canvas->width + offsetx + W;
 		}
 		if((map->map[i].x * W)+ map->map[i].transx + map->vscroll.x <= -16){
 		//	printf("OUT OF BOUNDS AT (%d,%d)\n",map->map[i].x, map->map[i].y);
-			map->map[i].transx += canvas->width + W;
+			map->map[i].transx += canvas->width + offsetx + W;
 		}
 		
-		if((map->map[i].y * H) + map->map[i].transy + map->hscroll.y >= canvas->height + 2){
+		if((map->map[i].y * H) + map->map[i].transy + map->hscroll.y >= canvas->height + offsety + 2){
 		//	printf("OUT OF BOUNDS AT (%d, %d)\n",map->map[i].x, map->map[i].y);
-			map->map[i].transy -= canvas->height + H;
+			map->map[i].transy -= canvas->height + offsety + H;
 		}
 		
 		if((map->map[i].y * H) + map->map[i].transy + map->hscroll.y <= -16){
 		//	printf("OUT OF BOUNDS AT (%d, %d)\n",map->map[i].x, map->map[i].y);
-			map->map[i].transy += canvas->height + H;
+			map->map[i].transy += canvas->height + offsety + H;
 		}
 		
 		switch(map->map[i].attribute){

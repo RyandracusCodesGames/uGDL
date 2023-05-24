@@ -2,6 +2,19 @@
 #include "dither.h"
 #include "bmp_img.h"
 
+/*************************************************************************
+	Copyright (c) 2023-present Ryandracus Chapman (@RyandracusCodesGames)
+	
+	(The Ultimate Graphics Display Library)
+	
+	Library : uGDL
+	File    : dither.c
+	Author  : Ryandracus Chapamn
+	Date 	: 5/23/2023
+	Version : 1.0
+	
+*************************************************************************/
+
 const   int BAYER_PATTERN_16X16[16][16] =   
 {   //  16x16 Bayer Dithering Matrix.  Color levels: 256
     {     0, 191,  48, 239,  12, 203,  60, 251,   3, 194,  51, 242,  15, 206,  63, 254  }, 
@@ -21,14 +34,30 @@ const   int BAYER_PATTERN_16X16[16][16] =
     {    42, 233,  26, 217,  38, 229,  22, 213,  41, 232,  25, 216,  37, 228,  21, 212  },
     {   169, 106, 153,  90, 165, 102, 149,  86, 168, 105, 152,  89, 164, 101, 148,  85  }
 };
-
+/*
+=======================================================================================
+	Function   : uGDLQuantizeImageColor
+	Purpose    : Limits the color range, the bit depth, of a particular color
+	Parameters : col - A color
+				 factor - The limit factor - 4 for example limits our color to 4 possible colors, 8 limits it to 8 and so on
+				 cf - The color format, bit depth, of the color
+	Returns	   : A color packed into an integer.
+=======================================================================================
+*/
 int uGDLQuantizeImageColor(int col, int factor, ColorFormat cf){
 	float newR = round(factor * getR(col,cf) / 255.00f) * (255.00f / factor);
 	float newG = round(factor * getG(col,cf) / 255.00f) * (255.00f / factor);
 	float newB = round(factor * getB(col,cf) / 255.00f) * (255.00f / factor);
 	return uGDLRGBComponentsToInt(newR,newG,newB,cf);
 }
-
+/*
+=======================================================================================
+	Function   : uGDLErrorDiffuseColor
+	Purpose    : Performs error diffusion of a color
+	Parameters : 
+	Returns	   : A color packed into an integer.
+=======================================================================================
+*/
 int uGDLErrorDiffuseColor(int col, float errR, float errG, float errB, float top, float bottom, ColorFormat cf){
 	float r1 = getR(col, RGB_888);
 	float g1 = getG(col, RGB_888);
@@ -40,7 +69,15 @@ int uGDLErrorDiffuseColor(int col, float errR, float errG, float errB, float top
 	
 	return uGDLRGBComponentsToInt(r1,g1,b1,cf);
 }
-
+/*
+=======================================================================================
+	Function   : uGDLDitherSprite
+	Purpose    : Performs dithering on a sprite
+	Parameters : spr - A sprite structure
+				 dither - The type of dithering desired to be performed on the sprite
+	Returns	   : void
+=======================================================================================
+*/
 void uGDLDitherSprite(uGDLSprite spr, uGDLDither dither, int factor){
 	switch(dither){
 		case DITHER_FLOYD_STEINBERG:{
@@ -101,7 +138,15 @@ void uGDLDitherSprite(uGDLSprite spr, uGDLDither dither, int factor){
 		};
 	}
 }
-
+/*
+=======================================================================================
+	Function   : uGDLDitherTexture
+	Purpose    : Performs dithering on a texture
+	Parameters : tex - A texture structure
+				 dither - The type of dithering desired to be performed on the texture
+	Returns	   : void
+=======================================================================================
+*/
 void uGDLDitherTexture(uGDLTexture tex, uGDLDither dither, int factor, ColorFormat cf){
 	switch(dither){
 		case DITHER_FLOYD_STEINBERG:{
@@ -162,7 +207,15 @@ void uGDLDitherTexture(uGDLTexture tex, uGDLDither dither, int factor, ColorForm
 		};
 	}
 }
-
+/*
+=======================================================================================
+	Function   : uGDLDitherImage
+	Purpose    : Performs dithering on an image
+	Parameters : img - An image structure
+				 dither - The type of dithering desired to be performed on the image
+	Returns	   : void
+=======================================================================================
+*/
 void uGDLDitherImage(uGDLImage img, uGDLDither dither, int factor){
 	switch(dither){
 		case DITHER_FLOYD_STEINBERG:{

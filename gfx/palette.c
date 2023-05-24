@@ -1,6 +1,20 @@
 #include "palette.h"
 #include "color.h"
 
+/*************************************************************************
+	Copyright (c) 2023-present Ryandracus Chapman (@RyandracusCodesGames)
+	
+	(The Ultimate Graphics Display Library)
+	
+	Library : uGDL
+	File    : palette.c
+	Author  : Ryandracus Chapamn
+	Date 	: 5/23/2023
+	Version : 1.0
+	
+*************************************************************************/
+
+
 void uGDLLoadPalette(uGDLPalette *pal, char * name, char * extension){
 	
 	FILE *file = fopen(AppendString(name,pal),"rb");

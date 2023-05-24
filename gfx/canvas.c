@@ -2,6 +2,31 @@
 #include "canvas.h"
 #include "draw.h"
 
+/*************************************************************************
+	Copyright (c) 2023-present Ryandracus Chapman (@RyandracusCodesGames)
+	
+	(The Ultimate Graphics Display Library)
+	
+	Library : uGDL
+	File    : canvas.c
+	Author  : Ryandracus Chapamn
+	Date 	: 5/23/2023
+	Version : 1.0
+	
+*************************************************************************/
+
+/*
+=======================================================================================
+	Function   : uGDLCreateCanvas
+	Purpose    : Creates a rectangular drawable area with a unique graphics context in the larger display of the frame buffer
+	Parameters : x - The x - coordinate offset of the canvas
+				 y - The y - coordinate offset of the canvas
+				 width - The width of the canvas
+				 height - The height of the canvas
+				 cf - The color format, the bit depth, of the canvas
+	Returns	   : A uGDLCanvas structure.
+=======================================================================================
+*/
 uGDLCanvas uGDLCreateCanvas(int x, int y, int width, int height, ColorFormat cf){
 	uGDLCanvas canvas;
 	canvas.x = x;
@@ -11,17 +36,40 @@ uGDLCanvas uGDLCreateCanvas(int x, int y, int width, int height, ColorFormat cf)
 	canvas.VRAM = (uint32_t*)malloc(sizeof(uint32_t)*(width*height));
 	return canvas;
 }
-
+/*
+=======================================================================================
+	Function   : uGDLGetCanvasPixel
+	Purpose    : Returns the color located at the specificed coordinates of the canvas
+	Parameters : x - The x - coordinate
+				 y - The y - coordinate
+	Returns	   : A color packed into an integer.
+=======================================================================================
+*/
 int uGDLGetCanvasPixel(uGDLCanvas *canvas, int x, int y){
 	if(x >= 0 && y >= 0 && x < canvas->width && y < canvas->height){
 		return canvas->VRAM[x + y * canvas->width];
 	}
 }
-
+/*
+=======================================================================================
+	Function   : uGDLFreeCanvas
+	Purpose    : Frees the allocated memory of the canvas
+	Parameters : canvas - A reference to a canvas structure
+	Returns	   : void
+=======================================================================================
+*/
 void uGDLFreeCanvas(uGDLCanvas *canvas){
 	free(canvas->VRAM);
 }
-
+/*
+=======================================================================================
+	Function   : uGDLDispCanvas
+	Purpose    : Displays our canvas to the window display
+	Parameters : canvas - A canvas structure
+				 buf - A reference to a frame buffer structure
+	Returns	   : void
+=======================================================================================
+*/
 void uGDLDispCanvas(uGDLCanvas canvas, FrameBuffer *buf){
 	int x, y;
 	for(y = 0; y < canvas.height; y++){
@@ -30,7 +78,17 @@ void uGDLDispCanvas(uGDLCanvas canvas, FrameBuffer *buf){
 		}
 	}
 }
-
+/*
+=======================================================================================
+	Function   : uGDLFlipCanvasVert
+	Purpose    : Displays our canvas to the screen vertically flipped with a translation offset
+	Parameters : canvas - A canvas structure
+				 buf - A reference to a frame buffer structure
+				 tX - The x - coordinate translation offset
+				 tY - The y - coordinate translation offset
+	Returns	   : void
+=======================================================================================
+*/
 void uGDLFlipCanvasVert(uGDLCanvas canvas, FrameBuffer *buf, int tX, int tY){
 	int x, y;
 	for(y = 0; y < canvas.height; y++){
@@ -39,7 +97,17 @@ void uGDLFlipCanvasVert(uGDLCanvas canvas, FrameBuffer *buf, int tX, int tY){
 		}
 	}
 }
-
+/*
+=======================================================================================
+	Function   : uGDLFlipCanvasHorz
+	Purpose    : Displays our canvas to the screen horizontally flipped with a translation offset
+	Parameters : canvas - A canvas structure
+				 buf - A reference to a frame buffer structure
+				 tX - The x - coordinate translation offset
+				 tY - The y - coordinate translation offset
+	Returns	   : void
+=======================================================================================
+*/
 void uGDLFlipCanvasHorz(uGDLCanvas canvas, FrameBuffer *buf, int tX, int tY){
 	int x, y;
 	for(y = 0; y < canvas.height; y++){
@@ -48,7 +116,17 @@ void uGDLFlipCanvasHorz(uGDLCanvas canvas, FrameBuffer *buf, int tX, int tY){
 		}
 	}
 }
-
+/*
+=======================================================================================
+	Function   : uGDLFlipCanvasHorzAndVert
+	Purpose    : Displays our canvas to the screen horizontally and vertically flipped with a translation offset
+	Parameters : canvas - A canvas structure
+				 buf - A reference to a frame buffer structure
+				 tX - The x - coordinate translation offset
+				 tY - The y - coordinate translation offset
+	Returns	   : void
+=======================================================================================
+*/
 void uGDLFlipCanvasHorzAndVert(uGDLCanvas canvas, FrameBuffer *buf, int tX, int tY){
 	int x, y;
 	for(y = 0; y < canvas.height; y++){
@@ -57,7 +135,17 @@ void uGDLFlipCanvasHorzAndVert(uGDLCanvas canvas, FrameBuffer *buf, int tX, int 
 		}
 	}
 }
-
+/*
+=======================================================================================
+	Function   : uGDLDispTranslatedCanvas
+	Purpose    : Displays our canvas to the screen with a translation offset
+	Parameters : canvas - A canvas structure
+				 buf - A reference to a frame buffer structure
+				 tX - The x - coordinate translation offset
+				 tY - The y - coordinate translation offset
+	Returns	   : void
+=======================================================================================
+*/
 void uGDLDispTranslatedCanvas(uGDLCanvas canvas, FrameBuffer *buf, int tX, int tY){
 	int x, y;
 	for(y = 0; y < canvas.height; y++){
@@ -66,7 +154,17 @@ void uGDLDispTranslatedCanvas(uGDLCanvas canvas, FrameBuffer *buf, int tX, int t
 		}
 	}
 }
-
+/*
+=======================================================================================
+	Function   : uGDLDispScaledCanvas
+	Purpose    : Displays a scaled canvas to the window display with a scale factor
+	Parameters : canvas - A canvas structure
+				 buf - A reference to a frame buffer structure
+				 sX - The x - coordinate scale factor
+				 sY - The y - coordinate scale factor
+	Returns	   : void
+=======================================================================================
+*/
 void uGDLDispScaledCanvas(uGDLCanvas canvas, FrameBuffer *buf, float sX, float sY){
 	int w1 = canvas.width, w2 = (int)(canvas.width * sX);
 	int h1 = canvas.height, h2 = (int)(canvas.height * sY);
@@ -82,20 +180,46 @@ void uGDLDispScaledCanvas(uGDLCanvas canvas, FrameBuffer *buf, float sX, float s
 		uGDLDrawPoint(buf->VRAM, uGDLCreatePoint(x + canvas.x,y + canvas.y),uGDLGetCanvasPixel(&canvas, x2, y2));
 	}
 }
-
+/*
+=======================================================================================
+	Function   : uGDLDrawPointOnCanvas
+	Purpose    : Draws a singular point to the canvas
+	Parameters : canvas - A reference to a canvas structure
+				 p - A 2D-Point structure
+				 col - A color
+	Returns	   : void
+=======================================================================================
+*/
 void uGDLDrawPointOnCanvas(uGDLCanvas *canvas, uGDLPoint2D p, int col){
 	if(p.x >= 0 && p.y >= 0 && p.x < canvas->width && p.y < canvas->height){
 		canvas->VRAM[p.x + p.y * canvas->width] = col;
 	}
 }
-
+/*
+=======================================================================================
+	Function   : uGDLClearCanvas
+	Purpose    : Fills the entire canvas with one color, clearing everything previously drawn to it
+	Parameters : canvas - A reference to a canvas structure
+				 col - A color
+	Returns	   : void
+=======================================================================================
+*/
 void uGDLClearCanvas(uGDLCanvas *canvas, int col){
 	int i;
 	for(i = 0; i < canvas->width * canvas->height; i++){
 		canvas->VRAM[i] = col;
 	}
 }
-
+/*
+=======================================================================================
+	Function   : uGDLDrawVertLineOnCanvas
+	Purpose    : Draws a vertical line to a canvas
+	Parameters : canvas - A reference to a canvas structure
+				 vline - A vertical line structure
+				 col - A color
+	Returns	   : void
+=======================================================================================
+*/
 void uGDLDrawVertLineOnCanvas(uGDLCanvas *canvas, uGDLVertLine vline, int col){
 	if(vline.y2 < vline.y1){
 		int y;
@@ -110,7 +234,16 @@ void uGDLDrawVertLineOnCanvas(uGDLCanvas *canvas, uGDLVertLine vline, int col){
 		}
 	}
 }
-
+/*
+=======================================================================================
+	Function   : uGDLDrawHorzLineOnCanvas
+	Purpose    : Draws a horizontal line on the canvas
+	Parameters : canvas - A reference to a canvas structure
+				 hline - A horizontal line structure
+				 col - A color
+	Returns	   : void
+=======================================================================================
+*/
 void uGDLDrawHorzLineOnCanvas(uGDLCanvas *canvas, uGDLHorzLine hline, int col){
 	if(hline.x1 > hline.x2){
 		int x;
@@ -125,7 +258,16 @@ void uGDLDrawHorzLineOnCanvas(uGDLCanvas *canvas, uGDLHorzLine hline, int col){
 		}
 	}
 }
-
+/*
+=======================================================================================
+	Function   : uGDLDrawLineOnCanvas
+	Purpose    : Draws any type of line to the canvas
+	Parameters : canvas - A reference to a canvas structure
+				 line - A line structure
+				 col - A color
+	Returns	   : void
+=======================================================================================
+*/
 void uGDLDrawLineOnCanvas(uGDLCanvas *canvas, uGDLLine line, int col){
 	int x1 = line.x1, x2 = line.x2, y1 = line.y1, y2 = line.y2;
 	int dx, dy, sx, sy, err, e2;
@@ -172,13 +314,140 @@ void uGDLDrawLineOnCanvas(uGDLCanvas *canvas, uGDLLine line, int col){
 		}
 	}while(x1 != x2 || y1 != y2);
 }
-
+/*
+=======================================================================================
+	Function   : uGDLDrawAALineOnCanvas
+	Purpose    : Draws an anti-aliased line to a canvas
+	Parameters : canvas - A reference to a canvas structure
+				 line - A line structure
+				 col - A color
+	Returns	   : void
+=======================================================================================
+*/
+void uGDLDrawAALineOnCanvas(uGDLCanvas *canvas, uGDLLine line, int col){
+	int x1 = line.x1, x2 = line.x2, y1 = line.y1, y2 = line.y2;
+	
+	if(x1 == x2){
+		uGDLDrawVertLineOnCanvas(canvas, uGDLCreateVertLine(x1, y1, y2), col);
+	}
+	
+	if(y1 == y2){
+		uGDLDrawHorzLineOnCanvas(canvas, uGDLCreateHorzLine(x1, x2, y1), col);
+	}
+	
+	int steep = Abs(y2 - y1) > Abs(x2 - x1);
+	
+	if(steep){
+		SWAP(&x1, &y1);
+		SWAP(&x2, &y2);
+	}
+	
+	if(x1 > x2){
+		SWAP(&x1, &x2);
+		SWAP(&y1, &y2);
+	}
+	
+	float dx = x2 - x1;
+	float dy = y2 - y1;
+	
+	float slope;
+	if(dx == 0.0f){
+		slope = 1.0f;
+	}
+	else{
+		slope = dy / dx;
+	}
+	
+	float xend, yend, xgap, xpxl1, ypxl1, xpxl2, ypxl2;
+	
+	xend = uGDLRound(x1);
+	yend = y1 + slope * (xend - x1);
+	xgap = invfpart(x1 + 0.5f);
+	xpxl1 = xend;
+	ypxl1 = ipart(yend);
+	
+	if (steep){
+		uGDLDrawPointOnCanvas(canvas, uGDLCreatePoint(ypxl1, xpxl1), col);
+        uGDLDrawPointOnCanvas(canvas, uGDLCreatePoint(ypxl1+1, xpxl1), col);
+	}else{
+		uGDLDrawPointOnCanvas(canvas, uGDLCreatePoint(xpxl1, ypxl1), col);
+        uGDLDrawPointOnCanvas(canvas, uGDLCreatePoint(xpxl1, ypxl1+1), col);
+	}
+        
+    float intery = yend + slope;
+    
+    xend = uGDLRound(x2);
+    yend = y2 + slope * (xend - x2);
+    xgap = fpart(x2 + 0.5f);
+    xpxl2 = xend;
+    ypxl2 = ipart(yend);
+    
+    if(steep){
+        uGDLDrawPointOnCanvas(canvas, uGDLCreatePoint(ypxl2, xpxl2), col);
+        uGDLDrawPointOnCanvas(canvas, uGDLCreatePoint(ypxl2+1, xpxl2), col);
+    }
+    else{
+        uGDLDrawPointOnCanvas(canvas, uGDLCreatePoint(xpxl2, ypxl2), col);
+        uGDLDrawPointOnCanvas(canvas, uGDLCreatePoint(xpxl2, ypxl2+1), col);
+	}
+	
+    if(steep){
+    	int x;
+        for (x = xpxl1 + 1; x <= xpxl2 - 1; x++){
+        	uGDLDrawPointOnCanvas(canvas, uGDLCreatePoint(ipart(intery), x), col);
+            uGDLDrawPointOnCanvas(canvas, uGDLCreatePoint(ipart(intery)+1, x), col);
+            intery = intery + slope;
+        }
+    }
+    else{
+    	int x;
+        for (x = xpxl1 + 1; x <= xpxl2 - 1; x++){
+        	uGDLDrawPointOnCanvas(canvas, uGDLCreatePoint(x, ipart(intery)), col);
+            uGDLDrawPointOnCanvas(canvas, uGDLCreatePoint(x, ipart(intery)+1), col);
+            intery = intery + slope;
+        }
+    }         
+}
+/*
+=======================================================================================
+	Function   : uGDLDrawTriangleOnCanvas
+	Purpose    : Draws a triangle on the canvas
+	Parameters : canvas - A reference to a canvas structure
+				 tri - A triangle structure
+				 col - A color
+	Returns	   : void
+=======================================================================================
+*/
 void uGDLDrawTriangleOnCanvas(uGDLCanvas *canvas, uGDLTriangle tri, int col){
 	uGDLDrawLineOnCanvas(canvas, uGDLCreateLine(tri.x1, tri.y1, tri.x2, tri.y2), col);
 	uGDLDrawLineOnCanvas(canvas, uGDLCreateLine(tri.x2, tri.y2, tri.x3, tri.y3), col);
 	uGDLDrawLineOnCanvas(canvas, uGDLCreateLine(tri.x3, tri.y3, tri.x1, tri.y1), col);
 }
-
+/*
+=======================================================================================
+	Function   : uGDLDrawAATriangleOnCanvas
+	Purpose    : Draws an anti-aliased triangle to the canvas
+	Parameters : canvas - A reference to a canvas structure
+				 tri - A triangle structure
+				 col - A color
+	Returns	   : void
+=======================================================================================
+*/
+void uGDLDrawAATriangleOnCanvas(uGDLCanvas *canvas, uGDLTriangle tri, int col){
+	uGDLDrawAALineOnCanvas(canvas, uGDLCreateLine(tri.x1, tri.y1, tri.x2, tri.y2), col);
+	uGDLDrawAALineOnCanvas(canvas, uGDLCreateLine(tri.x2, tri.y2, tri.x3, tri.y3), col);
+	uGDLDrawAALineOnCanvas(canvas, uGDLCreateLine(tri.x3, tri.y3, tri.x1, tri.y1), col);
+}
+/*
+=======================================================================================
+	Function   : uGDLDrawRectOnCanvas
+	Purpose    : Draws a rectangle on the canvas
+	Parameters : canvas - A reference to a canvas structure
+				 rect - A rectangle structure
+				 col - A color
+	Returns	   : void
+=======================================================================================
+*/
 void uGDLDrawRectOnCanvas(uGDLCanvas *canvas, uGDLRect rect, int col){
 	
 	int x = rect.x, y = rect.y, height = rect.height, width = rect.width;
@@ -207,7 +476,16 @@ void uGDLDrawRectOnCanvas(uGDLCanvas *canvas, uGDLRect rect, int col){
 	uGDLDrawHorzLineOnCanvas(canvas, h1, col);
 	uGDLDrawHorzLineOnCanvas(canvas, h2, col);
 }
-
+/*
+=======================================================================================
+	Function   : uGDLFillFlatTopTriangleOnCanvas
+	Purpose    : Draws a triangle with a flat top, a top with a horizontal line, to the canvas
+	Parameters : canvas - A reference to a canvas structure
+				 tri - A triangle structure
+				 col - A color
+	Returns	   : void
+=======================================================================================
+*/
 void uGDLFillFlatTopTriangleOnCanvas(uGDLCanvas *canvas, uGDLTriangle tri, int col){
 	float invslope1 = (tri.x3 - tri.x1)/(float)(tri.y3 - tri.y1);
 	float invslope2 = (tri.x3 - tri.x2)/(float)(tri.y3 - tri.y2);
@@ -222,7 +500,16 @@ void uGDLFillFlatTopTriangleOnCanvas(uGDLCanvas *canvas, uGDLTriangle tri, int c
 		currx2 += invslope2;
 	}
 }
-
+/*
+=======================================================================================
+	Function   : uGDLFillFlatBottomTriangleOnCanvas
+	Purpose    : Draws a triangle with a flat bottom, a bottom, horizontal line, to the canvas
+	Parameters : canvas - A reference to a canvas structure
+				 tri - A triangle structure
+				 col - A color
+	Returns	   : void
+=======================================================================================
+*/
 void uGDLFillFlatBottomTriangleOnCanvas(uGDLCanvas *canvas, uGDLTriangle tri, int col){
 	float invslope1 = (tri.x2 - tri.x1)/(float)(tri.y2 - tri.y1);
 	float invslope2 = (tri.x3 - tri.x1)/(float)(tri.y3 - tri.y1);
@@ -237,7 +524,16 @@ void uGDLFillFlatBottomTriangleOnCanvas(uGDLCanvas *canvas, uGDLTriangle tri, in
 		currx2 -= invslope2;
 	}
 }
-
+/*
+=======================================================================================
+	Function   : uGDLFillFastTriangleOnCanvas
+	Purpose    : Fills a quickly drawn triangle to the canvas
+	Parameters : canvas - A reference to a canvas structure
+				 tri - A triangle structure
+				 col - A color
+	Returns	   : void
+=======================================================================================
+*/
 void uGDLFillFastTriangleOnCanvas(uGDLCanvas *canvas, uGDLTriangle tri,  int col){
 	int x1 = tri.x1, x2 = tri.x2, x3 = tri.x3, y1 = tri.y1, y2 = tri.y2, y3 = tri.y3;
 	
@@ -272,7 +568,16 @@ void uGDLFillFastTriangleOnCanvas(uGDLCanvas *canvas, uGDLTriangle tri,  int col
 		uGDLFillFlatBottomTriangleOnCanvas(canvas, uGDLCreateTriangle(x1,y1,x2,y2,x4,y4),col);
 	}
 }
-
+/*
+=======================================================================================
+	Function   : uGDLFillTriangleOnCanvas
+	Purpose    : Fills a triangle drawn to the canvas
+	Parameters : canvas - A reference to a canvas structure
+				 t - A triangle structure
+				 col - A color
+	Returns	   : void
+=======================================================================================
+*/
 void uGDLFillTriangleOnCanvas(uGDLCanvas *canvas, uGDLTriangle t, int col){
 	int x1 = t.x1, x2 = t.x2, x3 = t.x3, y1 = t.y1, y2 = t.y2, y3 = t.y3;
 	
@@ -409,7 +714,16 @@ void uGDLFillTriangleOnCanvas(uGDLCanvas *canvas, uGDLTriangle t, int col){
 			if (y > y3) return;
 		}
 }
-
+/*
+=======================================================================================
+	Function   : uGDLFillRectOnCanvas
+	Purpose    : Fills a rectangle drawn to the canvas
+	Parameters : canvas - A reference to a canvas structure
+				 rect - A rectangle structure
+				 col - A color
+	Returns	   : void
+=======================================================================================
+*/
 void uGDLFillRectOnCanvas(uGDLCanvas *canvas, uGDLRect rect, int col)
 {
 	int x = rect.x, maxx = rect.x + rect.width, maxy = rect.y + rect.height, y;
@@ -417,7 +731,19 @@ void uGDLFillRectOnCanvas(uGDLCanvas *canvas, uGDLRect rect, int col)
 		uGDLDrawHorzLineOnCanvas(canvas, uGDLCreateHorzLine(x, maxx, y), col);
 	}
 }
-
+/*
+=======================================================================================
+	Function   : uGDLDrawCircleOutlineOnCanvas
+	Purpose    : Utility function used to draw the outline of a circle to the canvas
+	Parameters : canvas - A reference to a canvas structure
+				 x - The x - coordinate offset
+				 y - The y - coordinate offset
+				 xc - The center x - coordinate
+				 yc - The center y - coordinate
+				 col - The color
+	Returns	   : void
+=======================================================================================
+*/
 void uGDLDrawCircleOutlineOnCanvas(uGDLCanvas *canvas, int x, int y, int xc, int yc, int col){
 	uGDLDrawPointOnCanvas(canvas, uGDLCreatePoint(xc+x, yc+y), col);
 	uGDLDrawPointOnCanvas(canvas, uGDLCreatePoint(xc-x, yc+y), col);
@@ -428,7 +754,16 @@ void uGDLDrawCircleOutlineOnCanvas(uGDLCanvas *canvas, int x, int y, int xc, int
 	uGDLDrawPointOnCanvas(canvas, uGDLCreatePoint(xc+y, yc-x), col);
 	uGDLDrawPointOnCanvas(canvas, uGDLCreatePoint(xc-y, yc-x), col);
 }
-
+/*
+=======================================================================================
+	Function   : uGDLDrawCircleOnCanvas
+	Purpose    : Draws a circle to the canvas
+	Parameters : canvas - A reference to a canvas structure
+				 circle - A circle structure
+				 col - A color
+	Returns	   : void
+=======================================================================================
+*/
 void uGDLDrawCircleOnCanvas(uGDLCanvas *canvas, uGDLCircle circle, int col){
 	int x = 0, y = circle.r;
     int d = 3 - 2 * circle.r;
@@ -453,7 +788,14 @@ void uGDLDrawCircleOnCanvas(uGDLCanvas *canvas, uGDLCircle circle, int col){
         uGDLDrawCircleOutlineOnCanvas(canvas, x, y, circle.xc, circle.yc, col);
     }
 }
-
+/*
+=======================================================================================
+	Function   : uGDLDrawPointOnCanvas
+	Purpose    : Converts the entire canvas to a grayscale image
+	Parameters : canvas - A reference to a canvas structure
+	Returns	   : void
+=======================================================================================
+*/
 void uGDLConvertCanvasToGrayscale(uGDLCanvas *canvas){
 	int i;
 	for(i = 0; i < canvas->width * canvas->height; i++){

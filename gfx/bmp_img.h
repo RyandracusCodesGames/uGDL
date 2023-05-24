@@ -11,6 +11,19 @@
 #include "image.h"
 #include "dither.h"
 
+/*************************************************************************
+	Copyright (c) 2023-present Ryandracus Chapman (@RyandracusCodesGames)
+	
+	(The Ultimate Graphics Display Library)
+	
+	Library : uGDL
+	File    : bmp_img.h
+	Author  : Ryandracus Chapamn
+	Date 	: 5/23/2023
+	Version : 1.0
+	
+*************************************************************************/
+
 #define SIZE 4096
 
 typedef struct {             // Total: 54 bytes

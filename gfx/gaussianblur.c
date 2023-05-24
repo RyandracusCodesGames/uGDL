@@ -1,5 +1,29 @@
 #include "gaussianblur.h"
 
+/*************************************************************************
+	Copyright (c) 2023-present Ryandracus Chapman (@RyandracusCodesGames)
+	
+	(The Ultimate Graphics Display Library)
+	
+	Library : uGDL
+	File    : gaussianblur.c
+	Author  : Ryandracus Chapamn
+	Date 	: 5/23/2023
+	Version : 1.0
+	
+*************************************************************************/
+
+/*
+=======================================================================================
+	Function   : uGDLDispGaussianSprite
+	Purpose    : Displays a sprite with a blur effect to the window display
+	Parameters : VRAM - A reference to the video memory of our window display
+				 spr - A sprite structure
+				 tX - The x - coordinate translation offset
+				 tY - The y - coordinate translation offset
+	Returns	   : void
+=======================================================================================
+*/
 void uGDLDispGaussianSprite(uint32_t *VRAM, uGDLSprite spr, int tX, int tY){
 	
 	float sumr = 0;
@@ -57,7 +81,14 @@ void uGDLDispGaussianSprite(uint32_t *VRAM, uGDLSprite spr, int tX, int tY){
 		}
 	}
 }
-
+/*
+=======================================================================================
+	Function   : uGDLMakeTextureGaussian
+	Purpose    : Performs a blur effect to a texture
+	Parameters : tex - A texture structure
+	Returns	   : void
+=======================================================================================
+*/
 void uGDLMakeTextureGaussian(uGDLTexture tex){
 	
 	float sumr = 0;
@@ -115,7 +146,14 @@ void uGDLMakeTextureGaussian(uGDLTexture tex){
 		}
 	}
 }
-
+/*
+=======================================================================================
+	Function   : uGDLBlurCanvas
+	Purpose    : Performs a blur effect to a canvas
+	Parameters : canvas - A reference to a canvas structure
+	Returns	   : void
+=======================================================================================
+*/
 void uGDLBlurCanvas(uGDLCanvas *canvas){
 	float sumr = 0;
 	float sumg = 0;
@@ -172,7 +210,14 @@ void uGDLBlurCanvas(uGDLCanvas *canvas){
 		}
 	}
 }
-
+/*
+=======================================================================================
+	Function   : uGDLBlurImage
+	Purpose    : Performs a blur effect to an image structure
+	Parameters : img - An image structure
+	Returns	   : void
+=======================================================================================
+*/
 void uGDLBlurImage(uGDLImage img){
 	float sumr = 0;
 	float sumg = 0;

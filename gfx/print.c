@@ -3,12 +3,42 @@
 #include <stdlib.h>
 #include "print.h"
 
+/*************************************************************************
+	Copyright (c) 2023-present Ryandracus Chapman (@RyandracusCodesGames)
+	
+	(The Ultimate Graphics Display Library)
+	
+	Library : uGDL
+	File    : print.c
+	Author  : Ryandracus Chapamn
+	Date 	: 5/23/2023
+	Version : 1.0
+	
+*************************************************************************/
+
 uGDLFont printfont;
 
+/*
+=======================================================================================
+	Function   : uGDLInitDebugPrint
+	Purpose    : Initializes our debug print font to begin debug functionality
+	Parameters : 
+	Returns	   : void
+=======================================================================================
+*/
 void uGDLInitDebugPrint(){
 	uGDLInitFont(&printfont, 9, 9);
 }
 
+/*
+=======================================================================================
+	Function   : uGDLPrint
+	Purpose    : Prints a string to the window display with support for escape sequences and line wrapping
+	Parameters : VRAM - A reference to the video memory of our window display
+				 fmt - A string
+	Returns	   : void
+=======================================================================================
+*/
 void uGDLPrint(uint32_t *VRAM, char *fmt){
 	float offsetx = 0, offsety = (HEIGHT - 9);
 	int i;
@@ -40,7 +70,15 @@ void uGDLPrint(uint32_t *VRAM, char *fmt){
 		}
 	}
 }
-
+/*
+=======================================================================================
+	Function   : uGDLPrintf
+	Purpose    : Prints a formatted string to the window display
+	Parameters : VRAM - A reference to the video memory of the window display
+				 fmt - A string
+	Returns	   : void
+=======================================================================================
+*/
 void uGDLPrintf(uint32_t *VRAM, char *fmt,...){
 	va_list argptr;
 	char msg[500];
@@ -50,7 +88,16 @@ void uGDLPrintf(uint32_t *VRAM, char *fmt,...){
 	
 	uGDLPrint(VRAM, msg);
 }
-
+/*
+=======================================================================================
+	Function   : uGDLPrintColoredText
+	Purpose    : Prints a string with a desired color to the window display
+	Parameters : VRAM - A reference to the video memory of our window display
+				 fmt - A string
+				 col - A color
+	Returns	   : void
+=======================================================================================
+*/
 void uGDLPrintColoredText(uint32_t *VRAM, char *fmt, int col){
 	float offsetx = 0, offsety = (HEIGHT - 9);
 	int i;

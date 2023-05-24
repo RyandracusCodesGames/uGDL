@@ -3,6 +3,29 @@
 #include <stdlib.h>
 #include <string.h>
 
+/*************************************************************************
+	Copyright (c) 2023-present Ryandracus Chapman (@RyandracusCodesGames)
+	
+	(The Ultimate Graphics Display Library)
+	
+	Library : uGDL
+	File    : font.c
+	Author  : Ryandracus Chapamn
+	Date 	: 5/23/2023
+	Version : 1.0
+	
+*************************************************************************/
+
+/*
+=======================================================================================
+	Function   : uGDLInitFont
+	Purpose    : Initializes the data members of a font structure to indicate the width, height, and bitmap data of a font
+	Parameters : font - A reference to a font structure
+				 width - The width of the font
+				 height - The height of the font
+	Returns	   : void
+=======================================================================================
+*/
 void uGDLInitFont(uGDLFont *font, int width, int height){
 	font->width = width;
 	font->height = height;
@@ -99,6 +122,15 @@ void uGDLAddSprite(uGDLFont *font, uGDLSprite spr, int index){
 	font->spr[index] = spr;
 }
 
+/*
+=======================================================================================
+	Function   : uGDLFindFontCharacter
+	Purpose    : Perfoms linear search on font structure to find desired character sprite
+	Parameters : font - A font structure
+				 s - The character that we are using in the linear search
+	Returns	   : A uGDLSprite structure
+=======================================================================================
+*/
 uGDLSprite uGDLFindFontCharacter(uGDLFont font, char s){
 	int i;
 	for(i = 0; i < 44; i++){
@@ -107,14 +139,29 @@ uGDLSprite uGDLFindFontCharacter(uGDLFont font, char s){
 		}
 	}
 }
-
+/*
+=======================================================================================
+	Function   : uGDLFreeFont
+	Purpose    : Frees the allocated memory of our font structure
+	Parameters : font - A font structure
+	Returns	   : void
+=======================================================================================
+*/
 void uGDLFreeFont(uGDLFont font){
 	int i;
 	for(i = 0; i < 43; i++){
 		free(font.spr[i].clut);
 	}
 }
-
+/*
+=======================================================================================
+	Function   : uGDLSetFontColor
+	Purpose    : Sets the font to a desired color
+	Parameters : font - A font structure
+				 col - A color
+	Returns	   : void
+=======================================================================================
+*/
 void uGDLSetFontColor(uGDLFont font, int col){
 	font.col = col;
 	

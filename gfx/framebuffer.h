@@ -3,6 +3,19 @@
 
 #include <stdint.h>
 
+/*************************************************************************
+	Copyright (c) 2023-present Ryandracus Chapman (@RyandracusCodesGames)
+	
+	(The Ultimate Graphics Display Library)
+	
+	Library : uGDL
+	File    : framebuffer.h
+	Author  : Ryandracus Chapamn
+	Date 	: 5/23/2023
+	Version : 1.0
+	
+*************************************************************************/
+
 /*Enumeration to represent the most common bit-depth's for color in computer graphics*/
 typedef enum ColorFormat{
 	RGBA_8888 = 0,/*32 Bit RGBA*/

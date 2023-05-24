@@ -1,6 +1,20 @@
 #ifndef DRAW_H
 #define DRAW_H
 
+/*************************************************************************
+	Copyright (c) 2023-present Ryandracus Chapman (@RyandracusCodesGames)
+	
+	(The Ultimate Graphics Display Library)
+	
+	Library : uGDL
+	File    : draw.h
+	Author  : Ryandracus Chapamn
+	Date 	: 5/23/2023
+	Version : 1.0
+	
+*************************************************************************/
+
+
 #include "geometry.h"
 #include "font.h"
 #include "sprite.h"
@@ -22,7 +36,9 @@ void uGDLFadeScreen(uGDLSprite screen, uGDLSprite screen_buf, int col);
 void uGDLDrawVertLine(uint32_t *VRAM, uGDLVertLine vl, int col);
 void uGDLDrawHorzLine(uint32_t *VRAM, uGDLHorzLine hl, int col);
 void uGDLDrawLine(uint32_t *VRAM, uGDLLine line, int col);
+void uGDLDrawAALine(uint32_t *VRAM, uGDLLine line, int col);
 void uGDLDrawTriangle(uint32_t *VRAM, uGDLTriangle tri, int col);
+void uGDLDrawAATriangle(uint32_t *VRAM, uGDLTriangle tri, int col);
 void uGDLDrawPolygon(uint32_t *VRAM, uGDLPolygon p, int nx, int ny, int col);
 void uGDLDrawRect(uint32_t *VRAM, uGDLRect rect, int col);
 void uGDLDrawChar(uint32_t *VRAM, uGDLFont font, char s, int tX, int tY, float sX, float sY);
@@ -51,5 +67,10 @@ void uGDLFloodFill(uint32_t* VRAM, int x, int y, int col);
 
 #define TRUE 1
 #define FALSE 0
+
+int ipart(float x);
+float uGDLRound(float x);
+float fpart(float x);
+float invfpart(float x);
 
 #endif

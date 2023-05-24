@@ -1,6 +1,19 @@
 #ifndef GAUSSIANBLUR_H
 #define GAUSSIANBLUR_H
 
+/*************************************************************************
+	Copyright (c) 2023-present Ryandracus Chapman (@RyandracusCodesGames)
+	
+	(The Ultimate Graphics Display Library)
+	
+	Library : uGDL
+	File    : gaussianblur.h
+	Author  : Ryandracus Chapamn
+	Date 	: 5/23/2023
+	Version : 1.0
+	
+*************************************************************************/
+
 #include "framebuffer.h"
 #include "color.h"
 #include "image.h"

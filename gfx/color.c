@@ -1,5 +1,27 @@
 #include "color.h"
 
+/*************************************************************************
+	Copyright (c) 2023-present Ryandracus Chapman (@RyandracusCodesGames)
+	
+	(The Ultimate Graphics Display Library)
+	
+	Library : uGDL
+	File    : color.c
+	Author  : Ryandracus Chapamn
+	Date 	: 5/23/2023
+	Version : 1.0
+	
+*************************************************************************/
+
+/*
+=======================================================================================
+	Function   : getR
+	Purpose    : Returns the red component of a color
+	Parameters : col - A color
+				 cf - The color format, bit depth, of the color
+	Returns	   : A red color component packed into an integer.
+=======================================================================================
+*/
 int getR(int col, ColorFormat cf){
 	switch(cf){
 		case RGBA_8888:{
@@ -19,7 +41,15 @@ int getR(int col, ColorFormat cf){
 		}break;
 	}
 }
-
+/*
+=======================================================================================
+	Function   : getG
+	Purpose    : Returns the green component of a color
+	Parameters : col - A color
+				 cf - The color format, bit depth, of the color
+	Returns	   : A green color component packed into an integer.
+=======================================================================================
+*/
 int getG(int col, ColorFormat cf){
 	switch(cf){
 		case RGBA_8888:{
@@ -39,7 +69,15 @@ int getG(int col, ColorFormat cf){
 		}break;
 	}
 }
-
+/*
+=======================================================================================
+	Function   : getB
+	Purpose    : Returns the blue component of a color
+	Parameters : col - A color
+				 cf - The color format, bit depth, of the color
+	Returns	   : A blue color component packed into an integer.
+=======================================================================================
+*/
 int getB(int col, ColorFormat cf){
 	switch(cf){
 		case RGBA_8888:{
@@ -59,7 +97,15 @@ int getB(int col, ColorFormat cf){
 		}break;
 	}
 }
-
+/*
+=======================================================================================
+	Function   : getA
+	Purpose    : Returns the alpha component of a color
+	Parameters : col - A color
+				 cf - The color format, bit depth, of the color
+	Returns	   : A alpha color component packed into an integer.
+=======================================================================================
+*/
 int getA(int col, ColorFormat cf){
 	switch(cf){
 		case RGBA_8888:{
@@ -67,7 +113,15 @@ int getA(int col, ColorFormat cf){
 		}break;
 	}
 }
-
+/*
+=======================================================================================
+	Function   : getCol
+	Purpose    : Returns the color of the combined rgb component of a uGDL_RGB structure
+	Parameters : rgb - A structure encapsulating the three r,g,b component in a singular source
+				 cf - The color format, bit depth, of the color
+	Returns	   : A color component packed into an integer.
+=======================================================================================
+*/
 int getCol(uGDL_RGB rgb, ColorFormat cf){
 	int r = getR(rgb.r, cf);
 	int g = getG(rgb.g, cf);
@@ -88,7 +142,15 @@ int getCol(uGDL_RGB rgb, ColorFormat cf){
 		}
 	}
 }
-
+/*
+=======================================================================================
+	Function   : uGDLSetColor
+	Purpose    : Given a color, returns the correctly formatted color by the desired bit depth
+	Parameters : col - A color
+				 cf - The color format, bit depth, of the color
+	Returns	   : A correctly formatted color packed into an integer.
+=======================================================================================
+*/
 int uGDLSetColor(int col, ColorFormat cf){
 	switch(cf){
 		case RGBA_8888:{
@@ -314,7 +376,15 @@ int uGDLSetColor(int col, ColorFormat cf){
 		
 	}
 }
-
+/*
+=======================================================================================
+	Function   : colToRGB
+	Purpose    : Given a color and color format, extracts the color component of the color and puts them into an rgb structure
+	Parameters : col - A color
+				 cf - The color format, bit depth, of the color
+	Returns	   : A packed uGDL_RGB structure.
+=======================================================================================
+*/
 uGDL_RGB colToRGB(int col, ColorFormat cf){
 	
 	int r = getR(col, cf);
@@ -325,7 +395,15 @@ uGDL_RGB colToRGB(int col, ColorFormat cf){
 	
 	return rgb;
 }
-
+/*
+=======================================================================================
+	Function   : colToRGBA
+	Purpose    : Given a color with an alpha channel and color format, extracts the color component of the color and puts them into an rgba structure
+	Parameters : col - A color
+				 cf - The color format, bit depth, of the color
+	Returns	   : A packed uGDL_RGBA structure.
+=======================================================================================
+*/
 uGDL_RGBA colToRGBA(int col, ColorFormat cf){
 	
 	if(cf == RGBA_8888){
@@ -338,14 +416,33 @@ uGDL_RGBA colToRGBA(int col, ColorFormat cf){
 		return rgba;
 	}	
 }
-
+/*
+=======================================================================================
+	Function   : uGDLCreatePalette
+	Purpose    : Creates a color palette by streaming an array of color values to a palette
+	Parameters : pal - A reference to a palette structure
+				 col - An integer pointer
+	Returns	   : A packed uGDL_PALETTE structure.
+	Comments: (SOON TO BE DEPRECATED BY PALETTE SOURCE FILE)
+=======================================================================================
+*/
 uGDL_PALETTE uGDLCreatePalette(uGDL_PALETTE *pal, int* col){
 	int i;
 	for(i = 0; i < sizeof(col)/sizeof(col[0]); i++){
 		pal->palette[i] = col[i];
 	}
 }
-
+/*
+=======================================================================================
+	Function   : uGDLLoadTexturePalette
+	Purpose    : Loads an image file and streams its image data to a palette
+	Parameters : pal - A reference to a palette structure
+				 name - The directory, file name, and file extension of the image
+				 cf - The color format, bit depth, of the image
+	Returns	   : void
+	Comments: (SOON TO BE DEPRECATED BY PALETTE SOURCE FILE)
+=======================================================================================
+*/
 void uGDLLoadTexturePalette(uGDL_PALETTE* pal, char * name, ColorFormat cf){
 	uGDLTexture tex;
 	uGDLLoadTexture(name, cf, &tex, 16, 16);
@@ -355,10 +452,25 @@ void uGDLLoadTexturePalette(uGDL_PALETTE* pal, char * name, ColorFormat cf){
 		pal->palette[i] = tex.tlut[i];
 	}
 }
-
+/*
+=======================================================================================
+	Comments: uGDL_PALETTE (SOON TO BE DEPRECATED BY PALETTE SOURCE FILE)
+=======================================================================================
+*/
 void uGDLAddColToPalette(uGDL_PALETTE *pal, int index, int col){
 	pal->palette[index] = col;
 }
+/*
+=======================================================================================
+	Function   : uGDLBlendColor
+	Purpose    : Given two colors, blends the two together with a stronger preference to the first color in the resulting combined color
+	Parameters : col1 - The first color
+				 col2 - The second color
+				 ratio - The blending factor
+				 cf - The color format, bit depth, of the color
+	Returns	   : A combined color packed into an integer.
+=======================================================================================
+*/
 int uGDLBlendColor(int col1, int col2, float ratio, ColorFormat cf){
 	if(ratio > 1.0f){
 		ratio = 1.0f;
@@ -394,7 +506,18 @@ int uGDLBlendColor(int col1, int col2, float ratio, ColorFormat cf){
 	}
 	else return uGDLRGBComponentsToInt(r,g,b,BGR_888);
 }
-
+/*
+=======================================================================================
+	Function   : uGDLBlendColorMode
+	Purpose    : Given two colors, uses a mode to indicate how the two colors should be blended together
+	Parameters : col1 - The first color
+				 col2 - The second color
+				 factor - The blending ratio, the strength of the blend
+				 cf - The color format, bit depth, of the color
+				 mode - See header file to see different blending modes explained
+	Returns	   : A combined color packed into an integer.
+=======================================================================================
+*/
 int uGDLBlendColorMode(int col1, int col2, float factor, ColorFormat cf, int mode){
 	if(factor > 1.0f){
 		factor = 1.0f;
@@ -487,11 +610,31 @@ int uGDLBlendColorMode(int col1, int col2, float factor, ColorFormat cf, int mod
 		}
 	}
 }
-
+/*
+=======================================================================================
+	Function   : uGDLBlendColorWithVRAM
+	Purpose    : Given a color, a location, and our virtual memory, blend our color with that location in our window display to achieve semi-transparency
+	Parameters : col11 - A color
+				 VRAM - A reference to our video memory of our window display
+				 x - The x - coordinate of our color in video memory
+				 y - The y - coordinate of our color in video memory
+				 factor - The blending factor
+				 cf - The color format, bit depth, of the color
+	Returns	   : A combined color packed into an integer.
+=======================================================================================
+*/
 int uGDLBlendColorWithVRAM(int col, uint32_t *VRAM, int x, int y, float factor, ColorFormat cf){
 	return uGDLBlendColor(col, uGDLGetScreenPixel(VRAM, x, y, 0, 1), factor, cf);
 }
-
+/*
+=======================================================================================
+	Function   : uGDLColToGrayscale
+	Purpose    : Given a color, convert said color to a grayscale equivalent
+	Parameters : col - A color
+				 cf - The color format, bit depth, of the color
+	Returns	   : A combined color packed into an integer.
+=======================================================================================
+*/
 int uGDLColToGrayscale(int col, ColorFormat cf){
 	float r = getR(col, RGB_888);
 	float g = getG(col, RGB_888);
@@ -506,7 +649,16 @@ int uGDLColToGrayscale(int col, ColorFormat cf){
 		return uGDLRGBComponentsToInt(grayscale, grayscale, grayscale, cf);
 	}
 }
-
+/*
+=======================================================================================
+	Function   : uGDLAddColor
+	Purpose    : Given two colors, blends the two together with a no preference towards either color
+	Parameters : col1 - The first color
+				 col2 - The second color
+				 cf - The color format, bit depth, of the color
+	Returns	   : A combined color packed into an integer.
+=======================================================================================
+*/
 int uGDLAddColor(int col1, int col2, ColorFormat cf){
 	int i1 = col1;
 	int i2 = col2;
@@ -534,7 +686,17 @@ int uGDLAddColor(int col1, int col2, ColorFormat cf){
 	}
 	else return uGDLRGBComponentsToInt(r,g,b,BGR_888);
 }
-
+/*
+=======================================================================================
+	Function   : uGDLInterpColor
+	Purpose    : Given two colors, interpolates between them to find some color between their spectrum in color space
+	Parameters : col1 - The first color
+				 col2 - The second color
+				 interp - The interpolation factor
+				 cf - The color format, bit depth, of the color
+	Returns	   : A combined color packed into an integer.
+=======================================================================================
+*/
 int uGDLInterpColor(int col1, int col2, float interp, ColorFormat cf){
 	
 	int r1 = getR(col1, cf);
@@ -560,6 +722,16 @@ int uGDLInterpColor(int col1, int col2, float interp, ColorFormat cf){
 	}
 	else return uGDLRGBComponentsToInt(r,g,b,BGR_888);
 }
+/*
+=======================================================================================
+	Function   : uGDLDotColor
+	Purpose    : Dims or brightens a color by a certain factor
+	Parameters : col1 - A color
+				 factor - The dim/brighten factor
+				 cf - The color format, bit depth, of the color
+	Returns	   : A combined color packed into an integer.
+=======================================================================================
+*/
 int uGDLDotColor(int col1, float factor, ColorFormat cf){
 	
 	int r1 = getR(col1, cf);
@@ -580,7 +752,17 @@ int uGDLDotColor(int col1, float factor, ColorFormat cf){
 	}
 	else return uGDLRGBComponentsToInt(r,g,b,BGR_888);
 }
-
+/*
+=======================================================================================
+	Function   : uGDLRGBComponentsToInt
+	Purpose    : An alternative to using the equivalent macro, packs our individual rgb component into a singular integer
+	Parameters : r - The red component of the color
+				 g - The green component of the color
+				 b - The blue component of the color
+				 cf - The color format, bit depth, of the color
+	Returns	   : A combined color packed into an integer.
+=======================================================================================
+*/
 int uGDLRGBComponentsToInt(int r, int g, int b, ColorFormat cf){
 	switch(cf){
 		case RGB_888:{
@@ -598,7 +780,18 @@ int uGDLRGBComponentsToInt(int r, int g, int b, ColorFormat cf){
 		default: return r << 16 | g << 8 | b; break;
 	}
 }
-
+/*
+=======================================================================================
+	Function   : uGDLRGBAComponentsToInt
+	Purpose    : An alternative to using the equivalent macro, packs our individual rgba component into a singular integer
+	Parameters : r - The red component of the color
+				 g - The green component of the color
+				 b - The blue component of the color
+				 a - The alpha component of the color
+				 cf - The color format, bit depth, of the color
+	Returns	   : A combined color packed into an integer.
+=======================================================================================
+*/
 int uGDLRGBAComponentsToInt(int r, int g, int b, int a){
 	return r << 24 | g << 16 | b << 8 | a;
 }

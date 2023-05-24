@@ -70,7 +70,7 @@ void uGDLInitTilemap(uGDLTilemap *map, int priority);
 void uGDLLoadBackgroundLayer(uGDLTilemap *map, char * name, int width, int height, ColorFormat cf);
 void uGDLAddTile(int gTileNum, uGDLTilemap *map, uGDLTile tile);
 void uGDLDispTilemap(uint32_t *VRAM, uGDLTilemap *map);
-void uGDLDispTilemapOnCanvas(uGDLCanvas *canvas, uGDLTilemap *map);
+void uGDLDispTilemapOnCanvas(uGDLCanvas *canvas, uGDLTilemap *map, int offsetx, int offsety);
 void uGDLDispTileset(uint32_t *VRAM);
 void uGDLDispTilesetOnCanvas(uGDLCanvas *canvas);
 void uGDLSwapTile(uGDLTilemap *map, uGDLTile tile, int index);

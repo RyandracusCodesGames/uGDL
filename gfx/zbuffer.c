@@ -1,6 +1,19 @@
 #include <stdlib.h>
 #include "zbuffer.h"
 
+/*************************************************************************
+	Copyright (c) 2023-present Ryandracus Chapman (@RyandracusCodesGames)
+	
+	(The Ultimate Graphics Display Library)
+	
+	Library : uGDL
+	File    : zbuffer.c
+	Author  : Ryandracus Chapamn
+	Date 	: 5/23/2023
+	Version : 1.0
+	
+*************************************************************************/
+
 void uGDLInitDepthBuffer(uGDLDepthBuffer *buf, int width, int height){
 	buf->width = width;
 	buf->height = height;

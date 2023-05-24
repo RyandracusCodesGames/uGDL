@@ -5,6 +5,19 @@
 #include "tile.h"
 #include "canvas.h"
 
+/*************************************************************************
+	Copyright (c) 2023-present Ryandracus Chapman (@RyandracusCodesGames)
+	
+	(The Ultimate Graphics Display Library)
+	
+	Library : uGDL
+	File    : tile_priority.h
+	Author  : Ryandracus Chapamn
+	Date 	: 5/23/2023
+	Version : 1.0
+	
+*************************************************************************/
+
 typedef struct{
 	uGDLTilemap *tilemap;
 	int priority;

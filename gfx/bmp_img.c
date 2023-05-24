@@ -1,13 +1,34 @@
+#include <stdlib.h>
+#include <string.h>
 #include "bmp_img.h"
 #include "color.h"
-/**
- * read Pixels from BMP file based on width and height.
- *
- * @param  file: A pointer to the file being read or written
- * @param  pArr: Pixel array of the image that this header is for
- * @param  width: Width of the image that this header is for
- * @param  height: Height of the image that this header is for
- */
+
+/*************************************************************************
+	Copyright (c) 2023-present Ryandracus Chapman (@RyandracusCodesGames)
+	
+	(The Ultimate Graphics Display Library)
+	
+	Library : uGDL
+	File    : bmp_img.c
+	Author  : Ryandracus Chapamn
+	Date 	: 5/23/2023
+	Version : 1.0
+	
+*************************************************************************/
+
+/*
+=======================================================================================
+	Function   : readPixelsBMP
+	Purpose    : Reads the image data of an image file and flushes those contents into an integer array
+	Parameters : file - A reference to a standard library file structure
+				 pArr - A reference to an array of pixel structures
+				 width - The width of the image
+				 height - The height of the image
+				 clut - The integer array to store the image data
+				 cf - The color format, the bit depth, of our image
+	Returns	   : void
+=======================================================================================
+*/
 void readPixelsBMP(FILE* file,struct Pixel*pArr[SIZE],int width,int height, int *clut, ColorFormat cf)
 {
 	if(file == NULL)
@@ -69,8 +90,7 @@ void readPixelsBMP(FILE* file,struct Pixel*pArr[SIZE],int width,int height, int 
 					fread(&(pArr[ind]->b), 1, 1, file); 
 					fread(&(pArr[ind]->g), 1, 1, file); 
 					fread(&(pArr[ind]->r), 1, 1, file); 
-					fread(&(pArr[ind]->a), 1, 1, file);
-					clut[ind] = uGDL_RGBA8888(pArr[ind]->r, pArr[ind]->g, pArr[ind]->b, pArr[ind]->a);
+					clut[ind] = uGDL_RGBA8888(pArr[ind]->r, pArr[ind]->g, pArr[ind]->b, 0xFF);
 					ind++;
 				}
 				
@@ -85,10 +105,12 @@ void readPixelsBMP(FILE* file,struct Pixel*pArr[SIZE],int width,int height, int 
 			{
 				for(j=0;j<width;j++)
 				{
-					pArr[ind] = (struct Pixel*)malloc(sizeof(struct Pixel));
-					fread(&(pArr[ind]->b), 1, 1, file); 
-					fread(&(pArr[ind]->g), 1, 1, file); 
-					clut[ind] = pArr[ind]->b | pArr[ind]->g;
+					int col;
+					fread(&col,2,1,file);
+					int r = getR(col, RGB_565);
+					int g = getG(col, RGB_565);
+					int b = getB(col, RGB_565);
+					clut[ind] = uGDL_RGB565(r,g,b);
 					ind++;
 				}
 				
@@ -96,10 +118,41 @@ void readPixelsBMP(FILE* file,struct Pixel*pArr[SIZE],int width,int height, int 
 				fseek(file, padding, SEEK_CUR);  
 			}
 		}break;
+		case BGR_565:{
+			int i, j;
+			int ind = 0;
+			for(i=0;i<height;i++)
+			{
+				for(j=0;j<width;j++)
+				{
+					int col;
+					fread(&col,2,1,file);
+					int r = getR(col, BGR_565);
+					int g = getG(col, BGR_565);
+					int b = getB(col, BGR_565);
+					clut[ind] = uGDL_BGR565(b,g,r);
+					ind++;
+				}
+				
+				// Padding at the End of Each Row
+				fseek(file, padding, SEEK_CUR);  
+			}
+			
+		}break;
 	} 
  
 }
 
+/*
+=======================================================================================
+	Function   : displayPixels
+	Purpose    : Displays each RGB triplet of our image data to the console window
+	Parameters : pArr - A reference to an array of pixel structures
+				 width - The width of the image
+				 height - The height of the image
+	Returns	   : void
+=======================================================================================
+*/
 void displayPixels(struct Pixel*pArr[SIZE],int width,int height)
 {
 	int i;
@@ -113,6 +166,16 @@ void displayPixels(struct Pixel*pArr[SIZE],int width,int height)
 	}
 }
 
+/*
+=======================================================================================
+	Function   : removeAll
+	Purpose    : Frees all the allocated memory of our pixel structures
+	Parameters : pArr - A reference to an array of pixel structures
+				 width - The width of the image
+				 height - The height of the image
+	Returns	   : void
+=======================================================================================
+*/
 void removeAll(struct Pixel*pArr[SIZE],int width,int height)
 {
 	int i;
@@ -121,15 +184,40 @@ void removeAll(struct Pixel*pArr[SIZE],int width,int height)
 		free(pArr[i]);
 	}
 }
-
+/*
+=======================================================================================
+	Function   : uGDLFreeSprite
+	Purpose    : Frees the allocated memory to our sprite structure
+	Parameters : spr - A reference to a sprite structure
+	Returns	   : void
+=======================================================================================
+*/
 void uGDLFreeSprite(uGDLSprite *spr){
 	free(spr->clut);
 }
-
+/*
+=======================================================================================
+	Function   : uGDLFreeTexture
+	Purpose    : Frees the allocated memory to our texture structure
+	Parameters : tex - A reference to a texture structure
+	Returns	   : void
+=======================================================================================
+*/
 void uGDLFreeTexture(uGDLTexture *tex){
 	free(tex->tlut);
 }
-
+/*
+=======================================================================================
+	Function   : uGDLLoadSprite
+	Purpose    : Streams all of the image data contained inside of an image to a sprite
+	Parameters : name - The directory, name, and extension of the image
+				 cf - The color format, the bit depth, of the image
+				 spr - A reference to a sprite structure
+				 width - The width of the image
+				 height - The height of the image
+	Returns	   : void
+=======================================================================================
+*/
 void uGDLLoadSprite(char* name, ColorFormat cf, uGDLSprite* spr, int width, int height){
 	struct Pixel *A[width*height];
 	FILE *fp=NULL;
@@ -152,7 +240,17 @@ void uGDLLoadSprite(char* name, ColorFormat cf, uGDLSprite* spr, int width, int 
 	removeAll(A,width,height);
 	fclose(fp);	
 }
-
+/*
+=======================================================================================
+	Function   : uGDLLoadCLUT
+	Purpose    : Streams all of the image data contained inside of an image to an integer array
+	Parameters : name - The directory, name, and extension of the image
+				 cf - The color format, the bit depth, of the image
+				 width - The width of the image
+				 height - The height of the image
+	Returns	   : An integer array
+=======================================================================================
+*/
 int * uGDLLoadCLUT(char * name, ColorFormat cf, int width, int height){
 	struct Pixel *A[width*height];
 	FILE *fp = fopen(name, "rb");
@@ -170,7 +268,18 @@ int * uGDLLoadCLUT(char * name, ColorFormat cf, int width, int height){
 	
 	return clut;
 }
-
+/*
+=======================================================================================
+	Function   : uGDLLoadTexture
+	Purpose    : Streams all of the image data contained inside of an image to a texture
+	Parameters : name - The directory, name, and extension of the image
+				 cf - The color format, the bit depth, of the image
+				 tex - A reference to a texture structure
+				 width - The width of the image
+				 height - The height of the image
+	Returns	   : void
+=======================================================================================
+*/
 void uGDLLoadTexture(char* name, ColorFormat cf, uGDLTexture *tex, int width, int height){
 	struct Pixel *A[width*height];
 	FILE *fp=NULL;
@@ -190,7 +299,17 @@ void uGDLLoadTexture(char* name, ColorFormat cf, uGDLTexture *tex, int width, in
 	removeAll(A,width,height);
 	fclose(fp);	
 }
-
+/*
+=======================================================================================
+	Function   : uGDLCreateImage
+	Purpose    : Streams all of the image data contained inside of an image to a uGDL image structure
+	Parameters : name - The directory, name, and extension of the image
+				 width - The width of the image
+				 height - The height of the image
+				 cf - The color format, the bit depth, of the image
+	Returns	   : A uGDLImage structure
+=======================================================================================
+*/
 uGDLImage uGDLCreateImage(char * name, int width, int height, ColorFormat cf){
 	uGDLImage img;
 	img.name = name;
@@ -200,11 +319,26 @@ uGDLImage uGDLCreateImage(char * name, int width, int height, ColorFormat cf){
 	img.cf = cf;
 	return img;
 }
-
+/*
+=======================================================================================
+	Function   : uGDLSyncCLUT
+	Purpose    : Streams all of the color data contained inside of an integer array to an image structure
+	Parameters : img - A reference to an image structure
+				 clut - An integer array
+	Returns	   : void
+=======================================================================================
+*/
 void uGDLSyncCLUT(uGDLImage *img, int* clut){
 	img->clut = clut;
 }
-
+/*
+=======================================================================================
+	Function   : uGDLWriteImage
+	Purpose    : Writes all of the image data contained inside of an image structure to a real image file
+	Parameters : img - An image structure
+	Returns	   : void
+=======================================================================================
+*/
 void uGDLWriteImage(uGDLImage img){
 	
 	if(img.cf == RGB_888 || img.cf == BGR_888){
@@ -337,47 +471,112 @@ void uGDLWriteImage(uGDLImage img){
 		
 	}
 }
-
+/*
+=======================================================================================
+	Function   : uGDLCaptureScreenshot
+	Purpose    : Writes all of the data contained inside of a frame buffer to a real image
+	Parameters : buf - A frame buffer structure
+	Returns	   : void
+=======================================================================================
+*/
 void uGDLCaptureScreenshot(FrameBuffer buf){
 	uGDLImage img = uGDLCreateImage("screenshot.bmp",buf.width,buf.height, RGB_888);
 	uGDLSyncCLUT(&img, buf.VRAM);
 	uGDLWriteImage(img);
 }
-
+/*
+=======================================================================================
+	Function   : uGDLCaptureDitheredScreenshot
+	Purpose    : Writes all of the data contained inside of a frame buffer to a real,dithered image
+	Parameters : buf - A frame buffer structure
+				 dither - An enumeration containing different modes of dithering
+				 factor - The amount of dithering applied to the image
+	Returns	   : void
+=======================================================================================
+*/
 void uGDLCaptureDitheredScreenshot(FrameBuffer buf, uGDLDither dither, int factor){
 	uGDLImage img = uGDLCreateImage("screenshot_dithered.bmp",buf.width,buf.height, RGB_888);
 	uGDLSyncCLUT(&img, buf.VRAM);
 	uGDLDitherImage(img, dither, factor);
 	uGDLWriteImage(img);
 }
-
+/*
+=======================================================================================
+	Function   : uGDLCopyImageData
+	Purpose    : Copies all of the image data from a source image to a destination image
+	Parameters : src - A reference to the source image structure
+				 dest - A reference to the destination image structure
+	Returns	   : void
+=======================================================================================
+*/
 void uGDLCopyImageData(uGDLImage *src, uGDLImage *dest){
 	memcpy(src->clut, dest->clut, sizeof(int)*(src->width*src->height));
 }
-
+/*
+=======================================================================================
+	Function   : uGDLClearImage
+	Purpose    : Sets all of the image data of an image structure to a particular color
+	Parameters : img - A reference to an image structure
+				 col - The color to set all of the pixels in the image
+	Returns	   : void
+=======================================================================================
+*/
 void uGDLClearImage(uGDLImage *img, int col){
 	memset(img->clut,col,sizeof(int)*(img->width*img->height));
 }
-
+/*
+=======================================================================================
+	Function   : uGDLGetImagePixel
+	Purpose    : Returns the pixel of the given x and y coordinates
+	Parameters : img - An image structure
+				 x - The x - coordinate
+				 y - The y - coordinate
+	Returns	   : An integer
+=======================================================================================
+*/
 int uGDLGetImagePixel(uGDLImage img, int x, int y){
 	if(x >= 0 && y >= 0 && x < img.width && y < img.height){
 		return img.clut[x + y * img.width];
 	}
 }
-
+/*
+=======================================================================================
+	Function   : uGDLSetImagePixel
+	Purpose    : Sets the pixel of the given x and y coordinates to a particular color
+	Parameters : img - A reference to an image structure
+				 x - The x - coordinate
+				 y - The y - coordinate
+				 col - The color to set the given pixel to
+	Returns	   : void
+=======================================================================================
+*/
 void uGDLSetImagePixel(uGDLImage *img, int x, int y, int col){
 	if(x >= 0 && y >= 0 && x < img->width && y < img->height){
 		 img->clut[x + y * img->width] = col;
 	}
 }
-
+/*
+=======================================================================================
+	Function   : uGDLConvertImageToGrayscale
+	Purpose    : Converts the given image to a grayscaled equivalent
+	Parameters : img - A reference to an image structure
+	Returns	   : void
+=======================================================================================
+*/
 void uGDLConvertImageToGrayscale(uGDLImage *img){
 	int i;
 	for(i = 0; i < img->width * img->height; i++){
 		img->clut[i] = uGDLColToGrayscale(img->clut[i], img->cf);
 	}
 }
-
+/*
+=======================================================================================
+	Function   : uGDLFreeImage
+	Purpose    : Frees the allocated memory of an image structure
+	Parameters : img - A reference to an image structure
+	Returns	   : void
+=======================================================================================
+*/
 void uGDLFreeImage(uGDLImage *img){
 	if(img == NULL){
 		printf("IMAGE DOES NOT EXIST\n");
@@ -387,6 +586,15 @@ void uGDLFreeImage(uGDLImage *img){
 	img = NULL;
 }
 
+/*
+=======================================================================================
+	Function   : AppendStrings
+	Purpose    : Takes the given char arrays A and B and concatenates them to a resulting string C
+	Parameters : *A - The beginning appendage of the resulting concatenated string
+				 *B - The ending appendage of the resulting concatenated string
+	Returns	   : A char pointer.
+=======================================================================================
+*/
 char *AppendString(const char * A, const char * B){
 	int lenA = strlen(A);
 	int lenB = strlen(B);
