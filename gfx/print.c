@@ -64,7 +64,7 @@ void uGDLPrint(uint32_t *VRAM, char *fmt){
 			}
 		}
 		
-		if(offsetx >= WIDTH){
+		if(offsetx >= WIDTH - 9){
 			offsetx = 0;
 			offsety -= 12;
 		}
@@ -75,7 +75,7 @@ void uGDLPrint(uint32_t *VRAM, char *fmt){
 	Function   : uGDLPrintf
 	Purpose    : Prints a formatted string to the window display
 	Parameters : VRAM - A reference to the video memory of the window display
-				 fmt - A string
+				 fmt - A formatted string
 	Returns	   : void
 =======================================================================================
 */
@@ -123,7 +123,7 @@ void uGDLPrintColoredText(uint32_t *VRAM, char *fmt, int col){
 			}
 		}
 		
-		if(offsetx >= WIDTH){
+		if(offsetx >= WIDTH - 9){
 			offsetx = 0;
 			offsety -= 12;
 		}

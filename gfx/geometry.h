@@ -36,6 +36,17 @@ typedef struct{
 	int xc, yc, r;
 }uGDLCircle;
 
+typedef union{
+	uGDLPoint2D p;
+	uGDLRect rect;
+	uGDLHorzLine hline;
+	uGDLVertLine vline;
+	uGDLLine line;
+	uGDLTriangle tri;
+	uGDLPolygon poly;
+	uGDLCircle circle;
+}uGDLGeom;
+
 uGDLPoint2D uGDLCreatePoint(int x, int y);
 uGDLRect uGDLCreateRect(int x, int y, int width, int height);
 uGDLHorzLine uGDLCreateHorzLine(int x1, int x2, int y);

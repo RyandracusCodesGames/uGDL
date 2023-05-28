@@ -41,17 +41,42 @@ void uGDLDispCanvasHorzAndVert(uGDLCanvas canvas, FrameBuffer *buf, int tX, int 
 void uGDLDrawPointOnCanvas(uGDLCanvas *canvas, uGDLPoint2D p, int col);
 void uGDLClearCanvas(uGDLCanvas *canvas, int col);
 void uGDLDrawVertLineOnCanvas(uGDLCanvas *canvas, uGDLVertLine vline, int col);
+void uGDLDrawGouraudVertLineOnCanvas(uGDLCanvas *canvas, uGDLVertLine vl, int col1, int col2);
 void uGDLDrawHorzLineOnCanvas(uGDLCanvas *canvas, uGDLHorzLine hline, int col);
+void uGDLDrawGouraudHorzLineOnCanvas(uGDLCanvas *canvas, uGDLHorzLine hl, int col1, int col2);
 void uGDLDrawLineOnCanvas(uGDLCanvas *canvas, uGDLLine line, int col);
+void uGDLDrawGouraudLineOnCanvas(uGDLCanvas *canvas, uGDLLine line, int col1, int col2);
 void uGDLDrawAALineOnCanvas(uGDLCanvas *canvas, uGDLLine line, int col);
 void uGDLDrawTriangleOnCanvas(uGDLCanvas *canvas, uGDLTriangle tri, int col);
+void uGDLDrawGouraudTriangleOnCanvas(uGDLCanvas *canvas, uGDLTriangle tri, int col1, int col2, int col3);
 void uGDLDrawAATriangleOnCanvas(uGDLCanvas *canvas, uGDLTriangle tri, int col);
 void uGDLDrawRectOnCanvas(uGDLCanvas *canvas, uGDLRect rect, int col);
+void uGDLDrawGouraudRectOnCanvas(uGDLCanvas *canvas, uGDLRect rect, int col1, int col2, int col3, int col4);
 void uGDLFillFlatTopTriangleOnCanvas(uGDLCanvas *canvas, uGDLTriangle tri, int col);
+void uGDLFillGouraudFlatTopTriangleOnCanvas(uGDLCanvas *canvas, uGDLTriangle tri, int col1, int col2, int col3);
 void uGDLFillFlatBottomTriangleOnCanvas(uGDLCanvas *canvas, uGDLTriangle tri, int col);
+void uGDLFillGouraudFlatBottomTriangleOnCanvas(uGDLCanvas *canvas, uGDLTriangle tri, int col1, int col2, int col3);
 void uGDLFillFastTriangleOnCanvas(uGDLCanvas *canvas, uGDLTriangle tri,  int col);
+void uGDLFillFastGouraudTriangleOnCanvas(uGDLCanvas *canvas, uGDLTriangle tri, int col1, int col2, int col3);
 void uGDLFillTriangleOnCanvas(uGDLCanvas *canvas, uGDLTriangle t, int col);
 void uGDLFillRectOnCanvas(uGDLCanvas *canvas, uGDLRect rect, int col);
+void uGDLFillGouraudRectOnCanvas(uGDLCanvas *canvas, uGDLRect rect, int col1, int col2, int col3, int col4);
 void uGDLDrawCircleOnCanvas(uGDLCanvas *canvas, uGDLCircle circle, int col);
 void uGDLConvertCanvasToGrayscale(uGDLCanvas *canvas);
+/*Polymorphic function to render any geometric primitive with defined attributes*/
+#define SHAPE_POINT  0x1
+#define SHAPE_RECT   0x2
+#define SHAPE_VLINE  0x3
+#define SHAPE_HLINE  0x4
+#define SHAPE_LINE   0x5
+#define SHAPE_TRI    0x6
+#define SHAPE_POLY   0x7
+#define SHAPE_CIRCLE 0x8
+
+#define CYCLE_DRAW   0x9
+#define CYCLE_FILL	 0x10
+
+#define AA 			 0x11
+#define NO_AA 		 0x12
+void uGDLDispGeomOnCanvas(uGDLCanvas *canvas, int shape, uGDLGeom geom, int cycle, int aa, int blend, float factor, int col1, int col2, ColorFormat cf);
 #endif

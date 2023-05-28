@@ -39,6 +39,8 @@ char* AppendStrings(const char *A, const char*B)
 	Purpose    : Initializes the core components of an animation structure to faciliate video playback/keyframe animation
 	Parameters : anim - A reference to a 2D-Animation structure
 				 num_of_frames - The total number of frames in the animation
+				 width - The width of the animation
+				 height - The height of the animation
 				 curr_frame - The starting frame of the animation
 				 directory - The local directory folder containing the animation
 				 name - The name of the animations, ex: scene1.bmp and scene2.bmp -> scene
@@ -46,14 +48,17 @@ char* AppendStrings(const char *A, const char*B)
 	Returns	   : A uGDLAnim2D structure.
 =======================================================================================
 */
-void uGDLInitAnimation(uGDLAnim2D *anim, int num_of_frames, float curr_frame, char * directory, char * name, char * extension){
+void uGDLInitAnimation(uGDLAnim2D *anim, int num_of_frames, int width, int height, float curr_frame, char * directory, char * name, char * extension){
 	anim->num_of_frames = num_of_frames;
 	anim->curr_frame = curr_frame;
+	anim->width = width;
+	anim->height = height;
 	anim->finished = false;
 	anim->directory = directory;
 	anim->name = name;
 	anim->extension = extension;
-	anim->scale = 1;
+	anim->scalex = 1;
+	anim->scaley = 1;
 }
 /*
 =======================================================================================
@@ -80,7 +85,7 @@ void uGDLPlayAnimation(uint32_t *VRAM, uGDLAnim2D *anim){
 	//	printf("%s\n",extend);
 		uGDLSprite spr;
 		uGDLLoadSprite(extend, RGB_888, &spr, 310, 219);
-		uGDLScaleSprite(VRAM, spr, 0, 0, anim->scale, anim->scale);	
+		uGDLScaleSprite(VRAM, spr, 0, 0, anim->scalex, anim->scaley);	
 		uGDLFreeSprite(&spr);
 	}
 }
@@ -89,12 +94,14 @@ void uGDLPlayAnimation(uint32_t *VRAM, uGDLAnim2D *anim){
 	Function   : uGDLSetAnimationScale
 	Purpose    : Apples a scaling factor to an animation
 	Parameters : anim - A reference to a 2D-Animation structure
-				 scale - The scaling factor
+				 scalex - The x - scaling factor
+				 scaley - The y - scaling factor
 	Returns	   : void
 =======================================================================================
 */
-void uGDLSetAnimationScale(uGDLAnim2D *anim, float scale){
-	anim->scale = scale;
+void uGDLSetAnimationScale(uGDLAnim2D *anim, float scalex, float scaley){
+	anim->scalex = scalex;
+	anim->scaley = scaley;
 }
 /*
 =======================================================================================

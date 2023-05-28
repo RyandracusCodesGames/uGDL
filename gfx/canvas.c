@@ -223,7 +223,7 @@ void uGDLClearCanvas(uGDLCanvas *canvas, int col){
 void uGDLDrawVertLineOnCanvas(uGDLCanvas *canvas, uGDLVertLine vline, int col){
 	if(vline.y2 < vline.y1){
 		int y;
-		for(y = vline.y2; y >= vline.y1; y--){
+		for(y = vline.y1; y >= vline.y2; y--){
 			uGDLDrawPointOnCanvas(canvas, uGDLCreatePoint(vline.x, y), col);
 		}
 	}
@@ -231,6 +231,33 @@ void uGDLDrawVertLineOnCanvas(uGDLCanvas *canvas, uGDLVertLine vline, int col){
 		int y;
 		for(y = vline.y1; y <= vline.y2; y++){
 			uGDLDrawPointOnCanvas(canvas, uGDLCreatePoint(vline.x, y), col);
+		}
+	}
+}
+/*
+=======================================================================================
+	Function   : uGDLDrawGouraudVertLineOnCanvas
+	Purpose    : Draws a gouraud shaded vertical line to a canvas
+	Parameters : canvas - A reference to a canvas structure
+				 v1 - A vertical line structure
+				 col1 - The first color
+				 col2 - The second color
+	Returns	   : void
+=======================================================================================
+*/
+void uGDLDrawGouraudVertLineOnCanvas(uGDLCanvas *canvas, uGDLVertLine vl, int col1, int col2){
+	if(vl.y2 < vl.y1){
+		int y;
+		for(y = vl.y1; y >= vl.y2; y--){
+			float factor = (vl.y1 - y)/(float)(vl.y1 - vl.y2);
+			uGDLDrawPointOnCanvas(canvas, uGDLCreatePoint(vl.x, y), uGDLInterpColor(col1,col2,factor,RGB_888));
+		}
+	}
+	else{
+		int y;
+		for(y = vl.y1; y <= vl.y2; y++){
+			float factor = (vl.y2 - y)/(float)(vl.y2 - vl.y1);
+			uGDLDrawPointOnCanvas(canvas, uGDLCreatePoint(vl.x, y), uGDLInterpColor(col1,col2,factor,RGB_888));
 		}
 	}
 }
@@ -258,6 +285,34 @@ void uGDLDrawHorzLineOnCanvas(uGDLCanvas *canvas, uGDLHorzLine hline, int col){
 		}
 	}
 }
+/*
+=======================================================================================
+	Function   : uGDLDrawGouraudHorzLineOnCanvas
+	Purpose    : Draws a gouraud shaded horizontal line on the canvas
+	Parameters : canvas - A reference to a canvas structure
+				 hline - A horizontal line structure
+				 col1 - The first color
+				 col2 - The second color
+	Returns	   : void
+=======================================================================================
+*/
+void uGDLDrawGouraudHorzLineOnCanvas(uGDLCanvas *canvas, uGDLHorzLine hl, int col1, int col2){
+	if(hl.x1 > hl.x2){
+		int x;
+		for(x = hl.x1 - 2; x > hl.x2 - 1; x--){
+			float factor = (hl.x1 - x)/(float)(hl.x1 - hl.x2);
+			uGDLDrawPointOnCanvas(canvas, uGDLCreatePoint(x, hl.y), uGDLInterpColor(col1,col2,factor,RGB_888));
+		}
+	}
+	else{
+		int x;
+		for(x = hl.x1 - 2; x <= hl.x2 - 1; x++){
+			float factor = (hl.x2 - x)/(float)(hl.x2 - hl.x1);
+			uGDLDrawPointOnCanvas(canvas, uGDLCreatePoint(x, hl.y), uGDLInterpColor(col1,col2,factor,RGB_888));
+		}
+	}
+}
+
 /*
 =======================================================================================
 	Function   : uGDLDrawLineOnCanvas
@@ -312,6 +367,76 @@ void uGDLDrawLineOnCanvas(uGDLCanvas *canvas, uGDLLine line, int col){
 			err += dx;
 			y1 += sy;
 		}
+	}while(x1 != x2 || y1 != y2);
+}
+/*
+=======================================================================================
+	Function   : uGDLDrawGouraudLineOnCanvas
+	Purpose    : Draws any type of line gouraud shaded on a canvas
+	Parameters : canvas - A reference to a canvas structure
+				 line - A line structure
+				 col1 - The first color
+				 col2 - The second color
+				 col3 - The third color
+	Returns	   : void
+=======================================================================================
+*/
+void uGDLDrawGouraudLineOnCanvas(uGDLCanvas *canvas, uGDLLine line, int col1, int col2){
+	int x1 = line.x1, x2 = line.x2, y1 = line.y1, y2 = line.y2;
+	int dx, dy, sx, sy, err, e2;
+	
+	if(x1 == x2){
+		uGDLDrawGouraudVertLineOnCanvas(canvas, uGDLCreateVertLine(x1, y1, y2), col1, col2);
+		return;
+	}
+	
+	if(y1 == y2){;
+		uGDLDrawGouraudHorzLineOnCanvas(canvas, uGDLCreateHorzLine(x1, x2, y1), col1, col2);
+		return;
+	}
+	
+	dx = Abs(x2 - x1);
+	dy = Abs(y2 - y1);
+	
+	if(x1 < x2){
+		sx = 1;
+	}
+	else{
+		sx = -1;
+	}
+	
+	if(y1 < y2){
+		sy = 1;
+	}
+	else{
+		sy = -1;
+	}
+	
+	err = dx - dy;
+	
+	int initx = x1;
+	
+	do{
+		float interp = ((float)(x2 - x1)/(x2-initx));
+		
+		if(sx == 1){
+			interp = ((float)(x2 - x1)/(x2-initx));
+		}				
+		else{
+			interp = 1.0f - ((float)(x2 - x1)/(x2-initx));
+		}
+		uGDLDrawPointOnCanvas(canvas, uGDLCreatePoint(x1, y1), uGDLInterpColor(col1,col2,interp,RGB_888));
+		e2 = err * 2;
+		if (e2 > -dy) 
+		{
+            err -= dy;
+            x1 += sx;
+        }
+        if (e2 < dx) 
+		{
+            err += dx;
+            y1 += sy;
+        }
 	}while(x1 != x2 || y1 != y2);
 }
 /*
@@ -425,6 +550,27 @@ void uGDLDrawTriangleOnCanvas(uGDLCanvas *canvas, uGDLTriangle tri, int col){
 }
 /*
 =======================================================================================
+	Function   : uGDLDrawGouraudTriangle
+	Purpose    : Draws a gouraud shaded triangle to a canvas
+	Parameters : canvas - A reference to a canvas structure
+				 tri - A triangle structure
+				 col1 - The first color
+				 col2 - The second color
+				 col3 - The third color
+	Returns	   : void
+=======================================================================================
+*/
+void uGDLDrawGouraudTriangleOnCanvas(uGDLCanvas *canvas, uGDLTriangle tri, int col1, int col2, int col3){
+	uGDLLine line1 = {tri.x1, tri.y1, tri.x2, tri.y2};
+	uGDLLine line2 = {tri.x2, tri.y2, tri.x3, tri.y3};
+	uGDLLine line3 = {tri.x3, tri.y3, tri.x1, tri.y1};
+	
+	uGDLDrawGouraudLineOnCanvas(canvas, line1, col1, col2);
+	uGDLDrawGouraudLineOnCanvas(canvas, line2, col2, col3);
+	uGDLDrawGouraudLineOnCanvas(canvas, line3, col3, col1);
+}
+/*
+=======================================================================================
 	Function   : uGDLDrawAATriangleOnCanvas
 	Purpose    : Draws an anti-aliased triangle to the canvas
 	Parameters : canvas - A reference to a canvas structure
@@ -476,6 +622,34 @@ void uGDLDrawRectOnCanvas(uGDLCanvas *canvas, uGDLRect rect, int col){
 	uGDLDrawHorzLineOnCanvas(canvas, h1, col);
 	uGDLDrawHorzLineOnCanvas(canvas, h2, col);
 }
+
+/*
+=======================================================================================
+	Function   : uGDLDrawGouraudRectOnCanvas
+	Purpose    : Draws a gouraud shaded rectangle to a canvas
+	Parameters : canvas - A reference to a canvas structure
+				 rect - A rectangle structure
+				 col1 - The first color
+				 col2 - The second color
+				 col3 - The third color
+				 col4 - The fourth color
+	Returns	   : void
+=======================================================================================
+*/
+void uGDLDrawGouraudRectOnCanvas(uGDLCanvas *canvas, uGDLRect rect, int col1, int col2, int col3, int col4){
+	int x = rect.x, y = rect.y, height = rect.height, width = rect.width;
+	
+	uGDLVertLine v1 = {x, y, y + height};
+	uGDLVertLine v2 = {x + width, y, y + height};
+	uGDLHorzLine h1 = {x, x + width, y + height};
+	uGDLHorzLine h2 = {x, x + width, y};
+	
+	uGDLDrawGouraudVertLineOnCanvas(canvas, v1, col1, col2);
+	uGDLDrawGouraudVertLineOnCanvas(canvas, v2, col3, col4);
+	uGDLDrawGouraudHorzLineOnCanvas(canvas, h1, col3, col2);
+	uGDLDrawGouraudHorzLineOnCanvas(canvas, h2, col1, col4);
+}
+
 /*
 =======================================================================================
 	Function   : uGDLFillFlatTopTriangleOnCanvas
@@ -502,6 +676,37 @@ void uGDLFillFlatTopTriangleOnCanvas(uGDLCanvas *canvas, uGDLTriangle tri, int c
 }
 /*
 =======================================================================================
+	Function   : uGDLFillGouraudFlatTopTriangleOnCanvas
+	Purpose    : Draws a gouraud shaded triangle with a flat top, a top with a horizontal line, to a canvas
+	Parameters : canvas - A reference to a canvas structure
+				 tri - A triangle structure
+				 col1 - The first color
+				 col2 - The second color
+				 col3 - The third color
+	Returns	   : void
+=======================================================================================
+*/
+void uGDLFillGouraudFlatTopTriangleOnCanvas(uGDLCanvas *canvas, uGDLTriangle tri, int col1, int col2, int col3){
+	float invslope1 = (tri.x3 - tri.x1)/(float)(tri.y3 - tri.y1);
+	float invslope2 = (tri.x3 - tri.x2)/(float)(tri.y3 - tri.y2);
+	
+	float currx1 = tri.x3;
+	float currx2 = tri.x3;
+	
+	int x, y;
+	for(y = tri.y3; y <= tri.y1; y++){
+		for(x = currx1 + 1; x < currx2; x++){
+			int interpcol1 = uGDLInterpColor(col2, col1, ((y - tri.y3)/(float)(tri.y2-tri.y3)),RGB_888);
+        	int interpcol2 = uGDLInterpColor(col3, col1, ((y - tri.y3)/(float)(tri.y2-tri.y3)),RGB_888);
+			float factor = ((currx1-x)/(float)(currx2-currx1));
+			uGDLDrawPointOnCanvas(canvas, uGDLCreatePoint(x,y),uGDLInterpColor(interpcol1,interpcol2,factor,RGB_888));
+		}
+		currx1 += invslope1;
+		currx2 += invslope2;
+	}
+}
+/*
+=======================================================================================
 	Function   : uGDLFillFlatBottomTriangleOnCanvas
 	Purpose    : Draws a triangle with a flat bottom, a bottom, horizontal line, to the canvas
 	Parameters : canvas - A reference to a canvas structure
@@ -520,6 +725,37 @@ void uGDLFillFlatBottomTriangleOnCanvas(uGDLCanvas *canvas, uGDLTriangle tri, in
 	int y;
 	for(y = tri.y1; y >= tri.y2; y--){
 		uGDLDrawHorzLineOnCanvas(canvas, uGDLCreateHorzLine((int)currx2,(int)currx1, y),col);
+		currx1 -= invslope1;
+		currx2 -= invslope2;
+	}
+}
+/*
+=======================================================================================
+	Function   : uGDLFillGouraudFlatBottomTriangleOnCanvas
+	Purpose    : Draws a gouraud shaded triangle with a flat bottom, a bottom with a horizontal line, to the window display
+	Parameters : canvas - A reference to a canvas structure
+				 tri - A triangle structure
+				 col1 - The first color
+				 col2 - The second color
+				 col3 - The third color
+	Returns	   : void
+=======================================================================================
+*/
+void uGDLFillGouraudFlatBottomTriangleOnCanvas(uGDLCanvas *canvas, uGDLTriangle tri, int col1, int col2, int col3){
+	float invslope1 = (tri.x2 - tri.x1)/(float)(tri.y2 - tri.y1);
+	float invslope2 = (tri.x3 - tri.x1)/(float)(tri.y3 - tri.y1);
+	
+	float currx1 = tri.x1;
+	float currx2 = tri.x1;
+
+	int x, y;
+	for(y = tri.y1; y > tri.y2; y--){
+		for(x = currx1 + 1; x < currx2; x++){
+			int interpcol1 = uGDLInterpColor(col1, col2, ((y - tri.y1)/(float)(tri.y1-tri.y3)),RGB_888);
+        	int interpcol2 = uGDLInterpColor(col1, col3, ((y - tri.y1)/(float)(tri.y1-tri.y3)),RGB_888);
+			float factor = ((currx1-x)/(float)(currx2-currx1));
+			uGDLDrawPointOnCanvas(canvas, uGDLCreatePoint(x,y),uGDLInterpColor(interpcol1,interpcol2,factor,RGB_888));
+		}
 		currx1 -= invslope1;
 		currx2 -= invslope2;
 	}
@@ -566,6 +802,40 @@ void uGDLFillFastTriangleOnCanvas(uGDLCanvas *canvas, uGDLTriangle tri,  int col
 	//	printf("y1 = %d, y2 = %d, y3 = %d, y4 = %d\n",y1,y2,y3,y4);
 		uGDLFillFlatTopTriangleOnCanvas(canvas, uGDLCreateTriangle(x2,y2,x4,y4,x3,y3),col);
 		uGDLFillFlatBottomTriangleOnCanvas(canvas, uGDLCreateTriangle(x1,y1,x2,y2,x4,y4),col);
+	}
+}
+void uGDLFillFastGouraudTriangleOnCanvas(uGDLCanvas *canvas, uGDLTriangle tri,  int col1, int col2, int col3){
+	int x1 = tri.x1, x2 = tri.x2, x3 = tri.x3, y1 = tri.y1, y2 = tri.y2, y3 = tri.y3;
+	
+	if(y1 < y2){
+		SWAP(&y1, &y2);
+		SWAP(&x1, &x2);
+	}
+	
+	if(y2 < y3){
+		SWAP(&y2, &y3);
+		SWAP(&x2, &x3);
+	}
+	
+	if(y1 < y3){
+		SWAP(&y1, &y3);
+		SWAP(&x1, &x3);
+	}
+	
+	if(y2 == y3){
+		uGDLFillGouraudFlatBottomTriangleOnCanvas(canvas, tri, col1, col2, col3);
+	}
+	
+	else if(y1 == y2){
+		uGDLFillGouraudFlatTopTriangleOnCanvas(canvas, tri, col1, col2, col3);
+	}
+	else{
+		int x4 =(int)(x1 + ((float)(y2 - y1) / (float)(y3 - y1)) * (x3 - x1));
+		int y4 = y2;
+	//	printf("x1 = %d, x2 = %d, x3 = %d, x4 = %d\n",x1,x2,x3,x4);
+	//	printf("y1 = %d, y2 = %d, y3 = %d, y4 = %d\n",y1,y2,y3,y4);
+		uGDLFillGouraudFlatTopTriangleOnCanvas(canvas, uGDLCreateTriangle(x4,y4,x2,y2,x3,y3),col1,col2,col3);
+		uGDLFillGouraudFlatBottomTriangleOnCanvas(canvas, uGDLCreateTriangle(x1,y1,x4,y4,x2,y2),col1,col2,col3);
 	}
 }
 /*
@@ -733,6 +1003,30 @@ void uGDLFillRectOnCanvas(uGDLCanvas *canvas, uGDLRect rect, int col)
 }
 /*
 =======================================================================================
+	Function   : uGDLFillGouraudRectOnCanvas
+	Purpose    : Fills a gouraud shaded rectangle drawn to a canvas
+	Parameters : canvas - A reference to a canvas structure
+				 rect - A rectangle structure
+				 col - A color
+	Returns	   : void
+=======================================================================================
+*/
+void uGDLFillGouraudRectOnCanvas(uGDLCanvas *canvas, uGDLRect rect, int col1, int col2, int col3, int col4)
+{
+	int x, y, x2 = rect.x + rect.width, y2 = rect.y + rect.height;
+    for(y = rect.y; y < rect.y + rect.height; y++){
+    	for(x = rect.x; x < rect.x + rect.width; x++){
+        	int interpcol1 = uGDLInterpColor(col2, col1, (rect.y - y)/(float)(y2-rect.y),RGB_888);
+        	int interpcol2 = uGDLInterpColor(col3, col4, (rect.y - y)/(float)(y2-rect.y),RGB_888);
+        	
+        	float factor = (rect.x-x)/(float)(x2-rect.x);
+        	
+        	uGDLDrawPointOnCanvas(canvas, uGDLCreatePoint(x,y),uGDLInterpColor(interpcol1,interpcol2,factor,RGB_888));
+    	}
+    }
+}
+/*
+=======================================================================================
 	Function   : uGDLDrawCircleOutlineOnCanvas
 	Purpose    : Utility function used to draw the outline of a circle to the canvas
 	Parameters : canvas - A reference to a canvas structure
@@ -800,5 +1094,75 @@ void uGDLConvertCanvasToGrayscale(uGDLCanvas *canvas){
 	int i;
 	for(i = 0; i < canvas->width * canvas->height; i++){
 		canvas->VRAM[i] = uGDLColToGrayscale(canvas->VRAM[i],canvas->cf);
+	}
+}
+/*
+=======================================================================================
+	Function   : uGDLDispGeom
+	Purpose    : Polymorphic function that displays any shape to the canvas with well-defined attributes for blending colors, anti-aliasing, and draw/fill conventions
+	Parameters : canvas - A reference to a canvas structure
+				 shape - Macro defined desired shape
+				 geom - A union that contains any shape available in the uGDL
+				 cycle - Defines whether or not use draw or fill shape - CYCLE_DRAW OR CYCLE_FILL
+				 aa - Use or don't use anti-aliasing
+				 blend - Type of color mixing
+				 factor - The blending ratio of the two colors
+				 col1 - The first color
+				 col2 - The second color
+				 cf - The color format, bit depth, of the colors
+	Returns	   : void
+=======================================================================================
+*/
+void uGDLDispGeomOnCanvas(uGDLCanvas *canvas, int shape, uGDLGeom geom, int cycle, int aa, int blend, float factor, int col1, int col2, ColorFormat cf){
+	switch(shape){
+		case SHAPE_POINT:{
+			uGDLPoint2D p = geom.p;
+			uGDLDrawPointOnCanvas(canvas, p, uGDLBlendColorMode(col1,col2,factor,cf,blend));
+		}break;
+		case SHAPE_RECT:{
+			uGDLRect rect = geom.rect;
+			if(cycle == CYCLE_DRAW){
+				uGDLDrawRectOnCanvas(canvas, rect, uGDLBlendColorMode(col1,col2,factor,cf,blend));
+			}else{
+				uGDLFillRectOnCanvas(canvas, rect, uGDLBlendColorMode(col1,col2,factor,cf,blend));
+			}
+		}break;
+		case SHAPE_VLINE:{
+			uGDLVertLine vline = geom.vline;
+			uGDLDrawVertLineOnCanvas(canvas, vline, uGDLBlendColorMode(col1,col2,factor,cf,blend));
+		}break;
+		case SHAPE_HLINE:{
+			uGDLHorzLine hline = geom.hline;
+			uGDLDrawHorzLineOnCanvas(canvas, hline, uGDLBlendColorMode(col1,col2,factor,cf,blend));
+		}break;
+		case SHAPE_LINE:{
+			uGDLLine line = geom.line;
+			if(aa == AA){
+				uGDLDrawLineOnCanvas(canvas, line, uGDLBlendColorMode(col1,col2,factor,cf,blend));
+			}else{
+				uGDLDrawAALineOnCanvas(canvas, line, uGDLBlendColorMode(col1,col2,factor,cf,blend));
+			}
+		}break;
+		case SHAPE_TRI:{
+			uGDLTriangle tri = geom.tri;
+			if(cycle == CYCLE_DRAW){
+				if(aa == AA){
+					uGDLDrawTriangleOnCanvas(canvas, tri, uGDLBlendColorMode(col1,col2,factor,cf,blend));
+				}else{
+					uGDLDrawAATriangleOnCanvas(canvas, tri, uGDLBlendColorMode(col1,col2,factor,cf,blend));
+				}
+			}else{
+				uGDLFillTriangleOnCanvas(canvas, tri, uGDLBlendColorMode(col1,col2,factor,cf,blend));
+			}
+		}break;
+		case SHAPE_CIRCLE:{
+			uGDLCircle circle = geom.circle;
+			if(cycle == CYCLE_DRAW){
+				uGDLDrawCircleOnCanvas(canvas, circle, uGDLBlendColorMode(col1,col2,factor,cf,blend));
+			}
+			else{
+				
+			}
+		}break;
 	}
 }

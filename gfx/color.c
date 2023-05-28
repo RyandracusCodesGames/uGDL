@@ -496,7 +496,7 @@ int uGDLBlendColor(int col1, int col2, float ratio, ColorFormat cf){
 	int r = (int)((r1 * iRatio) + (r2 * ratio));
     int g = (int)((g1 * iRatio) + (g2 * ratio));
     int b = (int)((b1 * iRatio) + (b2 * ratio));
-    int a = (int)((a1 * iRatio) + (a2 * ratio));
+    int a = uGDLAlphaCombine(a1,a2,COMBINE_COLOR_BOTHINVALPHA);
 	
 	if(cf == RGB_888){
 		return uGDLRGBComponentsToInt(r,g,b,RGB_888);	
@@ -505,6 +505,46 @@ int uGDLBlendColor(int col1, int col2, float ratio, ColorFormat cf){
 		return uGDLRGBAComponentsToInt(r,g,b,a);
 	}
 	else return uGDLRGBComponentsToInt(r,g,b,BGR_888);
+}
+/*
+=======================================================================================
+	Function   : uGDLBlendAlphaColor
+	Purpose    : Given two colors, blends the two together with the alpha component serving as the blending factor
+	Parameters : col1 - The first color
+				 col2 - The second color
+				 mode - The alpha blending mode
+	Returns	   : A combined color packed into an integer.
+=======================================================================================
+*/
+int uGDLBlendAlphaColor(int col1, int col2, int mode){
+	int r1 = getR(col1, RGBA_8888);
+	int g1 = getG(col1, RGBA_8888);
+	int b1 = getB(col1, RGBA_8888);
+	int a1 = getA(col1, RGBA_8888);
+	
+	int r2 = getR(col1, RGBA_8888);
+	int g2 = getG(col2, RGBA_8888);
+	int b2 = getB(col2, RGBA_8888);
+	int a2 = getA(col2, RGBA_8888);
+	
+	float factor = uGDLAlphaCombine(a1,a2,mode);
+	
+	if(factor > 1.0f){
+		factor = 1.0f;
+	}
+	
+	if(factor < 0.0f){
+		factor = 0.0f;
+	}
+	
+	float iFactor = 1 - factor;
+	
+	int r = (int)((r1 * iFactor) + (r2 * factor));
+    int g = (int)((g1 * iFactor) + (g2 * factor));
+    int b = (int)((b1 * iFactor) + (b2 * factor));
+	int a = uGDLAlphaCombine(a1,a2,mode);
+	
+	return uGDLRGBAComponentsToInt(r,g,b,a);
 }
 /*
 =======================================================================================
@@ -591,7 +631,7 @@ int uGDLBlendColorMode(int col1, int col2, float factor, ColorFormat cf, int mod
 				int r = (r1 * iFactor) + (r2 * factor);
 				int g = (g1 * iFactor) + (g2 * factor);
 				int b = (b1 * iFactor) + (b2 * factor);
-				int a = (a1 * iFactor) + (a2 * factor);
+				int a = uGDLAlphaCombine(a1,a2,COMBINE_COLOR_BOTHINVALPHA);
 				return uGDLRGBAComponentsToInt(r,g,b,a);
 			}break;
 			case BLEND_COLOR_BOTHSRCALPHA:{
@@ -751,6 +791,31 @@ int uGDLDotColor(int col1, float factor, ColorFormat cf){
 		return uGDLRGBAComponentsToInt(r,g,b,a);
 	}
 	else return uGDLRGBComponentsToInt(r,g,b,BGR_888);
+}
+/*
+=======================================================================================
+	Function   : uGDLAlphaCombine
+	Purpose    : Blends the alpha channel of a color together
+	Parameters : alphasrc - The source color's alpha component
+				 destsrc - The destination color's alpha compoent
+				 mode - The blending mode
+	Returns	   : A combined color packed into an integer.
+=======================================================================================
+*/
+int uGDLAlphaCombine(int alphasrc, int alphadest, int mode){
+	float src = alphasrc, dest = alphadest, factor = 1 - (alphadest/255.0f);
+	switch(mode){
+		case COMBINE_COLOR_BOTHINVALPHA:{
+			return (int)((src*factor)+(dest));
+		}break;
+		case COMBINE_COLOR_INVDESTALPHA:{
+			return (int)((src)+(dest*factor));
+		}break;
+		case COMBINE_COLOR_BOTHSRCALPHA:{
+			factor = (alphadest)/(255.0f);
+			return (int)((src)+(dest*factor));
+		}break;
+	}
 }
 /*
 =======================================================================================

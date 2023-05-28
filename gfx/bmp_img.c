@@ -112,10 +112,7 @@ void readPixelsBMP(FILE* file,struct Pixel*pArr[SIZE],int width,int height, int 
 					int b = getB(col, RGB_565);
 					clut[ind] = uGDL_RGB565(r,g,b);
 					ind++;
-				}
-				
-				// Padding at the End of Each Row
-				fseek(file, padding, SEEK_CUR);  
+				} 
 			}
 		}break;
 		case BGR_565:{
@@ -133,9 +130,6 @@ void readPixelsBMP(FILE* file,struct Pixel*pArr[SIZE],int width,int height, int 
 					clut[ind] = uGDL_BGR565(b,g,r);
 					ind++;
 				}
-				
-				// Padding at the End of Each Row
-				fseek(file, padding, SEEK_CUR);  
 			}
 			
 		}break;
@@ -345,6 +339,8 @@ void uGDLWriteImage(uGDLImage img){
 		int w = img.width;
 		int h = img.height;
 		
+		int pad = img.width % 4;
+		
 		BMPHeader bmp;
 		bmp.type = 0x4d42;
 		bmp.size = 54 + ((w * h * 3) + (w * 2));
@@ -397,7 +393,7 @@ void uGDLWriteImage(uGDLImage img){
 			}
 			
 			if(!(w % 4) == 0){
-				fwrite(&padding,2,1,file);
+				fwrite(&padding,pad,1,file);
 			}
 		}
 		
