@@ -70,11 +70,11 @@ void uGDLFreeCanvas(uGDLCanvas *canvas){
 	Returns	   : void
 =======================================================================================
 */
-void uGDLDispCanvas(uGDLCanvas canvas, FrameBuffer *buf){
+void uGDLDispCanvas(uGDLCanvas *canvas, FrameBuffer *buf){
 	int x, y;
-	for(y = 0; y < canvas.height; y++){
-		for(x = 0; x < canvas.width; x++){
-			uGDLDrawPoint(buf->VRAM, uGDLCreatePoint(x + canvas.x, y + canvas.y), uGDLGetCanvasPixel(&canvas, x, y));
+	for(y = 0; y < canvas->height; y++){
+		for(x = 0; x < canvas->width; x++){
+			uGDLDrawPoint(buf->VRAM, uGDLCreatePoint(x + canvas->x, y + canvas->y), uGDLGetCanvasPixel(canvas, x, y));
 		}
 	}
 }
@@ -89,11 +89,11 @@ void uGDLDispCanvas(uGDLCanvas canvas, FrameBuffer *buf){
 	Returns	   : void
 =======================================================================================
 */
-void uGDLFlipCanvasVert(uGDLCanvas canvas, FrameBuffer *buf, int tX, int tY){
+void uGDLFlipCanvasVert(uGDLCanvas *canvas, FrameBuffer *buf, int tX, int tY){
 	int x, y;
-	for(y = 0; y < canvas.height; y++){
-		for(x = 0; x < canvas.width; x++){
-			uGDLDrawPoint(buf->VRAM, uGDLCreatePoint(x + canvas.x + tX, y + canvas.y + tY), uGDLGetCanvasPixel(&canvas, x, canvas.height - y));
+	for(y = 0; y < canvas->height; y++){
+		for(x = 0; x < canvas->width; x++){
+			uGDLDrawPoint(buf->VRAM, uGDLCreatePoint(x + canvas->x + tX, y + canvas->y + tY), uGDLGetCanvasPixel(canvas, x, canvas->height - y));
 		}
 	}
 }
@@ -108,11 +108,11 @@ void uGDLFlipCanvasVert(uGDLCanvas canvas, FrameBuffer *buf, int tX, int tY){
 	Returns	   : void
 =======================================================================================
 */
-void uGDLFlipCanvasHorz(uGDLCanvas canvas, FrameBuffer *buf, int tX, int tY){
+void uGDLFlipCanvasHorz(uGDLCanvas *canvas, FrameBuffer *buf, int tX, int tY){
 	int x, y;
-	for(y = 0; y < canvas.height; y++){
-		for(x = 0; x < canvas.width; x++){
-			uGDLDrawPoint(buf->VRAM, uGDLCreatePoint(x + canvas.x + tX, y + canvas.y + tY), uGDLGetCanvasPixel(&canvas, canvas.width - x, y));
+	for(y = 0; y < canvas->height; y++){
+		for(x = 0; x < canvas->width; x++){
+			uGDLDrawPoint(buf->VRAM, uGDLCreatePoint(x + canvas->x + tX, y + canvas->y + tY), uGDLGetCanvasPixel(canvas, canvas->width - x, y));
 		}
 	}
 }
@@ -127,11 +127,11 @@ void uGDLFlipCanvasHorz(uGDLCanvas canvas, FrameBuffer *buf, int tX, int tY){
 	Returns	   : void
 =======================================================================================
 */
-void uGDLFlipCanvasHorzAndVert(uGDLCanvas canvas, FrameBuffer *buf, int tX, int tY){
+void uGDLFlipCanvasHorzAndVert(uGDLCanvas *canvas, FrameBuffer *buf, int tX, int tY){
 	int x, y;
-	for(y = 0; y < canvas.height; y++){
-		for(x = 0; x < canvas.width; x++){
-			uGDLDrawPoint(buf->VRAM, uGDLCreatePoint(x + canvas.x + tX, y + canvas.y + tY), uGDLGetCanvasPixel(&canvas, canvas.width - x, canvas.height - y));
+	for(y = 0; y < canvas->height; y++){
+		for(x = 0; x < canvas->width; x++){
+			uGDLDrawPoint(buf->VRAM, uGDLCreatePoint(x + canvas->x + tX, y + canvas->y + tY), uGDLGetCanvasPixel(canvas, canvas->width - x, canvas->height - y));
 		}
 	}
 }
@@ -146,11 +146,11 @@ void uGDLFlipCanvasHorzAndVert(uGDLCanvas canvas, FrameBuffer *buf, int tX, int 
 	Returns	   : void
 =======================================================================================
 */
-void uGDLDispTranslatedCanvas(uGDLCanvas canvas, FrameBuffer *buf, int tX, int tY){
+void uGDLDispTranslatedCanvas(uGDLCanvas *canvas, FrameBuffer *buf, int tX, int tY){
 	int x, y;
-	for(y = 0; y < canvas.height; y++){
-		for(x = 0; x < canvas.width; x++){
-			uGDLDrawPoint(buf->VRAM, uGDLCreatePoint(x + canvas.x + tX, y + canvas.y + tY), uGDLGetCanvasPixel(&canvas, x, y));
+	for(y = 0; y < canvas->height; y++){
+		for(x = 0; x < canvas->width; x++){
+			uGDLDrawPoint(buf->VRAM, uGDLCreatePoint(x + canvas->x + tX, y + canvas->y + tY), uGDLGetCanvasPixel(canvas, x, y));
 		}
 	}
 }
@@ -165,19 +165,19 @@ void uGDLDispTranslatedCanvas(uGDLCanvas canvas, FrameBuffer *buf, int tX, int t
 	Returns	   : void
 =======================================================================================
 */
-void uGDLDispScaledCanvas(uGDLCanvas canvas, FrameBuffer *buf, float sX, float sY){
-	int w1 = canvas.width, w2 = (int)(canvas.width * sX);
-	int h1 = canvas.height, h2 = (int)(canvas.height * sY);
+void uGDLDispScaledCanvas(uGDLCanvas *canvas, FrameBuffer *buf, float sX, float sY){
+	int w1 = canvas->width, w2 = (int)(canvas->width * sX);
+	int h1 = canvas->height, h2 = (int)(canvas->height * sY);
 	
-	int x_factor = (int)((w1<<16)/ w2) + 1;
-	int y_factor = (int)((h1<<16)/ h2) + 1;
+	int x_factor = ((w1<<16)/ w2) + 1;
+	int y_factor = ((h1<<16)/ h2) + 1;
 	
 	int x, y, x2, y2, i;
 	for(i = 0; i < w2 * h2; i++){
 		x = i % w2, y = i / w2;
 		x2 = ((x*x_factor)>>16);
 		y2 = ((y*y_factor)>>16);
-		uGDLDrawPoint(buf->VRAM, uGDLCreatePoint(x + canvas.x,y + canvas.y),uGDLGetCanvasPixel(&canvas, x2, y2));
+		uGDLDrawPoint(buf->VRAM, uGDLCreatePoint(x + canvas->x,y + canvas->y),uGDLGetCanvasPixel(canvas, x2, y2));
 	}
 }
 /*

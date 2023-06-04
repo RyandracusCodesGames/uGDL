@@ -34,6 +34,7 @@ void uGDLDrawPoint(uint32_t *VRAM, uGDLPoint2D p, int col);
 void uGDLFillScreen(uint32_t *VRAM, int col);
 uGDLSprite uGDLScreenToSprite(uint32_t *VRAM);
 void uGDLFadeScreen(uGDLSprite screen, uGDLSprite screen_buf, int col);
+void uGDLFillScreenRandom(uint32_t *VRAM);
 void uGDLDrawVertLine(uint32_t *VRAM, uGDLVertLine vl, int col);
 void uGDLDrawGouraudVertLine(uint32_t *VRAM, uGDLVertLine vl, int col1, int col2);
 void uGDLDrawHorzLine(uint32_t *VRAM, uGDLHorzLine hl, int col);

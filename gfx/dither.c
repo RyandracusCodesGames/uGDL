@@ -1,6 +1,7 @@
 #include <math.h>
 #include "dither.h"
 #include "bmp_img.h"
+#include "mathutils.h"
 
 /*************************************************************************
 	Copyright (c) 2023-present Ryandracus Chapman (@RyandracusCodesGames)
@@ -50,6 +51,7 @@ int uGDLQuantizeImageColor(int col, int factor, ColorFormat cf){
 	float newB = round(factor * getB(col,cf) / 255.00f) * (255.00f / factor);
 	return uGDLRGBComponentsToInt(newR,newG,newB,cf);
 }
+
 /*
 =======================================================================================
 	Function   : uGDLErrorDiffuseColor
@@ -59,15 +61,44 @@ int uGDLQuantizeImageColor(int col, int factor, ColorFormat cf){
 =======================================================================================
 */
 int uGDLErrorDiffuseColor(int col, float errR, float errG, float errB, float top, float bottom, ColorFormat cf){
-	float r1 = getR(col, RGB_888);
-	float g1 = getG(col, RGB_888);
-	float b1 = getB(col, RGB_888);
+	int r1 = getR(col, cf);
+	int g1 = getG(col, cf);
+	int b1 = getB(col, cf);
+	int a1 = getA(col, cf);
 			
-	r1 = r1 + errR * (top/bottom);
-	g1 = g1 + errG * (top/bottom);
-	b1 = b1 + errB * (top/bottom);
-	
-	return uGDLRGBComponentsToInt(r1,g1,b1,cf);
+
+	switch(cf){
+		case RGBA_8888:{
+			r1 = uGDLClamp(0,(r1 + errR * (top/bottom)),255);
+			g1 = uGDLClamp(0,(g1 + errG * (top/bottom)),255);
+			b1 = uGDLClamp(0,(b1 + errB * (top/bottom)),255);
+			return uGDLRGBAComponentsToInt(r1,g1,b1,a1);
+		}break;
+		case RGB_888:{
+			r1 = uGDLClamp(0,(r1 + errR * (top/bottom)),255);
+			g1 = uGDLClamp(0,(g1 + errG * (top/bottom)),255);
+			b1 = uGDLClamp(0,(b1 + errB * (top/bottom)),255);
+			return uGDLRGBComponentsToInt(r1,g1,b1,RGB_888);
+		}break;
+		case BGR_888:{
+			r1 = uGDLClamp(0,(r1 + errR * (top/bottom)),255);
+			g1 = uGDLClamp(0,(g1 + errG * (top/bottom)),255);
+			b1 = uGDLClamp(0,(b1 + errB * (top/bottom)),255);
+			return uGDLRGBComponentsToInt(r1,g1,b1,BGR_888);			
+		}break;
+		case RGB_565:{
+			r1 = uGDLClamp(0,(r1 + errR * (top/bottom)),31);
+			g1 = uGDLClamp(0,(g1 + errG * (top/bottom)),31);
+			b1 = uGDLClamp(0,(b1 + errB * (top/bottom)),31);
+			return uGDLRGBComponentsToInt(r1,g1,b1,RGB_565);
+		}break;
+		case BGR_565:{
+			r1 = uGDLClamp(0,(r1 + errR * (top/bottom)),31);
+			g1 = uGDLClamp(0,(g1 + errG * (top/bottom)),31);
+			b1 = uGDLClamp(0,(b1 + errB * (top/bottom)),31);
+			return uGDLRGBComponentsToInt(r1,g1,b1,BGR_565);			
+		}break;
+	}
 }
 /*
 =======================================================================================
@@ -270,6 +301,67 @@ void uGDLDitherImage(uGDLImage img, uGDLDither dither, int factor){
 					b = (b > BAYER_PATTERN_16X16[col][row] ? 255 : 0);
 					
 					uGDLSetImagePixel(&img, x, y, uGDLRGBComponentsToInt(r,g,b,img.cf));
+				}
+			}
+			
+		};
+	}
+}
+
+void uGDLDitherCanvas(uGDLCanvas *canvas, uGDLDither dither, int factor){
+		switch(dither){
+		case DITHER_FLOYD_STEINBERG:{
+			int x, y, i;
+			for(i = 0; i < canvas->width * canvas->height; i++){
+					x = i % canvas->width, y = i / canvas->width;
+					int col = uGDLGetCanvasPixel(canvas, x, y);
+					
+					int r = getR(col, canvas->cf);
+					int g = getG(col, canvas->cf);
+					int b = getB(col, canvas->cf);
+					
+					uGDLDrawPointOnCanvas(canvas, uGDLCreatePoint(x, y), uGDLQuantizeImageColor(col,factor,canvas->cf));
+					
+					float newR = round(factor * r / 255.00f) * (255.00f / factor);
+					float newG = round(factor * g / 255.00f) * (255.00f / factor);
+					float newB = round(factor * b / 255.00f) * (255.00f / factor);
+					
+					float errR = r - newR;
+					float errG = g - newG;
+					float errB = b - newB;
+					
+					col = uGDLGetCanvasPixel(canvas, x + 1, y);
+					uGDLDrawPointOnCanvas(canvas, uGDLCreatePoint(x + 1,  y), uGDLErrorDiffuseColor(col,errR,errG,errB,7.00f,16.00f,canvas->cf));
+					
+					col = uGDLGetCanvasPixel(canvas, x - 1, y + 1);
+					uGDLDrawPointOnCanvas(canvas, uGDLCreatePoint(x - 1,  y + 1), uGDLErrorDiffuseColor(col,errR,errG,errB,3.00f,16.00f,canvas->cf));
+					
+					col = uGDLGetCanvasPixel(canvas, x, y + 1);
+					uGDLDrawPointOnCanvas(canvas, uGDLCreatePoint(x,  y + 1), uGDLErrorDiffuseColor(col,errR,errG,errB,5.00f,16.00f,canvas->cf));
+					
+					col = uGDLGetCanvasPixel(canvas, x + 1, y + 1);
+					uGDLDrawPointOnCanvas(canvas, uGDLCreatePoint(x + 1,  y + 1), uGDLErrorDiffuseColor(col,errR,errG,errB,1.00f,16.00f,canvas->cf));
+			}
+		}break;
+		case DITHER_ORDERED:{
+			
+			int x, y, col, row;
+			for(y = 0; y < canvas->height; y++){
+				row = y & 15;
+				for(x = 0; x < canvas->width; x++){
+					col = x & 15;
+					
+					int color = uGDLGetCanvasPixel(canvas,x,y);
+					
+					int r = getR(color, canvas->cf);
+					int g = getG(color, canvas->cf);
+					int b = getB(color, canvas->cf);
+					
+					r = (r > BAYER_PATTERN_16X16[col][row] ? 255 : 0);
+					g = (g > BAYER_PATTERN_16X16[col][row] ? 255 : 0);
+					b = (b > BAYER_PATTERN_16X16[col][row] ? 255 : 0);
+					
+					uGDLDrawPointOnCanvas(canvas, uGDLCreatePoint(x, y), uGDLRGBComponentsToInt(r,g,b,canvas->cf));
 				}
 			}
 			

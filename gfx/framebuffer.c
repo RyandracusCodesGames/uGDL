@@ -98,6 +98,22 @@ void uGDLClearBackBuffer(uint32_t *draw_buffer, int width, int height){
 }
 /*
 =======================================================================================
+	Function   : uGDLSwapBuffers
+	Purpose    : Copies the video memory of the draw buffer into our frame buffer to be displayed to the window then clears the draw buffer
+	Parameters : buf - A reference to a frame buffer structure
+				 draw_buffer - A reference to the video memory of our back buffer
+				 width - The width of our buffers
+				 height - The height of our buffers
+	Returns	   : void
+=======================================================================================
+*/
+void uGDLSwapBuffers(FrameBuffer *buf, uint32_t *draw_buffer, int width, int height){
+	uGDLCopyBuffer(buf, draw_buffer);
+	uGDLClearBackBuffer(draw_buffer,width,height);
+}
+
+/*
+=======================================================================================
 	Function   : uGDLFreeFrameBuffer
 	Purpose    : Frees the allocated memory of our frame buffer
 	Parameters : buf - A reference to a frame buffer structure

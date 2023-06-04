@@ -1,6 +1,7 @@
 #include "draw.h"
 #include "framebuffer.h"
 #include "sprite.h"
+#include "mathutils.h"
 #include <string.h>
 #include <math.h>
 
@@ -97,6 +98,21 @@ void uGDLFadeScreen(uGDLSprite screen, uGDLSprite screen_buf, int col){
 		//uGDLBlendSprite(screen, screen_buf, 0.1f);
 	}	
 }
+/*
+=======================================================================================
+	Function   : uGDLFillScreenRandom
+	Purpose    : Sets each individual pixel of the window display to a randomized color
+	Parameters : VRAM - A reference to the video memory of our window display
+	Returns	   : void
+=======================================================================================
+*/
+void uGDLFillScreenRandom(uint32_t *VRAM){
+	int i;
+	for(i = 0; i < WIDTH * HEIGHT; i++){
+		VRAM[i] = uGDL_RGB888(uGDLRandInt(), uGDLRandInt(), uGDLRandInt());
+	}
+}
+
 /*
 =======================================================================================
 	Function   : uGDLScreenToSprite

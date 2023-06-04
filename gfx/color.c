@@ -1,4 +1,5 @@
 #include "color.h"
+#include "mathutils.h"
 
 /*************************************************************************
 	Copyright (c) 2023-present Ryandracus Chapman (@RyandracusCodesGames)
@@ -111,6 +112,7 @@ int getA(int col, ColorFormat cf){
 		case RGBA_8888:{
 			return ((col & 0xff));
 		}break;
+		default: return (col & 0xff); break;
 	}
 }
 /*
@@ -498,13 +500,41 @@ int uGDLBlendColor(int col1, int col2, float ratio, ColorFormat cf){
     int b = (int)((b1 * iRatio) + (b2 * ratio));
     int a = uGDLAlphaCombine(a1,a2,COMBINE_COLOR_BOTHINVALPHA);
 	
-	if(cf == RGB_888){
-		return uGDLRGBComponentsToInt(r,g,b,RGB_888);	
+	switch(cf){
+		case RGBA_8888:{
+			float factor = uGDLClamp(0,(a/255.00f),1.0f);
+			float iFactor = 1.0f - factor;
+			r = (int)((r1 * iFactor) + (r2 * factor));
+			g = (int)((g1 * iFactor) + (g2 * factor));
+			b = (int)((b1 * iFactor) + (b2 * factor));
+			return uGDLRGBAComponentsToInt(r,g,b,a);
+		}break;
+		case RGB_888:{
+			r = uGDLClamp(0,r,255);
+			g = uGDLClamp(0,g,255);
+			b = uGDLClamp(0,b,255);
+			return uGDLRGBComponentsToInt(r,g,b,RGB_888);
+		}break;
+		case BGR_888:{
+			r = uGDLClamp(0,r,255);
+			g = uGDLClamp(0,g,255);
+			b = uGDLClamp(0,b,255);
+			return uGDLRGBComponentsToInt(r,g,b,BGR_888);
+		}break;
+		case RGB_565:{
+			r = uGDLClamp(0,r,31);
+			g = uGDLClamp(0,g,31);
+			b = uGDLClamp(0,b,31);
+			return uGDLRGBComponentsToInt(r,g,b,RGB_565);
+		}break;
+		case BGR_565:{
+			r = uGDLClamp(0,r,31);
+			g = uGDLClamp(0,g,31);
+			b = uGDLClamp(0,b,31);
+			return uGDLRGBComponentsToInt(r,g,b,BGR_565);
+			break;
+		}
 	}
-	else if(cf == RGBA_8888){
-		return uGDLRGBAComponentsToInt(r,g,b,a);
-	}
-	else return uGDLRGBComponentsToInt(r,g,b,BGR_888);
 }
 /*
 =======================================================================================
@@ -527,15 +557,7 @@ int uGDLBlendAlphaColor(int col1, int col2, int mode){
 	int b2 = getB(col2, RGBA_8888);
 	int a2 = getA(col2, RGBA_8888);
 	
-	float factor = uGDLAlphaCombine(a1,a2,mode);
-	
-	if(factor > 1.0f){
-		factor = 1.0f;
-	}
-	
-	if(factor < 0.0f){
-		factor = 0.0f;
-	}
+	float factor = uGDLClamp(0,uGDLAlphaCombine(a1,a2,mode),1);
 	
 	float iFactor = 1 - factor;
 	
@@ -582,9 +604,9 @@ int uGDLBlendColorMode(int col1, int col2, float factor, ColorFormat cf, int mod
 	if(cf == RGB_888){
 		switch(mode){
 			case BLEND_COLOR_BOTHINVALPHA:{
-				int r = (r1 * iFactor) + (r2 * factor);
-				int g = (g1 * iFactor) + (g2 * factor);
-				int b = (b1 * iFactor) + (b2 * factor);
+				int r = uGDLClamp(0,(r1 * iFactor) + (r2 * factor),255);
+				int g = uGDLClamp(0,(g1 * iFactor) + (g2 * factor),255);
+				int b = uGDLClamp(0,(b1 * iFactor) + (b2 * factor),255);
 				return uGDLRGBComponentsToInt(r,g,b,RGB_888);
 			}break;
 			case BLEND_COLOR_BOTHSRCALPHA:{
@@ -605,10 +627,10 @@ int uGDLBlendColorMode(int col1, int col2, float factor, ColorFormat cf, int mod
 	else if(cf == BGR_888){
 		switch(mode){
 			case BLEND_COLOR_BOTHINVALPHA:{
-				int r = (r1 * iFactor) + (r2 * factor);
-				int g = (g1 * iFactor) + (g2 * factor);
-				int b = (b1 * iFactor) + (b2 * factor);
-				return uGDLRGBComponentsToInt(r,g,b,RGB_888);
+				int r = uGDLClamp(0,(r1 * iFactor) + (r2 * factor),255);
+				int g = uGDLClamp(0,(g1 * iFactor) + (g2 * factor),255);
+				int b = uGDLClamp(0,(b1 * iFactor) + (b2 * factor),255);
+				return uGDLRGBComponentsToInt(r,g,b,BGR_888);
 			}break;
 			case BLEND_COLOR_BOTHSRCALPHA:{
 				return uGDLBlendColor(col1, col2, factor, cf);
@@ -628,9 +650,11 @@ int uGDLBlendColorMode(int col1, int col2, float factor, ColorFormat cf, int mod
 	else{
 		switch(mode){
 			case BLEND_COLOR_BOTHINVALPHA:{
-				int r = (r1 * iFactor) + (r2 * factor);
-				int g = (g1 * iFactor) + (g2 * factor);
-				int b = (b1 * iFactor) + (b2 * factor);
+				float ffactor = uGDLAlphaCombine(a1,a2,COMBINE_COLOR_BOTHINVALPHA);
+				float iiFactor = 1.0f - ffactor;
+				int r = (r1 * iiFactor) + (r2 * ffactor);
+				int g = (g1 * iiFactor) + (g2 * ffactor);
+				int b = (b1 * iiFactor) + (b2 * ffactor);
 				int a = uGDLAlphaCombine(a1,a2,COMBINE_COLOR_BOTHINVALPHA);
 				return uGDLRGBAComponentsToInt(r,g,b,a);
 			}break;
@@ -679,13 +703,14 @@ int uGDLColToGrayscale(int col, ColorFormat cf){
 	float r = getR(col, RGB_888);
 	float g = getG(col, RGB_888);
 	float b = getB(col, RGB_888);
+	float a = getA(col, RGBA_8888);
 
 	if(cf == RGBA_8888){
-		int grayscale = (int)((r,g,b)/3.0f);
+		int grayscale = (int)uGDLClamp(0,((r+g+b)/3.0f),255);
 		return uGDLRGBAComponentsToInt(grayscale, grayscale, grayscale,255);
 	}
 	else{
-		int grayscale = (int)((r+g+b)/3.0f);
+		int grayscale = (int)uGDLClamp(0,((r+g+b)/3.0f),255);
 		return uGDLRGBComponentsToInt(grayscale, grayscale, grayscale, cf);
 	}
 }
@@ -716,15 +741,41 @@ int uGDLAddColor(int col1, int col2, ColorFormat cf){
 	int r = r1 + r2;
     int g = g1 + g2;
     int b = b1 + b2;
-    int a = a1 + a2;
+    int a = uGDLAlphaCombine(a1,a2,COMBINE_COLOR_BOTHINVALPHA);
 	
-	if(cf == RGB_888){
-		return uGDLRGBComponentsToInt(r,g,b,RGB_888);	
+	switch(cf){
+		case RGBA_8888:{
+			r = uGDLClamp(0,r,255);
+			g = uGDLClamp(0,g,255);
+			b = uGDLClamp(0,b,255);
+			a = uGDLClamp(0,a,255);
+			return uGDLRGBAComponentsToInt(r,g,b,a);
+		}break;
+		case RGB_888:{
+			r = uGDLClamp(0,r,255);
+			g = uGDLClamp(0,g,255);
+			b = uGDLClamp(0,b,255);
+			return uGDLRGBComponentsToInt(r,g,b,RGB_888);
+		}break;
+		case BGR_888:{
+			r = uGDLClamp(0,r,255);
+			g = uGDLClamp(0,g,255);
+			b = uGDLClamp(0,b,255);
+			return uGDLRGBComponentsToInt(r,g,b,BGR_888);
+		}
+		case RGB_565:{
+			r = uGDLClamp(0,r,31);
+			g = uGDLClamp(0,g,31);
+			b = uGDLClamp(0,b,31);
+			return uGDLRGBComponentsToInt(r,g,b,RGB_565);
+		}break;
+		case BGR_565:{
+			r = uGDLClamp(0,r,31);
+			g = uGDLClamp(0,g,31);
+			b = uGDLClamp(0,b,31);
+			return uGDLRGBComponentsToInt(r,g,b,BGR_565);
+		}break;
 	}
-	else if(cf == RGBA_8888){
-		return uGDLRGBAComponentsToInt(r,g,b,a);
-	}
-	else return uGDLRGBComponentsToInt(r,g,b,BGR_888);
 }
 /*
 =======================================================================================
@@ -752,15 +803,41 @@ int uGDLInterpColor(int col1, int col2, float interp, ColorFormat cf){
 	int r = r1 + interp * (r1 - r2);
 	int g = g1 + interp * (g1 - g2);
 	int b = b1 + interp * (b1 - b2);
-	int a = a1 + interp * (a1 - a2);
+	int a = uGDLAlphaCombine(a1,a2,COMBINE_COLOR_BOTHINVALPHA);
 	
-	if(cf == RGB_888){
-		return uGDLRGBComponentsToInt(r,g,b,RGB_888);	
+	switch(cf){
+		case RGBA_8888:{
+			r = uGDLClamp(0,r,255);
+			g = uGDLClamp(0,g,255);
+			b = uGDLClamp(0,b,255);
+			a = uGDLClamp(0,a,255);
+			return uGDLRGBAComponentsToInt(r,g,b,a);
+		}break;
+		case RGB_888:{
+			r = uGDLClamp(0,r,255);
+			g = uGDLClamp(0,g,255);
+			b = uGDLClamp(0,b,255);
+			return uGDLRGBComponentsToInt(r,g,b,RGB_888);
+		}break;
+		case BGR_888:{
+			r = uGDLClamp(0,r,255);
+			g = uGDLClamp(0,g,255);
+			b = uGDLClamp(0,b,255);
+			return uGDLRGBComponentsToInt(r,g,b,BGR_888);
+		}
+		case RGB_565:{
+			r = uGDLClamp(0,r,31);
+			g = uGDLClamp(0,g,31);
+			b = uGDLClamp(0,b,31);
+			return uGDLRGBComponentsToInt(r,g,b,RGB_565);
+		}break;
+		case BGR_565:{
+			r = uGDLClamp(0,r,31);
+			g = uGDLClamp(0,g,31);
+			b = uGDLClamp(0,b,31);
+			return uGDLRGBComponentsToInt(r,g,b,BGR_565);
+		}break;
 	}
-	else if(cf == RGBA_8888){
-		return uGDLRGBAComponentsToInt(r,g,b,a);
-	}
-	else return uGDLRGBComponentsToInt(r,g,b,BGR_888);
 }
 /*
 =======================================================================================
@@ -784,13 +861,39 @@ int uGDLDotColor(int col1, float factor, ColorFormat cf){
 	int b = (g1 * factor);
 	int a = (a1 * factor);
 	
-	if(cf == RGB_888){
-		return uGDLRGBComponentsToInt(r,g,b,RGB_888);	
+	switch(cf){
+		case RGBA_8888:{
+			r = uGDLClamp(0,r,255);
+			g = uGDLClamp(0,g,255);
+			b = uGDLClamp(0,b,255);
+			a = uGDLClamp(0,a,255);
+			return uGDLRGBAComponentsToInt(r,g,b,a);
+		}break;
+		case RGB_888:{
+			r = uGDLClamp(0,r,255);
+			g = uGDLClamp(0,g,255);
+			b = uGDLClamp(0,b,255);
+			return uGDLRGBComponentsToInt(r,g,b,RGB_888);
+		}break;
+		case BGR_888:{
+			r = uGDLClamp(0,r,255);
+			g = uGDLClamp(0,g,255);
+			b = uGDLClamp(0,b,255);
+			return uGDLRGBComponentsToInt(r,g,b,BGR_888);
+		}
+		case RGB_565:{
+			r = uGDLClamp(0,r,31);
+			g = uGDLClamp(0,g,31);
+			b = uGDLClamp(0,b,31);
+			return uGDLRGBComponentsToInt(r,g,b,RGB_565);
+		}break;
+		case BGR_565:{
+			r = uGDLClamp(0,r,31);
+			g = uGDLClamp(0,g,31);
+			b = uGDLClamp(0,b,31);
+			return uGDLRGBComponentsToInt(r,g,b,BGR_565);
+		}break;
 	}
-	else if(cf == RGBA_8888){
-		return uGDLRGBAComponentsToInt(r,g,b,a);
-	}
-	else return uGDLRGBComponentsToInt(r,g,b,BGR_888);
 }
 /*
 =======================================================================================
@@ -806,15 +909,16 @@ int uGDLAlphaCombine(int alphasrc, int alphadest, int mode){
 	float src = alphasrc, dest = alphadest, factor = 1 - (alphadest/255.0f);
 	switch(mode){
 		case COMBINE_COLOR_BOTHINVALPHA:{
-			return (int)((src*factor)+(dest));
+			return (int)uGDLClamp(0,((src*factor)+(dest)),255);
 		}break;
 		case COMBINE_COLOR_INVDESTALPHA:{
-			return (int)((src)+(dest*factor));
+			return (int)uGDLClamp(0,((src)+(dest*factor)),255);
 		}break;
 		case COMBINE_COLOR_BOTHSRCALPHA:{
 			factor = (alphadest)/(255.0f);
-			return (int)((src)+(dest*factor));
+			return (int)uGDLClamp(0,((src)+(dest*factor)),255);
 		}break;
+		default: return (int)uGDLClamp(0,((src*alphadest)+(dest*factor)),255);
 	}
 }
 /*

@@ -7,8 +7,8 @@
 
 #define W 16
 #define H 16
-#define MAX_X 100
-#define MAX_Y 75
+#define MAX_X 1000
+#define MAX_Y 1000
 
 /*Macros will determine if individual tile will be flipped horizontally, vertically, or both*/
 #define G_FLIP_HORZ 0x0810
@@ -45,6 +45,7 @@ typedef struct{
 	uGDLHorzScroll hscroll;
 	int priority;
 	int erase;
+	int xoffset, yoffset;
 	uGDLTile map[MAX_X * MAX_Y];
 }uGDLTilemap;
 
@@ -52,6 +53,7 @@ int uGDLGetTileTexel(uGDLTile tile, int x, int y);
 void uGDLSetTileTexel(uGDLTile *tile, int x, int y, int col);
 uGDLTile uGDLLoadTile(char * name, int x, int y, int attr);
 void uGDLSetTileAttribute(uGDLTile *tile, int attr);
+void uGDLSetTilemapOffsets(uGDLTilemap *tile, int xoffset, int yoffset);
 void uGDLDispTile(uint32_t *VRAM, uGDLTile tile, int tX, int tY, int erase);
 void uGDLDispGrayscaleTile(uint32_t *VRAM, uGDLTile tile, int tX, int tY);
 void uGDLDispGrayscaleTileOnCanvas(uGDLCanvas *canvas, uGDLTile tile, int tX, int tY);

@@ -10,7 +10,7 @@
 	
 	Library : uGDL
 	File    : bmp_img.c
-	Author  : Ryandracus Chapamn
+	Author  : Ryandracus Chapman
 	Date 	: 5/23/2023
 	Version : 1.0
 	
@@ -139,29 +139,6 @@ void readPixelsBMP(FILE* file,struct Pixel*pArr[SIZE],int width,int height, int 
 
 /*
 =======================================================================================
-	Function   : displayPixels
-	Purpose    : Displays each RGB triplet of our image data to the console window
-	Parameters : pArr - A reference to an array of pixel structures
-				 width - The width of the image
-				 height - The height of the image
-	Returns	   : void
-=======================================================================================
-*/
-void displayPixels(struct Pixel*pArr[SIZE],int width,int height)
-{
-	int i;
-	for(i = 0; i < width * height; i++)
-	{
-		printf("(%d,%d,%d)",pArr[i]->r,pArr[i]->g,pArr[i]->b);
-		
-		if(i % height == 0){
-			printf("\n");
-		}
-	}
-}
-
-/*
-=======================================================================================
 	Function   : removeAll
 	Purpose    : Frees all the allocated memory of our pixel structures
 	Parameters : pArr - A reference to an array of pixel structures
@@ -213,26 +190,10 @@ void uGDLFreeTexture(uGDLTexture *tex){
 =======================================================================================
 */
 void uGDLLoadSprite(char* name, ColorFormat cf, uGDLSprite* spr, int width, int height){
-	struct Pixel *A[width*height];
-	FILE *fp=NULL;
-
-	fp=fopen(name,"rb");
-	
-	if(fp == NULL){
-		printf("NULL\n");
-		printf("%s\n",name);
-	}
-	
-	spr->clut = (int*)malloc(sizeof(int)*(width*height));
-	
-	readPixelsBMP(fp,A,width,height, spr->clut, cf);
-	
 	spr->width = width;
 	spr->height = height;
 	spr->cf = cf;
-
-	removeAll(A,width,height);
-	fclose(fp);	
+	spr->clut = uGDLLoadCLUT(name,cf,width,height);
 }
 /*
 =======================================================================================
@@ -245,7 +206,7 @@ void uGDLLoadSprite(char* name, ColorFormat cf, uGDLSprite* spr, int width, int 
 	Returns	   : An integer array
 =======================================================================================
 */
-int * uGDLLoadCLUT(char * name, ColorFormat cf, int width, int height){
+int* uGDLLoadCLUT(char* name, ColorFormat cf, int width, int height){
 	struct Pixel *A[width*height];
 	FILE *fp = fopen(name, "rb");
 	
@@ -464,7 +425,58 @@ void uGDLWriteImage(uGDLImage img){
 		fclose(file);
 	}
 	else{
+		int w = img.width;
+		int h = img.height;
 		
+		int pad = img.width % 4;
+		
+		BMPHeader bmp;
+		bmp.type = 0x4d42;
+		bmp.size = 54 + ((w * h * 3) + (w * 2));
+		bmp.reserved1 = 0;
+		bmp.reserved2 = 0;
+		bmp.offset = 54;
+		bmp.dib_header_size = 40;
+		bmp.width_px = w;
+		bmp.height_px = h;
+		bmp.num_planes = 1;
+		bmp.bits_per_pixel = 24;
+		bmp.compression = 0;
+		bmp.image_size_bytes = w * h * 3;
+		bmp.x_resolution_ppm = 0;
+		bmp.y_resolution_ppm = 0;
+		bmp.num_colors = 0;
+		bmp.important_colors = 0;
+		
+		uint16_t padding = 0;
+		
+		FILE *file = fopen(img.name,"wb");
+		
+		fwrite(&bmp.type, sizeof(uint16_t), 1, file);
+		fwrite(&bmp.size, sizeof(uint32_t), 1, file);
+		fwrite(&bmp.reserved1, sizeof(uint16_t), 1, file);
+		fwrite(&bmp.reserved2, sizeof(uint16_t), 1, file);
+		fwrite(&bmp.offset, sizeof(uint32_t), 1, file);
+		fwrite(&bmp.dib_header_size, sizeof(uint32_t), 1, file);
+		fwrite(&bmp.width_px, sizeof(uint32_t), 1, file);
+		fwrite(&bmp.height_px, sizeof(uint32_t), 1, file);
+		fwrite(&bmp.num_planes, sizeof(uint16_t), 1, file);
+		fwrite(&bmp.bits_per_pixel, sizeof(uint16_t), 1, file);
+		fwrite(&bmp.compression, sizeof(uint32_t), 1, file);
+		fwrite(&bmp.image_size_bytes, sizeof(uint32_t), 1, file);
+		fwrite(&bmp.x_resolution_ppm, sizeof(uint32_t), 1, file);
+		fwrite(&bmp.y_resolution_ppm, sizeof(uint32_t), 1, file);
+		fwrite(&bmp.num_colors, sizeof(uint32_t), 1, file);
+		fwrite(&bmp.important_colors, sizeof(uint32_t), 1, file);
+		
+		int x, y;
+		for(y = 0; y < h; y++){
+			for(x = 0; x < w; x++){
+				int col = img.clut[x+y*w];
+				
+				fwrite(&col,2,1,file);
+			}
+		}
 	}
 }
 /*

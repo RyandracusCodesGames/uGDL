@@ -31,12 +31,12 @@ uGDLCanvas uGDLCreateCanvas(int x, int y, int width, int height, ColorFormat cf)
 int uGDLGetCanvasPixel(uGDLCanvas *canvas, int x, int y);
 void uGDLFreeCanvas(uGDLCanvas *canvas);
 /*Display Canvas to Frame Buffer*/
-void uGDLDispCanvas(uGDLCanvas canvas, FrameBuffer *buf);
-void uGDLDispTranslatedCanvas(uGDLCanvas canvas, FrameBuffer *buf, int tX, int tY);
-void uGDLDispScaledCanvas(uGDLCanvas canvas, FrameBuffer *buf, float sX,float sY);
-void uGDLFlipCanvasHorz(uGDLCanvas canvas, FrameBuffer *buf, int tX, int tY);
-void uGDLFlipCanvasVert(uGDLCanvas canvas, FrameBuffer *buf, int tX, int tY);
-void uGDLDispCanvasHorzAndVert(uGDLCanvas canvas, FrameBuffer *buf, int tX, int tY);
+void uGDLDispCanvas(uGDLCanvas *canvas, FrameBuffer *buf);
+void uGDLDispTranslatedCanvas(uGDLCanvas *canvas, FrameBuffer *buf, int tX, int tY);
+void uGDLDispScaledCanvas(uGDLCanvas *canvas, FrameBuffer *buf, float sX,float sY);
+void uGDLFlipCanvasHorz(uGDLCanvas *canvas, FrameBuffer *buf, int tX, int tY);
+void uGDLFlipCanvasVert(uGDLCanvas *canvas, FrameBuffer *buf, int tX, int tY);
+void uGDLDispCanvasHorzAndVert(uGDLCanvas *canvas, FrameBuffer *buf, int tX, int tY);
 /*Rasterization functions applied to the canvas*/
 void uGDLDrawPointOnCanvas(uGDLCanvas *canvas, uGDLPoint2D p, int col);
 void uGDLClearCanvas(uGDLCanvas *canvas, int col);

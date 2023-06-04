@@ -39,6 +39,11 @@ void uGDLSetTileAttribute(uGDLTile *tile, int attr){
 	tile->attribute = attr;
 }
 
+void uGDLSetTilemapOffsets(uGDLTilemap *tile, int xoffset, int yoffset){
+	tile->xoffset = xoffset;
+	tile->yoffset = yoffset;
+}
+
 int uGDLGetTileTexel(uGDLTile tile, int x, int y){
 	if(x >= 0 && y >= 0 && x < W && y < W){
 		return tile.tlut[x + y * W];
@@ -76,6 +81,8 @@ void uGDLSetHorzScroll(uGDLTilemap *map, float hscroll){
 void uGDLInitTilemap(uGDLTilemap *map, int priority){
     uGDLVertScroll vscroll = {0};
     uGDLHorzScroll hscroll = {0};
+    map->xoffset = 0;
+    map->yoffset = 0;
     map->priority = priority;
     map->erase = uGDL_RGB888(4,20,83);
     map->vscroll = vscroll;
@@ -228,23 +235,23 @@ void uGDLDispTileHorzAndVertOnCanvas(uGDLCanvas *canvas, uGDLTile tile, int tX, 
 void uGDLDispTilemap(uint32_t *VRAM, uGDLTilemap *map){
 	int i = 0;
 	for(i = 0; i < map->index; i++){
-		if((map->map[i].x * W)+ map->map[i].transx + map->vscroll.x >= WIDTH + 2){
+		if((map->map[i].x * W)+ map->map[i].transx + map->vscroll.x >= WIDTH + map->xoffset + 2){
 		//	printf("OUT OF BOUNDS AT (%d,%d)\n",map->map[i].x, map->map[i].y);
-			map->map[i].transx -= WIDTH + 16;
+			map->map[i].transx -= WIDTH + map->xoffset + 16;
 		}
 		if((map->map[i].x * W)+ map->map[i].transx + map->vscroll.x <= -26){
 		//	printf("OUT OF BOUNDS AT (%d,%d)\n",map->map[i].x, map->map[i].y);
-			map->map[i].transx += WIDTH + 16;
+			map->map[i].transx += WIDTH + map->xoffset + 16;
 		}
 		
-		if((map->map[i].y * H) + map->map[i].transy + map->hscroll.y >= WIDTH + 2){
+		if((map->map[i].y * H) + map->map[i].transy + map->hscroll.y >= WIDTH + map->yoffset + 2){
 		//	printf("OUT OF BOUNDS AT (%d, %d)\n",map->map[i].x, map->map[i].y);
-			map->map[i].transy -= HEIGHT + H;
+			map->map[i].transy -= HEIGHT + map->yoffset + H;
 		}
 		
 		if((map->map[i].y * H) + map->map[i].transy + map->hscroll.y <= -16){
 		//	printf("OUT OF BOUNDS AT (%d, %d)\n",map->map[i].x, map->map[i].y);
-			map->map[i].transy += HEIGHT + H;
+			map->map[i].transy += HEIGHT + map->yoffset + H;
 		}
 		
 		switch(map->map[i].attribute){
@@ -270,23 +277,23 @@ void uGDLDispTilemap(uint32_t *VRAM, uGDLTilemap *map){
 void uGDLDispTilemapOnCanvas(uGDLCanvas *canvas, uGDLTilemap *map){
 	int i = 0;
 	for(i = 0; i < map->index; i++){
-		if((map->map[i].x * W)+ map->map[i].transx + map->vscroll.x >= canvas->width + 2){
+		if((map->map[i].x * W)+ map->map[i].transx + map->vscroll.x >= canvas->width + map->xoffset + 2){
 		//	printf("OUT OF BOUNDS AT (%d,%d)\n",map->map[i].x, map->map[i].y);
-			map->map[i].transx -= canvas->width + W;
+			map->map[i].transx -= canvas->width + map->xoffset + W;
 		}
 		if((map->map[i].x * W)+ map->map[i].transx + map->vscroll.x <= -16){
 		//	printf("OUT OF BOUNDS AT (%d,%d)\n",map->map[i].x, map->map[i].y);
-			map->map[i].transx += canvas->width + W;
+			map->map[i].transx += canvas->width + map->xoffset + W;
 		}
 		
-		if((map->map[i].y * H) + map->map[i].transy + map->hscroll.y >= canvas->height + 2){
+		if((map->map[i].y * H) + map->map[i].transy + map->hscroll.y >= canvas->height + map->yoffset + 2){
 		//	printf("OUT OF BOUNDS AT (%d, %d)\n",map->map[i].x, map->map[i].y);
-			map->map[i].transy -= canvas->height + H;
+			map->map[i].transy -= canvas->height + map->yoffset + H;
 		}
 		
 		if((map->map[i].y * H) + map->map[i].transy + map->hscroll.y <= -16){
 		//	printf("OUT OF BOUNDS AT (%d, %d)\n",map->map[i].x, map->map[i].y);
-			map->map[i].transy += canvas->height + H;
+			map->map[i].transy += canvas->height + map->yoffset + H;
 		}
 		
 		switch(map->map[i].attribute){

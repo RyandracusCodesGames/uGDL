@@ -66,7 +66,7 @@ extern uGDLScissor sciptr;
 /*Initialie the core components of our frame buffer*/
 void uGDLInitFrameBuffer(FrameBuffer *buf, int width, int height, ColorFormat cf);
 /*Some platforms require a manual page flip to avoid page tearing artifacts*/
-void uGDLSwapBuffers();
+void uGDLSwapBuffers(FrameBuffer *buf, uint32_t *draw_buffer, int width, int height);
 /*Some platforms require the programmer to wait for all vertical scanlines to be done drawing before swapping buffers*/
 void uGDLWaitVBlank();
 /*Initialize the core components of our window display*/
